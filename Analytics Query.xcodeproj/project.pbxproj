@@ -19,6 +19,7 @@
 		D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */; };
 		D87DCA72262A6325000668A3 /* AnalyticsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA71262A6325000668A3 /* AnalyticsItem.swift */; };
 		D8F0B4AC260CFD83008D6054 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F0B4AB260CFD83008D6054 /* Coding.swift */; };
+		D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryTypeQueryComparison.swift; sourceTree = "<group>"; };
 		D87DCA71262A6325000668A3 /* AnalyticsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsItem.swift; sourceTree = "<group>"; };
 		D8F0B4AB260CFD83008D6054 /* Coding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coding.swift; sourceTree = "<group>"; };
+		D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueriesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				D87A5C31260AD35500D7B016 /* AppDelegate.swift */,
 				D87A5C43260BCC2900D7B016 /* MainViewController.swift */,
 				D87396E9262106C40050D602 /* SearchViewController.swift */,
+				D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */,
 				D829263A262360D600B16434 /* QueryItem.swift */,
 				D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */,
 				D829263C262386E600B16434 /* QueriesTable.swift */,
@@ -165,6 +168,7 @@
 				D8F0B4AC260CFD83008D6054 /* Coding.swift in Sources */,
 				D87A5C44260BCC2900D7B016 /* MainViewController.swift in Sources */,
 				D829263B262360D600B16434 /* QueryItem.swift in Sources */,
+				D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */,
 				D87396EE26210D050050D602 /* QueryItemCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

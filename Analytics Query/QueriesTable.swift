@@ -38,7 +38,6 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
             guard let index = items.firstIndex(where: { $0.id == queryItem.id }) else { return }
             if index >= 0, let items = self?.queryItems, index < items.count {
                 self?.queryItems[index] = queryItem
-//                print("Item \(index) text: \(queryItem)")
             }
         })
         
@@ -48,6 +47,21 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
     func addQuery() {
         let item = QueryItem()
         queryItems.append(item)
+        reloadData()
+    }
+    
+    func removeRow(_ row: Int) {
+        queryItems.remove(at: row)
+        if queryItems.isEmpty {
+            queryItems.append(QueryItem())
+        }
+
+        reloadData()
+    }
+    
+    func removeAll() {
+        queryItems.removeAll()
+        queryItems.append(QueryItem())
         reloadData()
     }
     

@@ -1228,18 +1228,18 @@
         <scene sceneID="YE5-ki-hqZ">
             <objects>
                 <viewController title="Search" id="4dh-oP-68C" customClass="SearchViewController" customModule="Analytics_Query" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" misplaced="YES" id="J8T-wf-deI">
+                    <view key="view" id="J8T-wf-deI">
                         <rect key="frame" x="0.0" y="0.0" width="772" height="387"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hjS-gK-cb6">
-                                <rect key="frame" x="228" y="19" width="524" height="215"/>
+                                <rect key="frame" x="228" y="20" width="524" height="347"/>
                                 <clipView key="contentView" id="gXm-la-nDS">
-                                    <rect key="frame" x="1" y="1" width="522" height="213"/>
+                                    <rect key="frame" x="1" y="1" width="522" height="345"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" headerView="2sQ-Wr-gjl" viewBased="YES" id="sFW-D9-Qsh">
-                                            <rect key="frame" x="0.0" y="0.0" width="522" height="185"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="522" height="317"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="17" height="0.0"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1330,16 +1330,50 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="N5g-K3-7oA">
+                                <rect key="frame" x="20" y="20" width="200" height="347"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="FRP-qv-Kcg"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="N5g-K3-7oA" firstAttribute="leading" secondItem="J8T-wf-deI" secondAttribute="leading" constant="20" symbolic="YES" id="6oZ-ZV-qVz"/>
+                            <constraint firstAttribute="trailing" secondItem="hjS-gK-cb6" secondAttribute="trailing" constant="20" symbolic="YES" id="9MV-V1-Yeo"/>
+                            <constraint firstItem="N5g-K3-7oA" firstAttribute="top" secondItem="J8T-wf-deI" secondAttribute="top" constant="20" symbolic="YES" id="CHh-9G-LpP"/>
+                            <constraint firstAttribute="bottom" secondItem="N5g-K3-7oA" secondAttribute="bottom" constant="20" symbolic="YES" id="XYe-NO-GuR"/>
+                            <constraint firstAttribute="bottom" secondItem="hjS-gK-cb6" secondAttribute="bottom" constant="20" symbolic="YES" id="nRT-wF-hJr"/>
+                            <constraint firstItem="hjS-gK-cb6" firstAttribute="leading" secondItem="N5g-K3-7oA" secondAttribute="trailing" constant="8" symbolic="YES" id="vt3-jL-qa0"/>
+                            <constraint firstItem="hjS-gK-cb6" firstAttribute="top" secondItem="J8T-wf-deI" secondAttribute="top" constant="20" symbolic="YES" id="xYe-t3-aac"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="queriesContainerView" destination="N5g-K3-7oA" id="3Ys-Ag-awo"/>
+                        <outlet property="resultsTableView" destination="sFW-D9-Qsh" id="dF6-yg-ZZW"/>
+                    </connections>
+                </viewController>
+                <customObject id="5XQ-x9-Iuv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="311" y="1654.5"/>
+        </scene>
+        <!--Search Queries View Controller-->
+        <scene sceneID="6fn-pd-iam">
+            <objects>
+                <viewController storyboardIdentifier="SearchQueriesViewController" id="7fz-iM-JXA" customClass="SearchQueriesViewController" customModule="Analytics_Query" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" misplaced="YES" id="5Vh-7f-RbM">
+                        <rect key="frame" x="0.0" y="0.0" width="200" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Zfj-kd-txO">
-                                <rect key="frame" x="20" y="20" width="200" height="214"/>
+                                <rect key="frame" x="0.0" y="0.0" width="200" height="218"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="96" horizontalPageScroll="10" verticalLineScroll="96" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lm4-Y7-6Qb">
-                                        <rect key="frame" x="0.0" y="116" width="200" height="98"/>
+                                        <rect key="frame" x="0.0" y="120" width="200" height="98"/>
                                         <clipView key="contentView" id="4In-RA-S5A">
                                             <rect key="frame" x="1" y="1" width="198" height="96"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="96" rowSizeStyle="automatic" headerView="dg7-2I-wkf" viewBased="YES" id="3Cu-Ko-ig1" customClass="QueriesTable" customModule="Analytics_Query" customModuleProvider="target">
+                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="96" usesAutomaticRowHeights="YES" headerView="dg7-2I-wkf" viewBased="YES" id="3Cu-Ko-ig1" customClass="QueriesTable" customModule="Analytics_Query" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="198" height="96"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <size key="intercellSpacing" width="17" height="0.0"/>
@@ -1411,8 +1445,8 @@
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="640370102.34211802">
-                                                                                    <!--2021-04-17 16:35:02 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="640370517.22167003">
+                                                                                    <!--2021-04-17 16:41:57 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1456,11 +1490,11 @@
                                             </subviews>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="dnS-jj-gwl">
-                                            <rect key="frame" x="1" y="76" width="183" height="15"/>
+                                            <rect key="frame" x="1" y="82" width="183" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="wVT-cq-agK">
-                                            <rect key="frame" x="184" y="29" width="15" height="47"/>
+                                            <rect key="frame" x="184" y="29" width="15" height="53"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <tableHeaderView key="headerView" wantsLayer="YES" id="dg7-2I-wkf">
@@ -1478,7 +1512,7 @@
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="addQueryItem:" target="4dh-oP-68C" id="zn1-GK-Wdu"/>
+                                                    <action selector="addQueryItem:" target="7fz-iM-JXA" id="k59-AQ-3Ks"/>
                                                 </connections>
                                             </button>
                                             <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="k5J-Yr-xRS">
@@ -1488,7 +1522,7 @@
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="removeQuery:" target="4dh-oP-68C" id="lQV-TC-xSN"/>
+                                                    <action selector="removeQuery:" target="7fz-iM-JXA" id="LCp-Nv-H8W"/>
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cwp-iz-GQW">
@@ -1502,7 +1536,7 @@
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="performSearch:" target="4dh-oP-68C" id="OIp-aH-UpI"/>
+                                                    <action selector="performSearch:" target="7fz-iM-JXA" id="ohH-yo-tXJ"/>
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g5M-Rn-Bkc">
@@ -1516,7 +1550,7 @@
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="removeAllQueries:" target="4dh-oP-68C" id="ZN3-AU-d12"/>
+                                                    <action selector="removeAllQueries:" target="7fz-iM-JXA" id="YpR-xu-9b5"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1542,7 +1576,7 @@
                                                     <font key="font" metaFont="smallSystem"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="selectedWhatRadioButton:" target="4dh-oP-68C" id="Sje-X2-dsi"/>
+                                                    <action selector="selectedWhatRadioButton:" target="7fz-iM-JXA" id="9D1-4P-DHD"/>
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-LG-QeX">
@@ -1552,7 +1586,7 @@
                                                     <font key="font" metaFont="smallSystem"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="selectedWhatRadioButton:" target="4dh-oP-68C" id="PlR-eq-8gq"/>
+                                                    <action selector="selectedWhatRadioButton:" target="7fz-iM-JXA" id="SsG-lW-XIo"/>
                                                 </connections>
                                             </button>
                                             <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="752" translatesAutoresizingMaskIntoConstraints="NO" id="Ftx-dB-r7X">
@@ -1562,7 +1596,7 @@
                                                     <font key="font" metaFont="smallSystem"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="selectedWhatRadioButton:" target="4dh-oP-68C" id="MRx-pN-8Vd"/>
+                                                    <action selector="selectedWhatRadioButton:" target="7fz-iM-JXA" id="JMw-C5-hyv"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1598,7 +1632,7 @@
                                                     <font key="font" metaFont="smallSystem"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="selectedWhichRadioButton:" target="4dh-oP-68C" id="LcQ-1d-SFf"/>
+                                                    <action selector="selectedMatchRadioButton:" target="7fz-iM-JXA" id="5MK-Tn-mXT"/>
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Pe-BmA">
@@ -1608,7 +1642,7 @@
                                                     <font key="font" metaFont="smallSystem"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="selectedWhichRadioButton:" target="4dh-oP-68C" id="xOY-Il-V6t"/>
+                                                    <action selector="selectedMatchRadioButton:" target="7fz-iM-JXA" id="oUa-on-RQG"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1631,60 +1665,44 @@
                                     <constraint firstItem="Lm4-Y7-6Qb" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" id="7Zd-wg-waa"/>
                                     <constraint firstAttribute="trailing" secondItem="f1x-yd-iXd" secondAttribute="trailing" id="9EF-6B-a3K"/>
                                     <constraint firstItem="oZu-o7-6Fk" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" constant="4" id="B2s-61-Ci1"/>
+                                    <constraint firstAttribute="trailing" secondItem="Lm4-Y7-6Qb" secondAttribute="trailing" id="JSy-sl-rDs"/>
                                     <constraint firstAttribute="width" constant="200" id="Jb8-RW-2Yl"/>
                                     <constraint firstAttribute="trailing" secondItem="oZu-o7-6Fk" secondAttribute="trailing" constant="4" id="JbS-xK-oP5"/>
+                                    <constraint firstItem="Lm4-Y7-6Qb" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" id="K4Y-qx-Z28"/>
                                     <constraint firstItem="f1x-yd-iXd" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" id="LqV-Qc-2qd"/>
-                                    <constraint firstItem="9Xa-7F-iVa" firstAttribute="top" secondItem="Lm4-Y7-6Qb" secondAttribute="bottom" constant="4" id="UGa-gQ-yVa"/>
                                     <constraint firstAttribute="bottom" secondItem="f1x-yd-iXd" secondAttribute="bottom" id="VX7-t2-wUn"/>
                                     <constraint firstItem="Lm4-Y7-6Qb" firstAttribute="top" secondItem="Zfj-kd-txO" secondAttribute="top" id="Wpu-yX-DA8"/>
                                     <constraint firstAttribute="trailing" secondItem="9Xa-7F-iVa" secondAttribute="trailing" constant="4" id="Xd5-C8-xnn"/>
+                                    <constraint firstItem="9Xa-7F-iVa" firstAttribute="top" secondItem="Lm4-Y7-6Qb" secondAttribute="bottom" constant="8" id="c59-vm-P5X"/>
                                     <constraint firstAttribute="trailing" secondItem="Lm4-Y7-6Qb" secondAttribute="trailing" id="eaG-dz-lX5"/>
+                                    <constraint firstItem="Lm4-Y7-6Qb" firstAttribute="top" secondItem="Zfj-kd-txO" secondAttribute="top" id="kpL-M1-3CU"/>
                                     <constraint firstItem="9Xa-7F-iVa" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" constant="4" id="nt1-zv-gR2"/>
                                     <constraint firstItem="f1x-yd-iXd" firstAttribute="top" secondItem="oZu-o7-6Fk" secondAttribute="bottom" constant="4" id="suc-Uy-dSo"/>
-                                    <constraint firstItem="oZu-o7-6Fk" firstAttribute="top" secondItem="9Xa-7F-iVa" secondAttribute="bottom" constant="8" symbolic="YES" id="yvI-KA-Q8a"/>
+                                    <constraint firstItem="oZu-o7-6Fk" firstAttribute="top" secondItem="9Xa-7F-iVa" secondAttribute="bottom" constant="8" id="yvI-KA-Q8a"/>
                                 </constraints>
                             </customView>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="Zfj-kd-txO" firstAttribute="bottom" secondItem="sFW-D9-Qsh" secondAttribute="bottom" id="64p-kq-hSn"/>
-                            <constraint firstAttribute="trailing" secondItem="hjS-gK-cb6" secondAttribute="trailing" constant="20" symbolic="YES" id="9MV-V1-Yeo"/>
-                            <constraint firstItem="Zfj-kd-txO" firstAttribute="leading" secondItem="J8T-wf-deI" secondAttribute="leading" constant="20" symbolic="YES" id="MIL-hi-oEv"/>
-                            <constraint firstAttribute="bottom" secondItem="Zfj-kd-txO" secondAttribute="bottom" constant="20" symbolic="YES" id="har-1J-HjK"/>
-                            <constraint firstItem="Zfj-kd-txO" firstAttribute="top" secondItem="J8T-wf-deI" secondAttribute="top" constant="20" symbolic="YES" id="scM-3G-5RR"/>
-                            <constraint firstItem="hjS-gK-cb6" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="trailing" constant="8" symbolic="YES" id="suI-5f-mLd"/>
-                            <constraint firstItem="hjS-gK-cb6" firstAttribute="top" secondItem="J8T-wf-deI" secondAttribute="top" constant="20" symbolic="YES" id="xYe-t3-aac"/>
+                            <constraint firstItem="Zfj-kd-txO" firstAttribute="top" secondItem="5Vh-7f-RbM" secondAttribute="top" id="8pd-NS-Jea"/>
+                            <constraint firstAttribute="trailing" secondItem="Zfj-kd-txO" secondAttribute="trailing" id="J7B-ZD-idJ"/>
+                            <constraint firstAttribute="bottom" secondItem="Zfj-kd-txO" secondAttribute="bottom" id="Snh-83-zx6"/>
+                            <constraint firstItem="Zfj-kd-txO" firstAttribute="leading" secondItem="5Vh-7f-RbM" secondAttribute="leading" id="gFX-fC-sis"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="allRadio" destination="osn-9s-QOI" id="Cx2-1p-sRz"/>
-                        <outlet property="anyRadio" destination="ZsH-Pe-BmA" id="Cay-Hn-FrD"/>
-                        <outlet property="bothRadio" destination="Ftx-dB-r7X" id="WWg-rc-NIk"/>
-                        <outlet property="containerSeparatorView" destination="f1x-yd-iXd" id="f0H-cz-9m0"/>
-                        <outlet property="countersRadio" destination="wxQ-LG-QeX" id="hAE-LD-ajC"/>
-                        <outlet property="itemsRadio" destination="nAh-KD-j1s" id="O1L-is-AN5"/>
-                        <outlet property="queriesContainerView" destination="Zfj-kd-txO" id="hRb-Df-sX4"/>
-                        <outlet property="queriesTableView" destination="3Cu-Ko-ig1" id="9S1-Hd-p1D"/>
-                        <outlet property="removeAllQueriesButton" destination="g5M-Rn-Bkc" id="Jil-vg-eIV"/>
-                        <outlet property="removeQueryButton" destination="k5J-Yr-xRS" id="OMl-6A-BH2"/>
-                        <outlet property="resultsTableView" destination="sFW-D9-Qsh" id="dF6-yg-ZZW"/>
+                        <outlet property="allRadio" destination="osn-9s-QOI" id="QoN-1k-I22"/>
+                        <outlet property="anyRadio" destination="ZsH-Pe-BmA" id="UkY-go-OUH"/>
+                        <outlet property="bothRadio" destination="Ftx-dB-r7X" id="U7z-48-iW7"/>
+                        <outlet property="countersRadio" destination="wxQ-LG-QeX" id="j5l-nZ-vV4"/>
+                        <outlet property="itemsRadio" destination="nAh-KD-j1s" id="ibT-SU-Dgt"/>
+                        <outlet property="queriesTableView" destination="3Cu-Ko-ig1" id="ydD-gd-Bji"/>
+                        <outlet property="removeAllQueriesButton" destination="g5M-Rn-Bkc" id="Jtu-kd-ukO"/>
+                        <outlet property="removeQueryButton" destination="k5J-Yr-xRS" id="d41-pQ-fKe"/>
                     </connections>
-                </viewController>
-                <customObject id="5XQ-x9-Iuv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="311" y="1654.5"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="6fn-pd-iam">
-            <objects>
-                <viewController id="7fz-iM-JXA" sceneMemberID="viewController">
-                    <view key="view" id="5Vh-7f-RbM">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
                 </viewController>
                 <customObject id="gne-JX-lar" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="150" y="2133"/>
+            <point key="canvasLocation" x="150" y="2177"/>
         </scene>
     </scenes>
     <resources>
