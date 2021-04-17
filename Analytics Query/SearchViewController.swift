@@ -13,6 +13,19 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     private var items = [AnalyticsItem]()
     
+
+    private struct ColumnHeadings {
+        static let timeStamp = "Date/Time"
+        static let description = "Description"
+        static let details = "Details"
+        static let count = "Count"
+        static let appName = "App name"
+        static let appVersion = "App version"
+        static let platform = "Platform"
+        static let systemVersion = "OS version"
+        static let deviceID = "Device ID"
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,7 +53,30 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        // TODO: Implement!!!
+        let item = items[row]
+        
+        if tableColumn?.title == ColumnHeadings.timeStamp {
+            return NSTextField(labelWithString: item.timestamp)
+        } else if tableColumn?.title == ColumnHeadings.description {
+            return NSTextField(labelWithString: item.description)
+        } else if tableColumn?.title == ColumnHeadings.details {
+            return NSTextField(labelWithString: item.details)
+        } else if tableColumn?.title == ColumnHeadings.count {
+            let countLabel = NSTextField(labelWithString: item.count)
+            countLabel.alignment = .right
+            return countLabel
+        } else if tableColumn?.title == ColumnHeadings.appName {
+            return NSTextField(labelWithString: item.appName)
+        } else if tableColumn?.title == ColumnHeadings.appVersion {
+            return NSTextField(labelWithString: item.appVersion)
+        } else if tableColumn?.title == ColumnHeadings.platform {
+            return NSTextField(labelWithString: item.platform)
+        } else if tableColumn?.title == ColumnHeadings.systemVersion {
+            return NSTextField(labelWithString: item.systemVersion)
+        } else if tableColumn?.title == ColumnHeadings.deviceID {
+            return NSTextField(labelWithString: item.deviceID)
+        }
+
         return nil
     }
     

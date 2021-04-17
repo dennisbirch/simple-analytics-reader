@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import os.log
 
 enum WhatItems: String {
     case items
@@ -81,7 +82,6 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
         queriesTableView.queriesTableDelegate = self
     }
     
-    
     @IBAction func addQueryItem(_ sender: Any) {
         queriesTableView.addQuery()
     }
@@ -115,8 +115,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
         selectedQueryRow = -1
         enableRemoveQueryButtons()
     }
-    
-    
+        
     @IBAction func performSearch(_ sender: Any) {
         var statements = [String]()
         
@@ -142,20 +141,28 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
         }
         
         // execute SQL statement
-        let sql = statements.joined(separator: ";")
-        
-        let submitter = QuerySubmitter(query: sql, mode: .items) { [weak self] result in
-            guard let result = result as? [AnalyticsItem] else {
-                print("Search query failed")
-                return
+        var resultItems = [AnalyticsItem]()
+        var counter = 0
+        for statement in statements {
+            let submitter = QuerySubmitter(query: statement, mode: .items) { result in
+                if let result = result as? [AnalyticsItem] {
+                    resultItems.append(contentsOf: result)
+                } else {
+                    os_log("Search query failed")
+                    return
+                }
+                
+                counter += 1
+                
+                if counter >= statements.count {
+                    DispatchQueue.main.async { [weak self] in
+                        self?.searchDelegate?.searchCompleted(results: resultItems)
+                    }
+                }
             }
-            
-//            self?.items = result
-//            self?.resultsTableView.reloadData()
-            self?.searchDelegate?.searchCompleted(results: result)
+            submitter.submit()
         }
-        
-        submitter.submit()
+
     }
  
 

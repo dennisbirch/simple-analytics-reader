@@ -20,7 +20,7 @@ struct AnalyticsItem: Hashable, Decodable {
     let timestamp: String
     let description: String
     let details: String
-    let count: Int
+    let count: String
     let deviceID: String
     let appName: String
     let appVersion: String
@@ -41,17 +41,17 @@ struct AnalyticsItem: Hashable, Decodable {
         
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        description = try values.decode(String.self, forKey: .description)
-        count = try values.decodeIfPresent(Int.self, forKey: .count) ?? 0
+        description = try values.decodeIfPresent(String.self, forKey: .description) ?? "N/A"
+        count = try values.decodeIfPresent(String.self, forKey: .count) ?? "N/A"
         let dateString = try values.decodeIfPresent(String.self, forKey: .timestamp)
         if let time = dateString {
-            timestamp = time.dateFromISOString()?.shortDateString() ?? ""
+            timestamp = time.dateFromISOString()?.shortDateString() ?? "N/A"
         } else {
-            timestamp = ""
+            timestamp = "N/A"
         }
         details = try values.decodeIfPresent(String.self, forKey: .details) ?? ""
         deviceID = try values.decodeIfPresent(String.self, forKey: .deviceID) ?? "N/A"
-        appName = try values.decode(String.self, forKey: .appName)
+        appName = try values.decodeIfPresent(String.self, forKey: .appName) ?? "N/A"
         appVersion = try values.decodeIfPresent(String.self, forKey: .appVersion) ?? "N/A"
         systemVersion = try values.decodeIfPresent(String.self, forKey: .systemVersion) ?? "N/A"
         platform = try values.decodeIfPresent(String.self, forKey: .platform) ?? "N/A"
