@@ -141,28 +141,19 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
         }
         
         // execute SQL statement
-        var resultItems = [AnalyticsItem]()
-        var counter = 0
-        for statement in statements {
-            let submitter = QuerySubmitter(query: statement, mode: .items) { result in
-                if let result = result as? [AnalyticsItem] {
-                    resultItems.append(contentsOf: result)
-                } else {
-                    os_log("Search query failed")
-                    return
+        let sql = statements.joined(separator: "; ")
+        let submitter = QuerySubmitter(query: sql, mode: .items) { result in
+            if let result = result as? [AnalyticsItem] {
+                DispatchQueue.main.async { [weak self] in
+                    self?.searchDelegate?.searchCompleted(results: result)
                 }
-                
-                counter += 1
-                
-                if counter >= statements.count {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.searchDelegate?.searchCompleted(results: resultItems)
-                    }
-                }
+            } else {
+                os_log("Search query failed")
+                return
             }
-            submitter.submit()
         }
-
+        
+        submitter.submit()
     }
  
 
