@@ -125,7 +125,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
         
         if whatItems == .items || whatItems == .both {
             let itemsWhereStatement = sqlArray.joined(separator: how)
-            let itemsSQL = "SELECT * FROM items WHERE (\(itemsWhereStatement))"
+            let itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
             statements.append(itemsSQL)
         }
         
@@ -135,7 +135,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
             if counterItems.isEmpty == false {
                 let counterSQLArray = counterItems.map{ $0.sqlWhereString() }
                 let countersWhereStatement = counterSQLArray.joined(separator: how)
-                let countersSQL = "SELECT * FROM counters WHERE (\(countersWhereStatement))"
+                let countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
                 statements.append(countersSQL)
             }
         }

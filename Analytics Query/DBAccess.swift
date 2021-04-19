@@ -27,8 +27,10 @@ struct Common {
 }
 
 struct DBAccess {
+    static var selectAll = "*"
+    
     static func query(what: String,
-                      from: String = "",
+                      from: String,
                       whereClause: String = "",
                       isDistinct: Bool = false,
                       sorting: String = "") -> String {
