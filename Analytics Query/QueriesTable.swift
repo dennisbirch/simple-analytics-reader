@@ -43,6 +43,14 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
         
         return cellView
     }
+    
+    func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+        return QueriesTableRow()
+    }
+    
+    override func didAdd(_ rowView: NSTableRowView, forRow row: Int) {
+        rowView.backgroundColor = QueriesTableRow.baseColor
+    }
         
     func addQuery() {
         let item = QueryItem()
@@ -67,7 +75,56 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
     
     func tableViewSelectionDidChange(_ notification: Notification) {
         if let tableView = notification.object as? NSTableView {
-            queriesTableDelegate?.queriesTableSelectionChanged(selectedRow: tableView.selectedRow)
+            let row = tableView.selectedRow
+            queriesTableDelegate?.queriesTableSelectionChanged(selectedRow: row)
+            tableView.enumerateAvailableRowViews { (rowView, _) in
+                if rowView.isSelected {
+                    rowView.backgroundColor = NSColor.tertiaryLabelColor
+                } else {
+                    rowView.backgroundColor = QueriesTableRow.baseColor
+                }
+                rowView.displayIfNeeded()
+            }
         }
     }
+    
+    override func validateProposedFirstResponder(_ responder: NSResponder, for event: NSEvent?) -> Bool {
+        if type(of: responder) == NSTextField.self {
+            self.selectRowIndexes([], byExtendingSelection: false)
+        }
+        return true
+    }
+}
+
+class QueriesTableRow: NSTableRowView {
+    static let baseColor = NSColor.yellow.withAlphaComponent(0.4)
+    private var cellTrackingArea: NSTrackingArea?
+    private var mouseIsInside = false
+    
+    override func drawSelection(in dirtyRect: NSRect) {
+        // TODO: Implement hover effect based on mouseIsInside status?
+    }
+    
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if cellTrackingArea == nil {
+            cellTrackingArea = NSTrackingArea(rect: NSRect.zero, options: [.mouseEnteredAndExited, .activeInKeyWindow, .inVisibleRect], owner: self, userInfo: nil)
+        }
+        
+        if let area = cellTrackingArea,
+           trackingAreas.contains(area) == false {
+            addTrackingArea(area)
+        }
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        mouseIsInside = true
+        setNeedsDisplay(bounds)
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        mouseIsInside = false
+        setNeedsDisplay(bounds)
+    }
+    
 }

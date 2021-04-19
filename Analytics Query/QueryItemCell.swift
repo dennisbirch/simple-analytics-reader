@@ -21,9 +21,6 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         dateTimeControl.isHidden = true
         searchTermText.delegate = self
         
-        self.wantsLayer = true
-        self.layer?.backgroundColor = NSColor.yellow.withAlphaComponent(0.4).cgColor
-        
         configureTypePopup(with: item.queryType.rawValue)
         configureEqualityPopup(with: item)
         searchTermText.stringValue = item.value
@@ -179,12 +176,12 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
             let control = obj.object
             if let textField = control as? NSTextField, textField == searchTermText {
                 queryItem = item.queryItemWithNewString(textField.stringValue)
-                
                 if let handler = self.insertHandler, let query = self.queryItem {
                     handler(query)
                 }
             }
         }
-    }    
+    }
+
 }
 
