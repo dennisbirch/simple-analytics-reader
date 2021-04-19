@@ -41,6 +41,7 @@ struct QuerySubmitter {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         let bodyString = ("\(queryKey)=\(query)&\(queryModeKey)=\(mode.modeString)")
+        os_log("Query string: %@", bodyString)
         
         let body = bodyString.data(using: .utf8)
         urlRequest.httpBody = body

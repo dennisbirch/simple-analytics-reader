@@ -111,25 +111,31 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         let queryType = QueryType.fromString(typeString)
         var comparison = queryItem?.comparison
         let date = dateTimeControl.dateValue
-        if comparison is DateComparison {
-            if let item = queryItem, queryType == .datetime {
+        
+        switch queryType {
+        case .datetime:
+            if comparison is DateComparison,
+               let item = queryItem {
                 comparison = item.comparison
             } else {
                 comparison = DateComparison.equals
             }
-        } else if comparison is NumericComparison {
-            if let item = queryItem, queryType == .appVersion || queryType == .systemVersion {
-                comparison = item.comparison
-            } else {
-                comparison = NumericComparison.equals
-            }
-        } else {
-            if let item = queryItem, queryType != .datetime {
+        case .appVersion, .systemVersion:
+            if comparison is NumericComparison,
+               let item = queryItem {
+                    comparison = item.comparison
+                } else {
+                    comparison = NumericComparison.equals
+                }
+        default: // string comparison
+            if let item = queryItem,
+               comparison is StringComparison {
                 comparison = item.comparison
             } else {
                 comparison = StringComparison.equals
             }
         }
+        
         var newQueryItem: QueryItem
         if queryType == .datetime, let dateComparison = comparison as? DateComparison {
             newQueryItem = QueryItem(queryType: queryType, dateComparison: dateComparison, value: date)

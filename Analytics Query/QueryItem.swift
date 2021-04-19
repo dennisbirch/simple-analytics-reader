@@ -175,7 +175,7 @@ extension String {
 extension ISO8601DateFormatter {
     static var queryFormatter: ISO8601DateFormatter {
         let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withYear, .withMonth, .withDay, .withTime]
+        formatter.formatOptions = [.withYear, .withMonth, .withDay, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
         return formatter
     }
 }
