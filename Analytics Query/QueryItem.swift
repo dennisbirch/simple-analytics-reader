@@ -83,6 +83,13 @@ extension QueryItem {
         return item
     }
     
+    func queryItemWithNewNumeric(_ numericString: String) -> QueryItem {
+        let comparison = self.comparison as? NumericComparison ?? NumericComparison.equals
+        var item = QueryItem(queryType: self.queryType, comparison: comparison, value: numericString)
+        item.id = self.id
+        return item
+    }
+    
     func queryItemWithNewDate(_ newDate: Date) -> QueryItem {
         let comparison = self.comparison as? DateComparison ?? DateComparison.equals
         var item = QueryItem(queryType: .datetime, dateComparison: comparison, value: newDate)

@@ -162,12 +162,18 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
 
     func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         if control == searchTermText {
-            if let item = queryItem, item.queryType != .datetime {
-                let newItem = item.queryItemWithNewString(fieldEditor.string)
-                queryItem = newItem
-                
-                if let handler = self.insertHandler {
-                    handler(newItem)
+            if let item = queryItem {
+                let type = item.queryType
+                if type == .appVersion || type == .systemVersion {
+                    let newItem = item.queryItemWithNewNumeric(fieldEditor.string)
+                    queryItem = newItem
+                } else if type != .datetime {
+                    let newItem = item.queryItemWithNewString(fieldEditor.string)
+                    queryItem = newItem
+                    
+                    if let handler = self.insertHandler {
+                        handler(newItem)
+                    }
                 }
             }
         }
@@ -177,13 +183,25 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     
     func controlTextDidChange(_ obj: Notification) {
         if let item = queryItem {
-            let qType = item.queryType
-            if qType == .datetime { return }
-            let control = obj.object
-            if let textField = control as? NSTextField, textField == searchTermText {
-                queryItem = item.queryItemWithNewString(textField.stringValue)
-                if let handler = self.insertHandler, let query = self.queryItem {
-                    handler(query)
+            let type = item.queryType
+            if type == .datetime { return }
+            let fieldEditor = obj.object
+            if let textField = fieldEditor as? NSTextField, textField == searchTermText {
+                if let item = queryItem {
+                    if type == .appVersion || type == .systemVersion {
+                        let newItem = item.queryItemWithNewNumeric(textField.stringValue)
+                        queryItem = newItem
+                    } else if type != .datetime {
+                        let newItem = item.queryItemWithNewString(textField.stringValue)
+                        queryItem = newItem
+                        
+                        if let handler = self.insertHandler {
+                            handler(newItem)
+                        }
+                    }
+                    if let handler = self.insertHandler, let query = self.queryItem {
+                        handler(query)
+                    }
                 }
             }
         }
