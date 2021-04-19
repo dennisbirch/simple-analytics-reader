@@ -70,8 +70,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
     
     private func requestApplicationNames() {
-        let itemsQuery = "SELECT DISTINCT (\(Common.appName)) FROM \(Items.table)"
-        let countersQuery = "SELECT DISTINCT (\(Common.appName)) FROM \(Counters.table)"
+        let itemsQuery = DBAccess.query(what: Common.appName, from: Items.table, isDistinct: true)
+        let countersQuery = DBAccess.query(what: Common.appName, from: Counters.table, isDistinct: true)
         
         showActivityIndicator(true)
         let itemSubmitter = QuerySubmitter(query: itemsQuery, mode: .array) { (result) in
@@ -114,8 +114,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         counters.removeAll()
         countersTable.reloadData()
         
-        let itemQuery = "SELECT DISTINCT(\(Common.platform)) FROM \(Items.table) WHERE \(Common.appName) = '\(appName)'"
-        let countersQuery = "SELECT DISTINCT(\(Common.platform)) FROM \(Counters.table) WHERE \(Common.appName) = '\(appName)'"
+        let itemQuery = DBAccess.query(what: Common.platform, from: Items.table, whereClause: "\(Common.appName) = '\(appName)'")
+        let countersQuery = DBAccess.query(what: Common.platform, from: Counters.table, whereClause: "\(Common.appName) = '\(appName)'")
         
         showActivityIndicator(true)
         let itemSubmitter = QuerySubmitter(query: itemQuery, mode: .array) { [weak self] result in
@@ -162,7 +162,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         counters.removeAll()
         countersTable.reloadData()
         
-        let query = "SELECT DISTINCT (\(Items.description)) FROM \(Items.table) WHERE \(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'"
+        let query = DBAccess.query(what: Items.description, from: Items.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
         let itemSubmitter = QuerySubmitter(query: query, mode: .array) { [weak self] result in
             guard let result = result as? [[String]] else {
                 return
@@ -183,7 +183,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private func requestCounters(app: String, platform: String) {
         showActivityIndicator(true)
 
-        let query = "SELECT \(Counters.description), \(Counters.count) FROM \(Counters.table) WHERE \(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'"
+        let query = DBAccess.query(what: "\(Counters.description), \(Counters.count)", from: Counters.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
         var countsArray = [String]()
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
             guard let result = result as? [[String : String]] else {
@@ -211,7 +211,10 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private func requestDetails(app: String, platform: String, action: String) {
         showActivityIndicator(true)
         
-        let query = "SELECT \(Items.details), \(Items.timestamp), \(Common.deviceID) FROM \(Items.table) WHERE \(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)' ORDER BY \(Common.deviceID), \(Items.timestamp)"
+        let query = DBAccess.query(what: "\(Items.details), \(Items.timestamp), \(Common.deviceID)",
+                                   from: Items.table,
+                                   whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)'",
+                                   sorting: "\(Common.deviceID), \(Items.timestamp)")
         let submitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
             guard let result = result as? [[String : String]] else {
                 self?.showActivityIndicator(false)

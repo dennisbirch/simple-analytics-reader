@@ -26,3 +26,32 @@ struct Common {
     static let platform = "platform"
 }
 
+struct DBAccess {
+    static func query(what: String,
+                      from: String = "",
+                      whereClause: String = "",
+                      isDistinct: Bool = false,
+                      sorting: String = "") -> String {
+        var sql = "SELECT "
+        if isDistinct == true {
+            sql.append("DISTINCT (\(what)) ")
+        } else {
+            sql.append("\(what) ")
+        }
+        
+        if from.isEmpty == false {
+            sql.append("FROM \(from) ")
+        }
+                
+        if whereClause.isEmpty == false {
+            let fromWhere = "WHERE (\(whereClause)) "
+            sql.append(fromWhere)
+        }
+        
+        if sorting.isEmpty == false {
+            sql.append("ORDER BY \(sorting)")
+        }
+        
+        return sql
+    }
+}
