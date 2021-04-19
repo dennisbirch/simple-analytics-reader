@@ -86,5 +86,14 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     func searchCompleted(results: [AnalyticsItem]) {
         items = results
         resultsTableView.reloadData()
+        
+        if items.isEmpty {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                let alert = NSAlert()
+                alert.messageText = NSLocalizedString("No Results", comment: "Title for alert when a query returns no results")
+                alert.informativeText = NSLocalizedString("Your search returned no results. Please try with a different set of query options.", comment: "Explanatory message for alert when a query returns no results")
+                alert.runModal()
+            }
+        }
     }
 }
