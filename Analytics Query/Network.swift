@@ -32,7 +32,6 @@ struct QuerySubmitter {
     private let queryKey = "query"
     
     func submit() {
-//        print("Query: \(query)")
         guard let url = URL(string: endpoint) else {
             os_log("URL is nil")
             completion([[]])
@@ -42,7 +41,6 @@ struct QuerySubmitter {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         let bodyString = ("\(queryKey)=\(query)&\(queryModeKey)=\(mode.modeString)")
-        print("Params: \(bodyString)")
         
         let body = bodyString.data(using: .utf8)
         urlRequest.httpBody = body
