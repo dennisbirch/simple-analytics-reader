@@ -69,6 +69,11 @@ struct QuerySubmitter {
                 
                 if let data = data {
                     var message: Any = []
+                    if data.count == 0 {
+                        completion(message)
+                        return
+                    }
+                    
                     if mode == .array {
                         message = handleArrayResult(data)
                     } else if mode == .dictionary {
