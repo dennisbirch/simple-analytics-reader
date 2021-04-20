@@ -24,6 +24,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var details = [[String : String]]()
     
     private let windowFrameKey = "main.window.frame"
+    private let noDetails = "----"
     
     // MARK: - ViewController Lifecycle
     
@@ -261,9 +262,9 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         } else if tableView == self.detailsTable {
             let item = details[row]
             if tableColumn == tableView.tableColumns[1] {
-               var detail = item["details"] ?? "----"
+               var detail = item["details"] ?? noDetails
                 if detail.isEmpty {
-                    detail = "----"
+                    detail = noDetails
                 }
                 return NSTextField(labelWithString: detail)
                 
@@ -275,7 +276,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                     return NSTextField(labelWithString: timestamp)
                 }
             } else if tableColumn == tableView.tableColumns[2] {
-                let device = item["device_id"] ?? "--------"
+                let device = item["device_id"] ?? noDetails
                 return NSTextField(labelWithString: String(device.suffix(8)))
             }
         }
