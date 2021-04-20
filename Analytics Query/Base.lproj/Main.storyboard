@@ -1585,16 +1585,16 @@
             <objects>
                 <viewController storyboardIdentifier="SearchQueriesViewController" id="7fz-iM-JXA" customClass="SearchQueriesViewController" customModule="Analytics_Query" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" misplaced="YES" id="5Vh-7f-RbM">
-                        <rect key="frame" x="0.0" y="0.0" width="200" height="270"/>
+                        <rect key="frame" x="0.0" y="0.0" width="200" height="242"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Zfj-kd-txO">
-                                <rect key="frame" x="0.0" y="0.0" width="200" height="162"/>
+                                <rect key="frame" x="0.0" y="0.0" width="200" height="242"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="96" horizontalPageScroll="10" verticalLineScroll="96" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lm4-Y7-6Qb">
-                                        <rect key="frame" x="0.0" y="120" width="200" height="42"/>
+                                        <rect key="frame" x="0.0" y="120" width="200" height="122"/>
                                         <clipView key="contentView" id="4In-RA-S5A">
-                                            <rect key="frame" x="1" y="1" width="198" height="40"/>
+                                            <rect key="frame" x="1" y="1" width="198" height="120"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="96" usesAutomaticRowHeights="YES" headerView="dg7-2I-wkf" viewBased="YES" id="3Cu-Ko-ig1" customClass="QueriesTable" customModule="Analytics_Query" customModuleProvider="target">
@@ -1669,8 +1669,8 @@
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="640557863.112607">
-                                                                                    <!--2021-04-19 20:44:23 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="640572550.95288002">
+                                                                                    <!--2021-04-20 00:49:10 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1714,7 +1714,7 @@
                                             </subviews>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="dnS-jj-gwl">
-                                            <rect key="frame" x="1" y="82" width="198" height="15"/>
+                                            <rect key="frame" x="1" y="26" width="198" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="wVT-cq-agK">
