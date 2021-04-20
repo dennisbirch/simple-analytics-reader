@@ -722,10 +722,10 @@
                                     <action selector="refreshTapped:" target="hbc-7o-DXU" id="x8C-lZ-89k"/>
                                 </connections>
                             </button>
-                            <splitView dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VYs-r6-bUP">
+                            <splitView autosaveName="main.horizontalsplitview.values" dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VYs-r6-bUP">
                                 <rect key="frame" x="20" y="20" width="820" height="398"/>
                                 <subviews>
-                                    <splitView fixedFrame="YES" dividerStyle="paneSplitter" id="F87-3K-T7g">
+                                    <splitView fixedFrame="YES" autosaveName="main.left.splitview.values" dividerStyle="paneSplitter" id="F87-3K-T7g">
                                         <rect key="frame" x="0.0" y="0.0" width="169" height="398"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
@@ -869,19 +869,19 @@
                                             <real value="250"/>
                                         </holdingPriorities>
                                     </splitView>
-                                    <splitView fixedFrame="YES" dividerStyle="paneSplitter" id="kJV-PE-Ci6">
+                                    <splitView fixedFrame="YES" autosaveName="main.right.splitview.values" dividerStyle="paneSplitter" id="kJV-PE-Ci6">
                                         <rect key="frame" x="179" y="0.0" width="268" height="398"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="mlJ-0m-lLd" userLabel="Bordered Scroll View - Actions Table View">
-                                                <rect key="frame" x="0.0" y="0.0" width="268" height="172"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="268" height="176"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <clipView key="contentView" id="eu0-7s-ncj">
-                                                    <rect key="frame" x="1" y="1" width="266" height="170"/>
+                                                    <rect key="frame" x="1" y="1" width="266" height="174"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" headerView="OCc-lt-KXx" viewBased="YES" id="PX6-Gc-nkL">
-                                                            <rect key="frame" x="0.0" y="0.0" width="266" height="142"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="266" height="146"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <size key="intercellSpacing" width="17" height="0.0"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -941,14 +941,14 @@
                                                 </tableHeaderView>
                                             </scrollView>
                                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="SIi-fc-fhw" userLabel="Bordered Scroll View - Counters Table View">
-                                                <rect key="frame" x="0.0" y="182" width="268" height="216"/>
+                                                <rect key="frame" x="0.0" y="177" width="268" height="221"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <clipView key="contentView" id="Nxu-KI-4Ev">
-                                                    <rect key="frame" x="1" y="1" width="266" height="214"/>
+                                                    <rect key="frame" x="1" y="1" width="266" height="219"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveName="mainView.countersTable" rowHeight="52" rowSizeStyle="automatic" headerView="qYP-Af-C7J" viewBased="YES" id="9Um-Gz-NXH">
-                                                            <rect key="frame" x="0.0" y="0.0" width="266" height="186"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="266" height="191"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <size key="intercellSpacing" width="17" height="0.0"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
