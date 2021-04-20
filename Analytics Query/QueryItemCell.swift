@@ -14,6 +14,28 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     @IBOutlet private weak var dateTimeControl: NSDatePicker!
     private var queryItem: QueryItem?
     private var insertHandler: ((QueryItem) -> Void)?
+    
+    private struct Localized {
+        static let title = NSLocalizedString("title-item", comment: "Selector for a title query")
+        static let appName = NSLocalizedString("app-name-item", comment: "Selector for an application name query")
+        static let appVersion = NSLocalizedString("app-version-item", comment: "Selector for an application version query")
+        static let platform = NSLocalizedString("platform-item", comment: "Selector for a platform query")
+        static let systemVersion = NSLocalizedString("system-version-item", comment: "Selector for a system version query")
+        static let deviceID = NSLocalizedString("device-id-item", comment: "Selector for a device-id query")
+        static let timestamp = NSLocalizedString("date-time-item", comment: "Selector for a timestamp query")
+        static let equals = NSLocalizedString("compare-equals", comment: "Comparison option for 'Equals'")
+        static let contains = NSLocalizedString("string-compare-contains", comment: "String comparison option for 'Contains'")
+        static let beginsWith = NSLocalizedString("string-compare-begins", comment: "String comparison option for 'Begins with'")
+        static let endsWith = NSLocalizedString("string-compare-ends", comment: "String comparison option for 'Ends with'")
+        static let beforeOrEqual = NSLocalizedString("date-compare-before-equal", comment: "Date comparison option for 'Before or equals'")
+        static let before = NSLocalizedString("date-compare-before", comment: "Date comparsion option for 'Before'")
+        static let after = NSLocalizedString("date-compare-after", comment: "Date comparison option for 'After'")
+        static let afterEquals = NSLocalizedString("date-compare-after-equals", comment: "Date comparison option for 'After or equals'")
+        static let lessEquals = NSLocalizedString("numeric-compare-less-equals", comment: "Numeric comparison option for 'Less than or equal'")
+        static let less = NSLocalizedString("numeric-compare-less", comment: "Numeric comparison option for 'Less than'")
+        static let greater = NSLocalizedString("numeric-compare-greater", comment: "Numeric comparison option for 'Greater than")
+        static let greaterEquals = NSLocalizedString("numeric-compare-greater-equals", comment: "Numeric comparison option for 'Greater than or equal'")
+    }
             
     func configure(with item: QueryItem, insertHandler: @escaping (QueryItem) -> Void) {
         self.queryItem = item
@@ -37,7 +59,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     
     private func configureTypePopup(with selectedOption: String?) {
         queryButton.removeAllItems()
-        let items = ["Title", "App name", "App version", "Platform", "System version", "Device ID", "Date/Time"]
+        let items = [Localized.title, Localized.appName, Localized.appVersion, Localized.platform, Localized.systemVersion, Localized.deviceID, Localized.timestamp]
         queryButton.addItems(withTitles: items)
         let selected = items.map{ $0.reducedEnumElement() }.firstIndex(of: selectedOption?.lowercased()) ?? 0
         
@@ -46,16 +68,16 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     
     private func configureEqualityPopup(with query: QueryItem) {
         equalityButton.removeAllItems()
-        var items = ["Equals", "Contains", "Begins With", "Ends With"]
+        var items = [Localized.equals, Localized.contains, Localized.beginsWith, Localized.endsWith]
         if query.queryType == .datetime {
-            items = ["Before or equals", "Before", "Equals", "After", "After or equals"]
+            items = [Localized.beforeOrEqual, Localized.before, Localized.equals, Localized.after, Localized.afterEquals]
         } else if query.queryType == .systemVersion || query.queryType == .appVersion {
-            items = ["Less than or equals", "Less than", "Equals", "Greater than", "Greater than or equals"]
+            items = [Localized.lessEquals, Localized.less, Localized.equals, Localized.greater, Localized.greaterEquals]
         }
         
         equalityButton.addItems(withTitles: items)
         
-        let equalIndex = items.firstIndex(of: "Equals") ?? 0
+        let equalIndex = items.firstIndex(of: Localized.equals) ?? 0
         let selected = items.map{ $0.reducedEnumElement() }.firstIndex(of: query.comparison?.toString().lowercased()) ?? equalIndex
         equalityButton.selectItem(at: selected)
     }

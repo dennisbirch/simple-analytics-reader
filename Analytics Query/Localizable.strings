@@ -1,0 +1,31 @@
+/* 
+  Localizable.strings
+  Analytics Query
+
+  Created by Dennis Birch on 4/20/21.
+  
+*/
+
+"title-item" = "Title";
+"app-name-item" = "App name";
+"app-version-item" = "App version";
+"platform-item" = "Platform";
+"system-version-item" = "System version";
+"device-id-item" = "Device ID";
+"date-time-item" = "Date/Time";
+
+"compare-equals" = "Equals";
+
+"string-compare-contains" = "Contains";
+"string-compare-begins" = "Begins With";
+"string-compare-ends" = "Ends With";
+
+"date-compare-before-equal" = "Before or equals";
+"date-compare-before" = "Before";
+"date-compare-after" = "After";
+"date-compare-after-equals" = "After or equals";
+
+"numeric-compare-less-equals" = "Less than or equals";
+"numeric-compare-less" = "Less than";
+"numeric-compare-greater" = "Greater than";
+"numeric-compare-greater-equals" = "Greater than or equals";
