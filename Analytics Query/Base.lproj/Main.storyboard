@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -1609,12 +1609,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Zfj-kd-txO">
-                                <rect key="frame" x="0.0" y="0.0" width="200" height="186"/>
+                                <rect key="frame" x="0.0" y="0.0" width="200" height="218"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="96" horizontalPageScroll="10" verticalLineScroll="96" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lm4-Y7-6Qb">
-                                        <rect key="frame" x="0.0" y="120" width="200" height="66"/>
+                                        <rect key="frame" x="0.0" y="120" width="200" height="98"/>
                                         <clipView key="contentView" id="4In-RA-S5A">
-                                            <rect key="frame" x="1" y="1" width="198" height="64"/>
+                                            <rect key="frame" x="1" y="1" width="198" height="96"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="96" usesAutomaticRowHeights="YES" headerView="dg7-2I-wkf" viewBased="YES" id="3Cu-Ko-ig1" customClass="QueriesTable" customModule="Analytics_Query" customModuleProvider="target">
@@ -1689,8 +1689,8 @@
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="640659049.97340095">
-                                                                                    <!--2021-04-21 00:50:49 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="640732307.69861305">
+                                                                                    <!--2021-04-21 21:11:47 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1734,7 +1734,7 @@
                                             </subviews>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="dnS-jj-gwl">
-                                            <rect key="frame" x="1" y="106" width="198" height="15"/>
+                                            <rect key="frame" x="1" y="82" width="198" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="wVT-cq-agK">
@@ -1749,26 +1749,6 @@
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="f1x-yd-iXd">
                                         <rect key="frame" x="0.0" y="0.0" width="200" height="68"/>
                                         <subviews>
-                                            <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="CbX-cD-4uF">
-                                                <rect key="frame" x="174" y="43" width="16" height="15"/>
-                                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Cy3-WA-MVl">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="addQueryItem:" target="7fz-iM-JXA" id="k59-AQ-3Ks"/>
-                                                </connections>
-                                            </button>
-                                            <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="k5J-Yr-xRS">
-                                                <rect key="frame" x="10" y="43" width="16" height="15"/>
-                                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Gm4-QP-i4c">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                </buttonCell>
-                                                <connections>
-                                                    <action selector="removeQuery:" target="7fz-iM-JXA" id="LCp-Nv-H8W"/>
-                                                </connections>
-                                            </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cwp-iz-GQW">
                                                 <rect key="frame" x="31" y="1" width="138" height="32"/>
                                                 <constraints>
@@ -1781,6 +1761,20 @@
                                                 </buttonCell>
                                                 <connections>
                                                     <action selector="performSearch:" target="7fz-iM-JXA" id="ohH-yo-tXJ"/>
+                                                </connections>
+                                            </button>
+                                            <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="k5J-Yr-xRS">
+                                                <rect key="frame" x="8" y="39" width="24" height="22"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="24" id="1f9-Ga-rnV"/>
+                                                    <constraint firstAttribute="height" constant="20" id="SvJ-G5-bi4"/>
+                                                </constraints>
+                                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Gm4-QP-i4c">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="removeQuery:" target="7fz-iM-JXA" id="LCp-Nv-H8W"/>
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g5M-Rn-Bkc">
@@ -1797,16 +1791,30 @@
                                                     <action selector="removeAllQueries:" target="7fz-iM-JXA" id="YpR-xu-9b5"/>
                                                 </connections>
                                             </button>
+                                            <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="CbX-cD-4uF">
+                                                <rect key="frame" x="168" y="39" width="24" height="22"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="20" id="QTA-bJ-RnS"/>
+                                                    <constraint firstAttribute="width" constant="24" id="Zgd-ay-njZ"/>
+                                                </constraints>
+                                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Cy3-WA-MVl">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="addQueryItem:" target="7fz-iM-JXA" id="k59-AQ-3Ks"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstItem="g5M-Rn-Bkc" firstAttribute="centerY" secondItem="k5J-Yr-xRS" secondAttribute="centerY" id="8GR-mk-iTe"/>
-                                            <constraint firstAttribute="trailing" secondItem="CbX-cD-4uF" secondAttribute="trailing" constant="10" id="DK1-B1-OgP"/>
+                                            <constraint firstAttribute="trailing" secondItem="CbX-cD-4uF" secondAttribute="trailing" constant="8" id="6VW-io-1Jz"/>
+                                            <constraint firstItem="k5J-Yr-xRS" firstAttribute="centerY" secondItem="g5M-Rn-Bkc" secondAttribute="centerY" id="QBC-4K-3w9"/>
                                             <constraint firstAttribute="height" constant="68" id="XOO-mM-FzZ"/>
-                                            <constraint firstItem="k5J-Yr-xRS" firstAttribute="leading" secondItem="f1x-yd-iXd" secondAttribute="leading" constant="10" id="erv-lY-K6t"/>
+                                            <constraint firstItem="k5J-Yr-xRS" firstAttribute="leading" secondItem="f1x-yd-iXd" secondAttribute="leading" constant="8" id="YIq-ZL-UQD"/>
                                             <constraint firstItem="g5M-Rn-Bkc" firstAttribute="top" secondItem="f1x-yd-iXd" secondAttribute="top" constant="8" id="k1c-p8-qy0"/>
-                                            <constraint firstItem="g5M-Rn-Bkc" firstAttribute="centerY" secondItem="CbX-cD-4uF" secondAttribute="centerY" id="tIv-oa-VAA"/>
                                             <constraint firstItem="cwp-iz-GQW" firstAttribute="top" secondItem="g5M-Rn-Bkc" secondAttribute="bottom" constant="12" id="tq3-uH-Hmt"/>
                                             <constraint firstItem="cwp-iz-GQW" firstAttribute="centerX" secondItem="f1x-yd-iXd" secondAttribute="centerX" id="w3c-jR-cQz"/>
+                                            <constraint firstItem="CbX-cD-4uF" firstAttribute="centerY" secondItem="g5M-Rn-Bkc" secondAttribute="centerY" id="wWH-Mr-jcI"/>
                                             <constraint firstItem="g5M-Rn-Bkc" firstAttribute="centerX" secondItem="f1x-yd-iXd" secondAttribute="centerX" id="z61-41-bLe"/>
                                         </constraints>
                                     </customView>
