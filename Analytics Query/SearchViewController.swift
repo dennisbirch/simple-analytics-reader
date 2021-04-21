@@ -79,7 +79,62 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
 
         return nil
     }
+        
+    func tableView(_ tableView: NSTableView, didClick tableColumn: NSTableColumn) {
+        if let sorter = tableColumn.sortDescriptorPrototype,
+           let reversed = sorter.reversedSortDescriptor as? NSSortDescriptor {
+            if sortItems(with: reversed) == true {
+                tableView.reloadData()
+            }
+        }
+    }
     
+    private func sortItems(with sorter: NSSortDescriptor) -> Bool {
+        var itemsSorted = true
+        switch sorter.key {
+        case "timestamp":
+            items.sort { (item1, item2) in
+                return (item1.timestamp > item2.timestamp) == (sorter.ascending == true)
+            }
+        case "details":
+            items.sort { (item1, item2) in
+                return (item1.details > item2.details) == (sorter.ascending == true)
+            }
+        case "description":
+            items.sort { (item1, item2) in
+                return (item1.description > item2.description) == (sorter.ascending == true)
+            }
+        case "count":
+            items.sort { (item1, item2) in
+                return (item1.count > item2.count) == (sorter.ascending == true)
+            }
+        case "appName":
+            items.sort { (item1, item2) in
+                return (item1.appName > item2.appName) == (sorter.ascending == true)
+            }
+        case "appVersion":
+            items.sort { (item1, item2) in
+                return (item1.appVersion > item2.appVersion) == (sorter.ascending == true)
+            }
+        case "platform":
+            items.sort { (item1, item2) in
+                return (item1.platform > item2.platform) == (sorter.ascending == true)
+            }
+        case "systemVersion":
+            items.sort { (item1, item2) in
+                return (item1.systemVersion > item2.systemVersion) == (sorter.ascending == true)
+            }
+        case "deviceID":
+            items.sort { (item1, item2) in
+                return (item1.deviceID > item2.deviceID) == (sorter.ascending == true)
+            }
+        default:
+            itemsSorted = false
+            break
+        }
+        
+        return itemsSorted
+    }
 
     // MARK: - QuerySearchDelegate
     
