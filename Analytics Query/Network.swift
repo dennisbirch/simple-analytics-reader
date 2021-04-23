@@ -81,7 +81,9 @@ struct QuerySubmitter {
                     } else if mode == .items {
                         message = handleItemsResult(data)
                     }
-                    completion(message)
+                    DispatchQueue.main.async {
+                        self.completion(message)
+                    }
                 } else {
                     os_log("Error: data is nil")
                     completion([])

@@ -6,15 +6,18 @@
 //
 
 import Cocoa
+import Combine
 
 class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     @IBOutlet private weak var queryButton: NSPopUpButton!
     @IBOutlet private weak var equalityButton: NSPopUpButton!
     @IBOutlet private weak var searchTermText: NSTextField!
     @IBOutlet private weak var dateTimeControl: NSDatePicker!
+    
     private var queryItem: QueryItem?
     private var insertHandler: ((QueryItem) -> Void)?
-    
+    private var searchTextObserver: AnyCancellable?
+
     private struct Localized {
         static let title = NSLocalizedString("title-item", comment: "Selector for a title query")
         static let appName = NSLocalizedString("app-name-item", comment: "Selector for an application name query")
@@ -55,6 +58,34 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         queryButton.action = #selector(selectedTypePopupItem(_:))
         equalityButton.target = self
         equalityButton.action = #selector(selectedEqualityPopupItem(_:))
+        
+        setupSearchTextObserver()
+    }
+    
+    private func setupSearchTextObserver() {
+        let sub = NotificationCenter.default
+            .publisher(for: NSControl.textDidChangeNotification, object: searchTermText)
+            .map( { ($0.object as! NSTextField).stringValue } )
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink(receiveValue: { [weak self] in
+                guard let item = self?.queryItem else {
+                    return
+                }
+                
+                let type = item.queryType
+                if type == .appVersion || type == .systemVersion {
+                    let newItem = item.queryItemWithNewNumeric($0)
+                    self?.queryItem = newItem
+                } else if type != .datetime {
+                    let newItem = item.queryItemWithNewString($0)
+                    self?.queryItem = newItem
+                }
+                if let handler = self?.insertHandler {
+                    handler(item)
+                }
+            })
+        
+        searchTextObserver = sub
     }
     
     private func configureTypePopup(with selectedOption: String?) {
@@ -202,32 +233,5 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         
         return true
     }
-    
-    func controlTextDidChange(_ obj: Notification) {
-        if let item = queryItem {
-            let type = item.queryType
-            if type == .datetime { return }
-            let fieldEditor = obj.object
-            if let textField = fieldEditor as? NSTextField, textField == searchTermText {
-                if let item = queryItem {
-                    if type == .appVersion || type == .systemVersion {
-                        let newItem = item.queryItemWithNewNumeric(textField.stringValue)
-                        queryItem = newItem
-                    } else if type != .datetime {
-                        let newItem = item.queryItemWithNewString(textField.stringValue)
-                        queryItem = newItem
-                        
-                        if let handler = self.insertHandler {
-                            handler(newItem)
-                        }
-                    }
-                    if let handler = self.insertHandler, let query = self.queryItem {
-                        handler(query)
-                    }
-                }
-            }
-        }
-    }
-
 }
 

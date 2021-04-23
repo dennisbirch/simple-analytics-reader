@@ -9,6 +9,7 @@ import Cocoa
 
 protocol QueriesTableDelegate {
     func queriesTableSelectionChanged(selectedRow: Int)
+    func searchQueriesChanged()
 }
 
 class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
@@ -33,15 +34,19 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
             return view
         }
 
-        let items = self.queryItems
-        cellView.configure(with: queryItems[row], insertHandler: { [weak self] (queryItem) in
-            guard let index = items.firstIndex(where: { $0.id == queryItem.id }) else { return }
+        cellView.configure(with: queryItems[row], insertHandler: queryItemsHandler())
+        return cellView
+    }
+    
+    private func queryItemsHandler() -> ((QueryItem) -> Void) {
+        return { [weak self] (queryItem) in
+            guard let index = self?.queryItems.firstIndex(where: { $0.id == queryItem.id }) else { return }
             if index >= 0, let items = self?.queryItems, index < items.count {
                 self?.queryItems[index] = queryItem
             }
-        })
-        
-        return cellView
+            
+            self?.queriesTableDelegate?.searchQueriesChanged()
+        }
     }
     
     func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
@@ -93,7 +98,7 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
             self.selectRowIndexes([], byExtendingSelection: false)
         }
         return true
-    }
+    }    
 }
 
 class QueriesTableRow: NSTableRowView {

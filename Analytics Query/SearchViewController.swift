@@ -12,7 +12,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     @IBOutlet private weak var queriesContainerView: NSView!
     
     private var items = [AnalyticsItem]()
-    
+    private var searchQueriesViewController: SearchQueriesViewController?
 
     private struct ColumnHeadings {
         static let timeStamp = "Date/Time"
@@ -44,6 +44,12 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                                      queriesView.trailingAnchor.constraint(equalTo: queriesContainerView.trailingAnchor),
                                      queriesView.topAnchor.constraint(equalTo: queriesContainerView.topAnchor),
                                      queriesView.bottomAnchor.constraint(equalTo: queriesContainerView.bottomAnchor)])
+        
+        searchQueriesViewController = queriesVC
+    }
+    
+    func updateSearchQueriesViewController() {
+        searchQueriesViewController?.searchQueriesChanged()
     }
     
     // MARK: - Results TableView
