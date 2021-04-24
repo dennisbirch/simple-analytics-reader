@@ -38,7 +38,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     @IBOutlet private weak var removeAllQueriesButton: NSButton!
     
     // Radio buttons
-    @IBOutlet private weak var allRadio: NSButton!
+    @IBOutlet weak var allRadio: NSButton!
     @IBOutlet private weak var anyRadio: NSButton!
     @IBOutlet private weak var itemsRadio: NSButton!
     @IBOutlet private weak var countersRadio: NSButton!
@@ -47,20 +47,22 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     // Search limit
     @IBOutlet private weak var limitComboBox: NSComboBox!
     @IBOutlet private weak var limitInfoLabel: NSTextField!
-    @IBOutlet private weak var limitHeightCheckbox: NSButton!
+    @IBOutlet private weak var limitSearchCheckbox: NSButton!
     @IBOutlet private weak var limitHeightConstraint: NSLayoutConstraint!
 
     private var selectedQueryRow = -1
-    private var whatItems: WhatItems = .items
+    var whatItems: WhatItems = .items
     private var searchLimits: SearchLimit = SearchLimit(itemsTotal: 0, countersTotal: 0, lastItemsIndex: 0, lastCountersIndex: 0)
     
-    private var matchCondition: MatchCondition = .all
+    var matchCondition: MatchCondition = .all
     private let expandedLimitViewHeight: CGFloat = 57
     private let collapsedLimitViewHeight: CGFloat = 4
-    private var isLimitedSearch = false
+    var isLimitedSearch = false
     
     private let searchWhatKey = "searchWhat"
     private let conditionMatchKey = "conditionMatchesOn"
+    private let limitSearchKey = "limitSearch"
+    private let limitPageSizeKey = "limitPageSize"
 
     // MARK: - ViewController Lifecycle
     
@@ -95,11 +97,30 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             allRadio.state = .on
         }
              
+        if let limitPageSize = UserDefaults.standard.string(forKey: limitPageSizeKey) {
+            if let index = limitComboBox.objectValues.firstIndex(where: { $0 as? String == limitPageSize }) {
+                limitComboBox.selectItem(at: index)
+            } else {
+                limitComboBox.stringValue = limitPageSize
+            }
+        }
+        
+        limitComboBox.delegate = self
+        let shouldLimitSearch = UserDefaults.standard.bool(forKey: limitSearchKey)
+        if shouldLimitSearch == true {
+            isLimitedSearch = true
+            limitSearchCheckbox.state = .on
+        }
+        displaySearchLimitControls(isLimitedSearch)
+
         queriesTableView.dataSource = queriesTableView
         queriesTableView.delegate = queriesTableView
         queriesTableView.queriesTableDelegate = self
-        limitComboBox.delegate = self
-        displaySearchLimitControls(false)
+    }
+    
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        
     }
     
     // MARK: - Private Helpers
@@ -265,6 +286,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     @IBAction func toggledShowSearchLimit(_ sender: NSButton) {
         isLimitedSearch = sender.state == .on
         displaySearchLimitControls(isLimitedSearch)
+        UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
     }
     
     @IBAction func addQueryItem(_ sender: Any) {
@@ -332,6 +354,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         searchLimits.pageLimit = value
         searchLimits.lastItemsIndex = 0
         searchLimits.lastCountersIndex = 0
+        UserDefaults.standard.set(combo.stringValue, forKey: limitPageSizeKey)
     }
     
     func comboBoxSelectionDidChange(_ notification: Notification) {
@@ -346,5 +369,6 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         searchLimits.pageLimit = intValue
         searchLimits.lastItemsIndex = 0
         searchLimits.lastCountersIndex = 0
+        UserDefaults.standard.set(value, forKey: limitPageSizeKey)
     }
 }
