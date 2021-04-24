@@ -26,6 +26,8 @@ struct AnalyticsItem: Hashable, Decodable {
     let appVersion: String
     let systemVersion: String
     let platform: String
+    let id: Int
+    let table: TableType
     
     enum CodingKeys: String, CodingKey {
         case description
@@ -37,6 +39,7 @@ struct AnalyticsItem: Hashable, Decodable {
         case appVersion = "app_version"
         case systemVersion = "system_version"
         case platform
+        case id
     }
         
     public init(from decoder: Decoder) throws {
@@ -55,6 +58,14 @@ struct AnalyticsItem: Hashable, Decodable {
         appVersion = try values.decodeIfPresent(String.self, forKey: .appVersion) ?? "N/A"
         systemVersion = try values.decodeIfPresent(String.self, forKey: .systemVersion) ?? "N/A"
         platform = try values.decodeIfPresent(String.self, forKey: .platform) ?? "N/A"
+        let idString = try values.decode(String.self, forKey: .id)
+        id = Int(idString) ?? 0
+     
+        if values.contains(.details) {
+            table = .items
+        } else {
+            table = .counters
+        }
     }
 }
 

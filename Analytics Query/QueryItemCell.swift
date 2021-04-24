@@ -80,8 +80,9 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
                     let newItem = item.queryItemWithNewString($0)
                     self?.queryItem = newItem
                 }
-                if let handler = self?.insertHandler {
-                    handler(item)
+                if let handler = self?.insertHandler,
+                   let newItem = self?.queryItem {
+                    handler(newItem)
                 }
             })
         

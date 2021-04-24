@@ -57,10 +57,13 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     private var matchCondition: MatchCondition = .all
     private let expandedLimitViewHeight: CGFloat = 57
     private let collapsedLimitViewHeight: CGFloat = 4
+    private var isLimitedSearch = false
     
     private let searchWhatKey = "searchWhat"
     private let conditionMatchKey = "conditionMatchesOn"
 
+    // MARK: - ViewController Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -99,6 +102,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         displaySearchLimitControls(false)
     }
     
+    // MARK: - Private Helpers
+    
     private func displaySearchLimitControls(_ shouldDisplay: Bool) {
         let newHeight: CGFloat
         if shouldDisplay == true {
@@ -118,24 +123,34 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             context.allowsImplicitAnimation = true
             context.duration = 0.25
             self?.view.layoutSubtreeIfNeeded()
+        } completionHandler: { [weak self] in
+            self?.limitInfoLabel.isHidden = !shouldDisplay
+            self?.limitComboBox.isHidden = !shouldDisplay
         }
     }
     
     private func setSearchLimitTotals() {
-        if limitHeightCheckbox.state == .off { return }
+        if isLimitedSearch == false { return }
         
         var queries = [String]()
         let baseSQL = "SELECT COUNT(*) FROM "
         if whatItems == .items || whatItems == .both {
             let whereClause = whereStatements(for: .items)
-            let sql = baseSQL + "items WHERE \(whereClause)"
-            queries.append(sql)
+            if whereClause.isEmpty == false {
+                let sql = baseSQL + "items WHERE \(whereClause)"
+                queries.append(sql)
+            }
         }
         if whatItems == .counters || whatItems == .both {
             let whereClause = whereStatements(for: .counters)
-            let sql = baseSQL + "counters WHERE \(whereClause)"
-            queries.append(sql)
+            if whereClause.isEmpty == false {
+                let sql = baseSQL + "counters WHERE \(whereClause)"
+                queries.append(sql)
+            }
         }
+        
+        if queries.isEmpty == true { return }
+        
         let submitter = QuerySubmitter(query: queries.joined(separator: ";"), mode: .array) { [weak self] (results) in
             if let results = results as? [[String]] {
                 var total = 0
@@ -157,9 +172,99 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         submitter.submit()
     }
     
+    private func whereStatements(for type: TableType) -> String {
+        let items = queriesTableView.queryItems
+        
+        if items.allSatisfy({ (item) -> Bool in
+            return item.queryType != .datetime && item.value.isEmpty == true
+        }) {
+            return ""
+        }
+        let sqlArray = items.map{ $0.sqlWhereString() }
+        let how = (matchCondition == .all) ? " AND " : " OR "
+        
+        switch type {
+        case .items:
+            return sqlArray.joined(separator: how)
+        case .counters:
+            let counterItems = items.filter{ $0.queryType != .datetime }
+            if counterItems.isEmpty == false {
+                let counterSQLArray = counterItems.map{ $0.sqlWhereString() }
+                return counterSQLArray.joined(separator: how)
+            } else {
+                return ""
+            }
+        }
+    }
+    
+    private func searchDB() {
+        var statements = [String]()
+        if whatItems == .items || whatItems == .both {
+            let itemsWhereStatement = whereStatements(for: .items)
+            let itemsSQL: String
+            if isLimitedSearch == true {
+                itemsSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Items.table, lastID: searchLimits.lastItemsIndex, limit: searchLimits.limitForTable(.items, whatItems: whatItems))
+            } else {
+                itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
+            }
+            statements.append(itemsSQL)
+        }
+        
+        if whatItems == .counters || whatItems == .both {
+            let countersWhereStatement = whereStatements(for: .counters)
+            let countersSQL: String
+            if isLimitedSearch == true {
+                countersSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Counters.table, lastID: searchLimits.lastCountersIndex, limit: searchLimits.limitForTable(.counters, whatItems: whatItems))
+            } else {
+                countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
+            }
+            statements.append(countersSQL)
+        }
+        
+        // execute SQL statement
+        let sql = statements.joined(separator: "; ")
+        let showLimitInfo = self.isLimitedSearch
+        let submitter = QuerySubmitter(query: sql, mode: .items) { result in
+            if let result = result as? [AnalyticsItem] {
+                DispatchQueue.main.async { [weak self] in
+                    if showLimitInfo == true {
+                        self?.updateSearchLimitInfo(results: result)
+                    }
+                    self?.searchDelegate?.searchCompleted(results: result)
+                }
+            } else {
+                os_log("Search query failed")
+                return
+            }
+        }
+        
+        submitter.submit()
+    }
+    
+    private func updateSearchLimitInfo(results: [AnalyticsItem]) {
+        searchLimits.currentFetchCount += results.count
+        let items = results.filter{ $0.table == .items }.sorted { (item1, item2) -> Bool in
+            return item1.id < item2.id
+        }
+        let counters = results.filter{ $0.table == .counters }.sorted { (item1, item2) -> Bool in
+            return item1.id < item2.id
+        }
+        
+        if let lastItem = items.last {
+            searchLimits.lastItemsIndex = lastItem.id
+        }
+        if let lastCounter = counters.last {
+            searchLimits.lastCountersIndex = lastCounter.id
+        }
+
+        limitInfoLabel.stringValue = "Showing records \(searchLimits.lastFetchCount) - \(searchLimits.currentFetchCount)"
+    }
+    
+    // MARK: - Actions
+    
     @IBAction func toggledShowSearchLimit(_ sender: NSButton) {
-        let show = sender.state == .on
-        displaySearchLimitControls(show)
+        isLimitedSearch = sender.state == .on
+        displaySearchLimitControls(isLimitedSearch)
     }
     
     @IBAction func addQueryItem(_ sender: Any) {
@@ -197,54 +302,9 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
         
     @IBAction func performSearch(_ sender: Any) {
-        var statements = [String]()
-        if whatItems == .items || whatItems == .both {
-            let itemsWhereStatement = whereStatements(for: .items)
-            let itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
-            statements.append(itemsSQL)
-        }
-        
-        if whatItems == .counters || whatItems == .both {
-            let countersWhereStatement = whereStatements(for: .counters)
-            let countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
-            statements.append(countersSQL)
-        }
-        
-        // execute SQL statement
-        let sql = statements.joined(separator: "; ")
-        let submitter = QuerySubmitter(query: sql, mode: .items) { result in
-            if let result = result as? [AnalyticsItem] {
-                DispatchQueue.main.async { [weak self] in
-                    self?.searchDelegate?.searchCompleted(results: result)
-                }
-            } else {
-                os_log("Search query failed")
-                return
-            }
-        }
-        
-        submitter.submit()
+        searchDB()
     }
     
-    private func whereStatements(for type: TableType) -> String {
-        let items = queriesTableView.queryItems
-        let sqlArray = items.map{ $0.sqlWhereString() }
-        let how = (matchCondition == .all) ? " AND " : " OR "
-        
-        switch type {
-        case .items:
-            return sqlArray.joined(separator: how)
-        case .counters:
-            let counterItems = items.filter{ $0.queryType != .datetime }
-            if counterItems.isEmpty == false {
-                let counterSQLArray = counterItems.map{ $0.sqlWhereString() }
-                return counterSQLArray.joined(separator: how)
-            } else {
-                return ""
-            }
-        }
-    }
- 
 
     // MARK: - QueriesTableDelegate
     
@@ -287,12 +347,4 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         searchLimits.lastItemsIndex = 0
         searchLimits.lastCountersIndex = 0
     }
-}
-
-struct SearchLimit {
-    var itemsTotal: Int
-    var countersTotal: Int
-    var lastItemsIndex: Int
-    var lastCountersIndex: Int
-    var pageLimit: Int = 100
 }
