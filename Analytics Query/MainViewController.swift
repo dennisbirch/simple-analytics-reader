@@ -115,8 +115,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         counters.removeAll()
         countersTable.reloadData()
         
-        let itemQuery = DBAccess.query(what: Common.platform, from: Items.table, whereClause: "\(Common.appName) = '\(appName)'")
-        let countersQuery = DBAccess.query(what: Common.platform, from: Counters.table, whereClause: "\(Common.appName) = '\(appName)'")
+        let itemQuery = DBAccess.query(what: Common.platform, from: Items.table, whereClause: "\(Common.appName) = '\(appName)'", isDistinct: true)
+        let countersQuery = DBAccess.query(what: Common.platform, from: Counters.table, whereClause: "\(Common.appName) = '\(appName)'", isDistinct: true)
         
         showActivityIndicator(true)
         let itemSubmitter = QuerySubmitter(query: itemQuery, mode: .array) { [weak self] result in
