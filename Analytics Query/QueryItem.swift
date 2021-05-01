@@ -125,7 +125,7 @@ extension QueryItem {
             let likeValue = "\(value)%".sqlify()
             switch comparison as! DateComparison {
             case DateComparison.beforeOrEquals:
-                sql = "\(queryType.dbColumnName) < \(likeValue) OR \(queryType.dbColumnName) LIKE \(likeValue)"
+                sql = "(\(queryType.dbColumnName) < \(likeValue) OR \(queryType.dbColumnName) LIKE \(likeValue))"
             case DateComparison.before:
                 sql = "\(queryType.dbColumnName) < \(likeValue)"
             case DateComparison.equals:
@@ -133,7 +133,7 @@ extension QueryItem {
             case DateComparison.after:
                 sql = "\(queryType.dbColumnName) > \(likeValue)"
             case DateComparison.afterOrEquals:
-                sql = "\(queryType.dbColumnName) LIKE \(likeValue) OR \(queryType.dbColumnName) > \(likeValue)"
+                sql = "(\(queryType.dbColumnName) LIKE \(likeValue) OR \(queryType.dbColumnName) > \(likeValue))"
             }
 
         case .systemVersion, .appVersion:
@@ -182,7 +182,7 @@ extension String {
 extension ISO8601DateFormatter {
     static var queryFormatter: ISO8601DateFormatter {
         let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withYear, .withMonth, .withDay, .withTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
+        formatter.formatOptions = [.withYear, .withMonth, .withDay, .withDashSeparatorInDate]
         return formatter
     }
 }

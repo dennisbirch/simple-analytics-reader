@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import os.log
 
 class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     @IBOutlet private weak var queryButton: NSPopUpButton!
@@ -95,8 +96,14 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     }
     
     @IBAction func dateValueChanged(_ sender: NSDatePicker) {
-        let newItem = queryItem?.queryItemWithNewDate(sender.dateValue)
-        queryItem = newItem
+        if let newItem = queryItem?.queryItemWithNewDate(sender.dateValue) {
+            queryItem = newItem
+            if let handler = self.insertHandler {
+                handler(newItem)
+            }
+        } else {
+            os_log("Failed to generate new query item")
+        }
     }
     
     private func handleComparisonChange(_ compareString: String) {
@@ -145,10 +152,10 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         case .appVersion, .systemVersion:
             if comparison is NumericComparison,
                let item = queryItem {
-                    comparison = item.comparison
-                } else {
-                    comparison = NumericComparison.equals
-                }
+                comparison = item.comparison
+            } else {
+                comparison = NumericComparison.equals
+            }
         default: // string comparison
             if let item = queryItem,
                comparison is StringComparison {

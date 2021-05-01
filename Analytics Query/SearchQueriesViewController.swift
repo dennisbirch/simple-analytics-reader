@@ -130,14 +130,9 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
         }
         
         if whatItems == .counters || whatItems == .both {
-            // counters have no timestamp
-            let counterItems = items.filter{ $0.queryType != .datetime }
-            if counterItems.isEmpty == false {
-                let counterSQLArray = counterItems.map{ $0.sqlWhereString() }
-                let countersWhereStatement = counterSQLArray.joined(separator: how)
-                let countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
-                statements.append(countersSQL)
-            }
+            let countersWhereStatement = sqlArray.joined(separator: how)
+            let countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
+            statements.append(countersSQL)
         }
         
         // execute SQL statement
