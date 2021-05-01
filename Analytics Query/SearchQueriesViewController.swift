@@ -194,13 +194,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
     
     private func whereStatements(for type: TableType) -> String {
-        let items = queriesTableView.queryItems
-        
-        if items.allSatisfy({ (item) -> Bool in
-            return item.queryType != .datetime && item.value.isEmpty == true
-        }) {
-            return ""
-        }
+        let items = queriesTableView.queryItems.filter{ $0.value.isEmpty == false }
         let sqlArray = items.map{ $0.sqlWhereString() }
         let how = (matchCondition == .all) ? " AND " : " OR "
         
