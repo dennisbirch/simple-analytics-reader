@@ -95,10 +95,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 }
                 
                 self?.applications = apps.sorted()
-                DispatchQueue.main.async {
-                    self?.showActivityIndicator(false)
-                    self?.appTable.reloadData()
-                }
+                self?.showActivityIndicator(false)
+                self?.appTable.reloadData()
             }
             
             countsSubmitter.submit()
@@ -133,13 +131,11 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 
                 self?.platforms = platforms.sorted()
                 
-                DispatchQueue.main.async {
-                    self?.showActivityIndicator(false)
-                    self?.platformTable.reloadData()
-                    if let count = self?.platforms.count,
-                       count > 0 {
-                        self?.platformTable.selectRowIndexes(IndexSet(0...0), byExtendingSelection: false)
-                    }
+                self?.showActivityIndicator(false)
+                self?.platformTable.reloadData()
+                if let count = self?.platforms.count,
+                   count > 0 {
+                    self?.platformTable.selectRowIndexes(IndexSet(0...0), byExtendingSelection: false)
                 }
             }
             
@@ -162,13 +158,12 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             let actions = result.compactMap{ $0.first }
             self?.actions = actions.sorted()
             
-            DispatchQueue.main.async {
-                self?.actionsTable.reloadData()
-                self?.showActivityIndicator(false)
-            }
+            self?.actionsTable.reloadData()
+            self?.showActivityIndicator(false)
             
             self?.requestCounters(app: app, platform: platform)
         }
+
         itemSubmitter.submit()
     }
 
@@ -194,10 +189,9 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             
             self?.countsArray = countsArray.sorted()
             self?.showActivityIndicator(false)
-            DispatchQueue.main.async {
-                self?.countersTable.reloadData()
-            }
+            self?.countersTable.reloadData()
         }
+
         itemSubmitter.submit()
     }
     
@@ -217,9 +211,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
 
             self?.details = result
             self?.showActivityIndicator(false)
-            DispatchQueue.main.async {
-                self?.detailsTable.reloadData()
-            }
+            self?.detailsTable.reloadData()
         }
 
         submitter.submit()

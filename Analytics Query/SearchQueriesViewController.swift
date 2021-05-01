@@ -236,12 +236,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         let showLimitInfo = self.isLimitedSearch
         let submitter = QuerySubmitter(query: sql, mode: .items) { result in
             if let result = result as? [AnalyticsItem] {
-                DispatchQueue.main.async { [weak self] in
-                    if showLimitInfo == true {
-                        self?.updateSearchLimitInfo(results: result)
-                    }
-                    self?.searchDelegate?.searchCompleted(results: result)
+                if showLimitInfo == true {
+                    self.updateSearchLimitInfo(results: result)
                 }
+                self.searchDelegate?.searchCompleted(results: result)
             } else {
                 os_log("Search query failed")
                 return
