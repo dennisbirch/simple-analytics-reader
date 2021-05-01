@@ -208,13 +208,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         case .items:
             return sqlArray.joined(separator: how)
         case .counters:
-            let counterItems = items.filter{ $0.queryType != .datetime }
-            if counterItems.isEmpty == false {
-                let counterSQLArray = counterItems.map{ $0.sqlWhereString() }
-                return counterSQLArray.joined(separator: how)
-            } else {
-                return ""
-            }
+            let counterSQLArray = items.map{ $0.sqlWhereString() }
+            return counterSQLArray.joined(separator: how)
         }
     }
     

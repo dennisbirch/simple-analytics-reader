@@ -7,6 +7,7 @@
 
 import Cocoa
 import Combine
+import os.log
 
 class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     @IBOutlet private weak var queryButton: NSPopUpButton!
@@ -17,7 +18,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     private var queryItem: QueryItem?
     private var insertHandler: ((QueryItem) -> Void)?
     private var searchTextObserver: AnyCancellable?
-
+    
     private struct Localized {
         static let title = NSLocalizedString("title-item", comment: "Selector for a title query")
         static let appName = NSLocalizedString("app-name-item", comment: "Selector for an application name query")
@@ -39,7 +40,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         static let greater = NSLocalizedString("numeric-compare-greater", comment: "Numeric comparison option for 'Greater than")
         static let greaterEquals = NSLocalizedString("numeric-compare-greater-equals", comment: "Numeric comparison option for 'Greater than or equal'")
     }
-            
+    
     func configure(with item: QueryItem, insertHandler: @escaping (QueryItem) -> Void) {
         self.queryItem = item
         self.insertHandler = insertHandler
@@ -113,22 +114,28 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         let selected = items.map{ $0.reducedEnumElement() }.firstIndex(of: query.comparison?.toString().lowercased()) ?? equalIndex
         equalityButton.selectItem(at: selected)
     }
-
+    
     @objc func selectedTypePopupItem(_ sender: NSPopUpButton) {
         let typeString = sender.title
         if let item = self.queryItem {
             handleTypeChange(typeString, itemID: item.id)
         }
     }
-
+    
     @objc func selectedEqualityPopupItem(_ sender: NSPopUpButton) {
         let compareString = sender.title
         handleComparisonChange(compareString)
     }
     
     @IBAction func dateValueChanged(_ sender: NSDatePicker) {
-        let newItem = queryItem?.queryItemWithNewDate(sender.dateValue)
-        queryItem = newItem
+        if let newItem = queryItem?.queryItemWithNewDate(sender.dateValue) {
+            queryItem = newItem
+            if let handler = self.insertHandler {
+                handler(newItem)
+            }
+        } else {
+            os_log("Failed to generate new query item")
+        }
     }
     
     private func handleComparisonChange(_ compareString: String) {
@@ -177,10 +184,10 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         case .appVersion, .systemVersion:
             if comparison is NumericComparison,
                let item = queryItem {
-                    comparison = item.comparison
-                } else {
-                    comparison = NumericComparison.equals
-                }
+                comparison = item.comparison
+            } else {
+                comparison = NumericComparison.equals
+            }
         default: // string comparison
             if let item = queryItem,
                comparison is StringComparison {
@@ -213,7 +220,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
             handler(newQueryItem)
         }
     }
-
+    
     func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         if control == searchTermText {
             if let item = queryItem {
