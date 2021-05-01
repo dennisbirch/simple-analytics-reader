@@ -95,10 +95,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 }
                 
                 self?.applications = apps.sorted()
-                DispatchQueue.main.async {
-                    self?.showActivityIndicator(false)
-                    self?.appTable.reloadData()
-                }
+                self?.showActivityIndicator(false)
+                self?.appTable.reloadData()
             }
             
             countsSubmitter.submit()
@@ -133,13 +131,11 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 
                 self?.platforms = platforms.sorted()
                 
-                DispatchQueue.main.async {
-                    self?.showActivityIndicator(false)
-                    self?.platformTable.reloadData()
-                    if let count = self?.platforms.count,
-                       count > 0 {
-                        self?.platformTable.selectRowIndexes(IndexSet(0...0), byExtendingSelection: false)
-                    }
+                self?.showActivityIndicator(false)
+                self?.platformTable.reloadData()
+                if let count = self?.platforms.count,
+                   count > 0 {
+                    self?.platformTable.selectRowIndexes(IndexSet(0...0), byExtendingSelection: false)
                 }
             }
             
@@ -151,7 +147,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private func requestAppActivity(app: String, platform: String) {
         showActivityIndicator(true)
-
+        
         resetDataStorage(startingTable: actionsTable)
         
         let query = DBAccess.query(what: Items.description, from: Items.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
@@ -162,20 +158,18 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             let actions = result.compactMap{ $0.first }
             self?.actions = actions.sorted()
             
-            DispatchQueue.main.async {
-                self?.actionsTable.reloadData()
-                self?.showActivityIndicator(false)
-            }
-            
+            self?.actionsTable.reloadData()
+            self?.showActivityIndicator(false)
             self?.requestCounters(app: app, platform: platform)
         }
+        
         itemSubmitter.submit()
     }
 
     private func requestCounters(app: String, platform: String) {
         showActivityIndicator(true)        
         resetDataStorage(startingTable: countersTable)
-
+        
         let query = DBAccess.query(what: "\(Counters.description), \(Counters.count)", from: Counters.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
         var countsArray = [String]()
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
@@ -194,10 +188,9 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             
             self?.countsArray = countsArray.sorted()
             self?.showActivityIndicator(false)
-            DispatchQueue.main.async {
-                self?.countersTable.reloadData()
-            }
+            self?.countersTable.reloadData()
         }
+        
         itemSubmitter.submit()
     }
     
@@ -214,12 +207,10 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 self?.showActivityIndicator(false)
                 return
             }
-
+            
             self?.details = result
             self?.showActivityIndicator(false)
-            DispatchQueue.main.async {
-                self?.detailsTable.reloadData()
-            }
+            self?.detailsTable.reloadData()
         }
 
         submitter.submit()

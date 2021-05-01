@@ -139,9 +139,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
         let sql = statements.joined(separator: "; ")
         let submitter = QuerySubmitter(query: sql, mode: .items) { result in
             if let result = result as? [AnalyticsItem] {
-                DispatchQueue.main.async { [weak self] in
-                    self?.searchDelegate?.searchCompleted(results: result)
-                }
+                self.searchDelegate?.searchCompleted(results: result)
             } else {
                 os_log("Search query failed")
                 return
