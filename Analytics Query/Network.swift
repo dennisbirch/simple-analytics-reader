@@ -86,7 +86,7 @@ struct QuerySubmitter {
                     }
                 } else {
                     os_log("Error: data is nil")
-                    completion([])
+                    self.completion([])
                 }
             }
         }

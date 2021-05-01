@@ -75,6 +75,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         let countersQuery = DBAccess.query(what: Common.appName, from: Counters.table, isDistinct: true)
         
         showActivityIndicator(true)
+        resetDataStorage(startingTable: appTable)
+
         let itemSubmitter = QuerySubmitter(query: itemsQuery, mode: .array) { (result) in
             guard let result = result as? [[String]] else {
                 return
@@ -106,19 +108,12 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
     
     private func requestPlatforms(appName: String) {
-        platforms.removeAll()
-        platformTable.reloadData()
-        
-        actions.removeAll()
-        actionsTable.reloadData()
-        
-        counters.removeAll()
-        countersTable.reloadData()
-        
         let itemQuery = DBAccess.query(what: Common.platform, from: Items.table, whereClause: "\(Common.appName) = '\(appName)'", isDistinct: true)
         let countersQuery = DBAccess.query(what: Common.platform, from: Counters.table, whereClause: "\(Common.appName) = '\(appName)'", isDistinct: true)
         
         showActivityIndicator(true)
+        resetDataStorage(startingTable: platformTable)
+        
         let itemSubmitter = QuerySubmitter(query: itemQuery, mode: .array) { [weak self] result in
             guard let result = result as? [[String]] else {
                 return
@@ -157,11 +152,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private func requestAppActivity(app: String, platform: String) {
         showActivityIndicator(true)
 
-        actions.removeAll()
-        actionsTable.reloadData()
-        
-        counters.removeAll()
-        countersTable.reloadData()
+        resetDataStorage(startingTable: actionsTable)
         
         let query = DBAccess.query(what: Items.description, from: Items.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
         let itemSubmitter = QuerySubmitter(query: query, mode: .array) { [weak self] result in
@@ -182,7 +173,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
 
     private func requestCounters(app: String, platform: String) {
-        showActivityIndicator(true)
+        showActivityIndicator(true)        
+        resetDataStorage(startingTable: countersTable)
 
         let query = DBAccess.query(what: "\(Counters.description), \(Counters.count)", from: Counters.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
         var countsArray = [String]()
@@ -211,6 +203,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private func requestDetails(app: String, platform: String, action: String) {
         showActivityIndicator(true)
+        resetDataStorage(startingTable: detailsTable)
         
         let query = DBAccess.query(what: "\(Items.details), \(Items.timestamp), \(Common.deviceID)",
                                    from: Items.table,
@@ -230,6 +223,36 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         }
 
         submitter.submit()
+    }
+    
+    private func resetDataStorage(startingTable: NSTableView) {
+        let tables = [appTable, platformTable, actionsTable, countersTable, detailsTable]
+        guard let tableIndex = tables.firstIndex(of: startingTable) else {
+            return
+        }
+        
+        let resetTables = tables[tableIndex..<tables.count]
+        
+        if resetTables.contains(appTable) {
+            applications.removeAll()
+        }
+        if resetTables.contains(platformTable) {
+            platforms.removeAll()
+        }
+        if resetTables.contains(actionsTable) {
+            actions.removeAll()
+        }
+        if resetTables.contains(countersTable) {
+            counters.removeAll()
+            countsArray.removeAll()
+        }
+        if resetTables.contains(detailsTable) {
+            details.removeAll()
+        }
+        
+        for table in resetTables {
+            table?.reloadData()
+        }
     }
 
     // MARK: - TableView DataSource & Delegate
