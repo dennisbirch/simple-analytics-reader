@@ -147,7 +147,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private func requestAppActivity(app: String, platform: String) {
         showActivityIndicator(true)
-
+        
         resetDataStorage(startingTable: actionsTable)
         
         let query = DBAccess.query(what: Items.description, from: Items.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
@@ -170,7 +170,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private func requestCounters(app: String, platform: String) {
         showActivityIndicator(true)        
         resetDataStorage(startingTable: countersTable)
-
+        
         let query = DBAccess.query(what: "\(Counters.description), \(Counters.count)", from: Counters.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
         var countsArray = [String]()
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
@@ -208,7 +208,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 self?.showActivityIndicator(false)
                 return
             }
-
+            
             self?.details = result
             self?.showActivityIndicator(false)
             self?.detailsTable.reloadData()
