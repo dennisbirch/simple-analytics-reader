@@ -29,3 +29,9 @@
 "numeric-compare-less" = "Less than";
 "numeric-compare-greater" = "Greater than";
 "numeric-compare-greater-equals" = "Greater than or equals";
+
+
+"no-search-results-alert-title" = "No Results";
+"no-search-results-alert-message" = "Your search returned no results. Please try with a different set of query options.";
+"invalid-search-query-alert-title" = "Invalid Query";
+"invalid-search-query-alert-message" = "You need to enter a valid search term in one or more query items in order to generate a valid query.";

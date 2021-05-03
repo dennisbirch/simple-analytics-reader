@@ -119,7 +119,15 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate {
     @IBAction func performSearch(_ sender: Any) {
         var statements = [String]()
         
-        let items = queriesTableView.queryItems
+        let items = queriesTableView.queryItems.filter{ $0.value.isEmpty == false }
+        guard items.isEmpty == false else {
+            let title = NSLocalizedString("invalid-search-query-alert-title", comment: "Title for 'No valid queries' alert")
+            let message = NSLocalizedString("invalid-search-query-alert-message", comment: "Message for 'No valid queries' alert")
+            let alert = NSAlert.okAlertWithTitle(title, message: message)
+            alert.runModal()
+            return
+        }
+        
         let sqlArray = items.map{ $0.sqlWhereString() }
         let how = (matchCondition == .all) ? " AND " : " OR "
         

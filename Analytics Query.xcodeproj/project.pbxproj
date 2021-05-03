@@ -18,6 +18,7 @@
 		D87A5C44260BCC2900D7B016 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87A5C43260BCC2900D7B016 /* MainViewController.swift */; };
 		D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */; };
 		D87DCA72262A6325000668A3 /* AnalyticsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA71262A6325000668A3 /* AnalyticsItem.swift */; };
+		D88B0D78263F87410055C196 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B0D77263F87410055C196 /* Extensions.swift */; };
 		D8ED4AD6262F713600A01593 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8ED4AD5262F713600A01593 /* Localizable.strings */; };
 		D8F0B4AC260CFD83008D6054 /* DBAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F0B4AB260CFD83008D6054 /* DBAccess.swift */; };
 		D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */; };
@@ -38,6 +39,7 @@
 		D87A5C43260BCC2900D7B016 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryTypeQueryComparison.swift; sourceTree = "<group>"; };
 		D87DCA71262A6325000668A3 /* AnalyticsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsItem.swift; sourceTree = "<group>"; };
+		D88B0D77263F87410055C196 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D8ED4AD5262F713600A01593 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		D8F0B4AB260CFD83008D6054 /* DBAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBAccess.swift; sourceTree = "<group>"; };
 		D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueriesViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				D87396ED26210D050050D602 /* QueryItemCell.swift */,
 				D87A5C41260AD37000D7B016 /* Network.swift */,
 				D8F0B4AB260CFD83008D6054 /* DBAccess.swift */,
+				D88B0D77263F87410055C196 /* Extensions.swift */,
 				D87DCA71262A6325000668A3 /* AnalyticsItem.swift */,
 				D8ED4AD5262F713600A01593 /* Localizable.strings */,
 				D87A5C35260AD35700D7B016 /* Assets.xcassets */,
@@ -170,6 +173,7 @@
 				D829263D262386E600B16434 /* QueriesTable.swift in Sources */,
 				D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */,
 				D8F0B4AC260CFD83008D6054 /* DBAccess.swift in Sources */,
+				D88B0D78263F87410055C196 /* Extensions.swift in Sources */,
 				D87A5C44260BCC2900D7B016 /* MainViewController.swift in Sources */,
 				D829263B262360D600B16434 /* QueryItem.swift in Sources */,
 				D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */,
