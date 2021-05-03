@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -1609,10 +1609,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Zfj-kd-txO">
-                                <rect key="frame" x="0.0" y="0.0" width="200" height="444"/>
+                                <rect key="frame" x="0.0" y="0.0" width="200" height="457"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="96" horizontalPageScroll="10" verticalLineScroll="96" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lm4-Y7-6Qb">
-                                        <rect key="frame" x="0.0" y="209" width="200" height="235"/>
+                                        <rect key="frame" x="0.0" y="222" width="200" height="235"/>
                                         <clipView key="contentView" id="4In-RA-S5A">
                                             <rect key="frame" x="1" y="1" width="198" height="233"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1689,8 +1689,8 @@
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="640990681.03707504">
-                                                                                    <!--2021-04-24 20:58:01 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="641771099.71130097">
+                                                                                    <!--2021-05-03 21:44:59 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1734,7 +1734,7 @@
                                             </subviews>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="dnS-jj-gwl">
-                                            <rect key="frame" x="1" y="219" width="138" height="15"/>
+                                            <rect key="frame" x="1" y="219" width="198" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="wVT-cq-agK">
@@ -1909,13 +1909,13 @@
                                         </customSpacing>
                                     </stackView>
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="Xg7-7x-XEb" userLabel="Limit Height Container">
-                                        <rect key="frame" x="0.0" y="120" width="200" height="57"/>
+                                        <rect key="frame" x="0.0" y="120" width="200" height="70"/>
                                         <subviews>
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y9D-GN-Ck3">
-                                                <rect key="frame" x="8" y="30" width="184" height="19"/>
+                                                <rect key="frame" x="8" y="30" width="184" height="32"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NkP-us-Urc">
-                                                        <rect key="frame" x="-2" y="2" width="41" height="16"/>
+                                                        <rect key="frame" x="-2" y="15" width="41" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="clipping" title="Show:" id="pCX-Oy-3cu">
                                                             <font key="font" usesAppearanceFont="YES"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1923,7 +1923,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xIi-kp-s5W">
-                                                        <rect key="frame" x="45" y="-4" width="142" height="25"/>
+                                                        <rect key="frame" x="45" y="9" width="142" height="25"/>
                                                         <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="100" drawsBackground="YES" completes="NO" numberOfVisibleItems="3" id="7bD-oQ-cpL">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1952,7 +1952,7 @@
                                             </stackView>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1RL-My-z26">
                                                 <rect key="frame" x="6" y="8" width="188" height="14"/>
-                                                <textFieldCell key="cell" lineBreakMode="clipping" id="sVy-tN-Bd9">
+                                                <textFieldCell key="cell" id="sVy-tN-Bd9">
                                                     <font key="font" metaFont="smallSystem"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1965,13 +1965,13 @@
                                             <constraint firstItem="1RL-My-z26" firstAttribute="top" secondItem="Y9D-GN-Ck3" secondAttribute="bottom" constant="8" id="FTW-f6-K5a"/>
                                             <constraint firstItem="1RL-My-z26" firstAttribute="leading" secondItem="Xg7-7x-XEb" secondAttribute="leading" constant="8" id="LK1-cB-Lwt"/>
                                             <constraint firstItem="Y9D-GN-Ck3" firstAttribute="leading" secondItem="Xg7-7x-XEb" secondAttribute="leading" constant="8" id="eAZ-uJ-Ih1"/>
-                                            <constraint firstAttribute="height" constant="57" id="glJ-8G-0jm"/>
+                                            <constraint firstAttribute="height" constant="70" id="glJ-8G-0jm"/>
                                             <constraint firstAttribute="bottom" secondItem="1RL-My-z26" secondAttribute="bottom" priority="750" constant="8" id="gsy-K2-nht"/>
                                             <constraint firstAttribute="trailing" secondItem="Y9D-GN-Ck3" secondAttribute="trailing" constant="8" id="sED-Lo-guH"/>
                                         </constraints>
                                     </customView>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="h6W-Yh-nuI">
-                                        <rect key="frame" x="6" y="184" width="144" height="18"/>
+                                        <rect key="frame" x="6" y="197" width="144" height="18"/>
                                         <buttonCell key="cell" type="check" title="Limit search results" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Ibd-78-mqB">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>

@@ -55,9 +55,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     private var searchLimits: SearchLimit = SearchLimit(itemsTotal: 0, countersTotal: 0, lastItemsIndex: 0, lastCountersIndex: 0)
     
     var matchCondition: MatchCondition = .all
-    private let expandedLimitViewHeight: CGFloat = 57
+    private let expandedLimitViewHeight: CGFloat = 64
     private let collapsedLimitViewHeight: CGFloat = 4
     var isLimitedSearch = false
+    var limitSearchTotal = 0
     
     private let searchWhatKey = "searchWhat"
     private let conditionMatchKey = "conditionMatchesOn"
@@ -187,6 +188,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
                 if total > 0 {
                     self?.limitInfoLabel.stringValue = "Total: \(total)"
                 }
+                
+                self?.limitSearchTotal = total
             }
         }
         
@@ -265,7 +268,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             searchLimits.lastCountersIndex = lastCounter.id
         }
 
-        limitInfoLabel.stringValue = "Showing records \(searchLimits.lastFetchCount) - \(searchLimits.currentFetchCount)"
+        limitInfoLabel.stringValue = "Showing records \(searchLimits.lastFetchCount + 1) - \(searchLimits.currentFetchCount) (\(limitSearchTotal) total)"
+        print("Total fetched: \(results.count)")
     }
     
     // MARK: - Actions

@@ -117,6 +117,8 @@ struct SearchLimit {
                 return pageLimit/2
             }
             
+            if totalAvailable == 0 { return pageLimit }
+            
             // calculate proportion of total available for this type
             let ratio: Double
             if table == .items {

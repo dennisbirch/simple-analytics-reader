@@ -34,7 +34,9 @@ struct QuerySubmitter {
     func submit() {
         guard let url = URL(string: endpoint) else {
             os_log("URL is nil")
-            completion([[]])
+            DispatchQueue.main.async {
+                self.completion([[]])
+            }
             return
         }
   
@@ -62,16 +64,20 @@ struct QuerySubmitter {
                         if let data = data {
                             os_log("%@", String(describing: String(data: data, encoding: .utf8)))
                         }
-                        completion([])
-                        return
+                        DispatchQueue.main.async {
+                            self.completion([])
+                            return
+                        }
                     }
                 }
                 
                 if let data = data {
                     var message: Any = []
                     if data.count == 0 {
-                        completion(message)
-                        return
+                        DispatchQueue.main.async {
+                            self.completion(message)
+                            return
+                        }
                     }
                     
                     if mode == .array {
@@ -86,7 +92,9 @@ struct QuerySubmitter {
                     }
                 } else {
                     os_log("Error: data is nil")
-                    self.completion([])
+                    DispatchQueue.main.async {
+                        self.completion([])
+                    }
                 }
             }
         }
