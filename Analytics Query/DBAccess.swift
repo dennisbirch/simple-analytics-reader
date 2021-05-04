@@ -88,12 +88,12 @@ struct SearchLimit {
     var lastItemsIndex: Int
     var lastCountersIndex: Int
     var pageLimit: Int = 100
-    var currentFetchCount: Int = 0 {
+    var currentFetchCount: Int = 1 {
         didSet {
             lastFetchCount = oldValue
         }
     }
-    var lastFetchCount: Int = 0
+    var lastFetchCount: Int = 1
     var totalCount: Int {
         return itemsTotal + countersTotal
     }

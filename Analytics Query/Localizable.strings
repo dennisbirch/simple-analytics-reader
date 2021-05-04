@@ -35,3 +35,6 @@
 "no-search-results-alert-message" = "Your search returned no results. Please try with a different set of query options.";
 "invalid-search-query-alert-title" = "Invalid Query";
 "invalid-search-query-alert-message" = "You need to enter a valid search term in one or more query items in order to generate a valid query.";
+
+"total-count-label %d" = "Total: %d";
+"record range label with total %d %d %d" = "Showing records %d - %d (%d total)";

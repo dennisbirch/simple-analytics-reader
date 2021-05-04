@@ -186,7 +186,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
                 }
                 
                 if total > 0 {
-                    self?.limitInfoLabel.stringValue = "Total: \(total)"
+                    let format = NSLocalizedString("total-count-label %d", comment: "Total records that match query")
+                    self?.limitInfoLabel.stringValue = String.localizedStringWithFormat(format, total)
                 }
                 
                 self?.limitSearchTotal = total
@@ -211,12 +212,28 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
     
     private func searchDB() {
+        var itemsLimit = 0
+        var countersLimit = 0
+        if isLimitedSearch == true {
+            itemsLimit = searchLimits.limitForTable(.items, whatItems: whatItems)
+            countersLimit = searchLimits.limitForTable(.counters, whatItems: whatItems)
+            // correct for minor miscalculation of proportional limits
+            while itemsLimit + countersLimit < searchLimits.pageLimit {
+                if itemsLimit < searchLimits.itemsTotal {
+                    itemsLimit += 1
+                } else {
+                    countersLimit += 1
+                }
+            }
+        }
+
         var statements = [String]()
+
         if whatItems == .items || whatItems == .both {
             let itemsWhereStatement = whereStatements(for: .items)
             let itemsSQL: String
             if isLimitedSearch == true {
-                itemsSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Items.table, lastID: searchLimits.lastItemsIndex, limit: searchLimits.limitForTable(.items, whatItems: whatItems))
+                itemsSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Items.table, lastID: searchLimits.lastItemsIndex, limit: itemsLimit)
             } else {
                 itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
             }
@@ -227,7 +244,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             let countersWhereStatement = whereStatements(for: .counters)
             let countersSQL: String
             if isLimitedSearch == true {
-                countersSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Counters.table, lastID: searchLimits.lastCountersIndex, limit: searchLimits.limitForTable(.counters, whatItems: whatItems))
+                countersSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Counters.table, lastID: searchLimits.lastCountersIndex, limit: countersLimit)
             } else {
                 countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
             }
@@ -251,7 +268,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         
         submitter.submit()
     }
-    
+        
     private func updateSearchLimitInfo(results: [AnalyticsItem]) {
         searchLimits.currentFetchCount += results.count
         let items = results.filter{ $0.table == .items }.sorted { (item1, item2) -> Bool in
@@ -268,7 +285,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             searchLimits.lastCountersIndex = lastCounter.id
         }
 
-        limitInfoLabel.stringValue = "Showing records \(searchLimits.lastFetchCount + 1) - \(searchLimits.currentFetchCount) (\(limitSearchTotal) total)"
+        let format = NSLocalizedString("record range label with total %d %d %d", comment: "First record to last record fetched, plus total available to show")
+        limitInfoLabel.stringValue = String.localizedStringWithFormat(format, searchLimits.lastFetchCount, searchLimits.currentFetchCount, searchLimits.totalCount)
         print("Total fetched: \(results.count)")
     }
     
@@ -322,6 +340,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     // MARK: - QueriesTableDelegate
     
     func searchQueriesChanged() {
+        searchLimits = SearchLimit(itemsTotal: 0, countersTotal: 0, lastItemsIndex: 0, lastCountersIndex: 0)
         setSearchLimitTotals()
     }
     
@@ -338,7 +357,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     // MARK: - NSComboBoxDelegate
     
     func controlTextDidChange(_ obj: Notification) {
-        guard let combo = obj.object as? NSComboBox else {
+        guard let combo = obj.object as? NSComboBox,
+              combo == self.limitComboBox else {
             return
         }
         let value = Int(combo.stringValue) ?? 100
@@ -349,7 +369,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
     
     func comboBoxSelectionDidChange(_ notification: Notification) {
-        guard let combo = notification.object as? NSComboBox else {
+        guard let combo = notification.object as? NSComboBox,
+              combo == self.limitComboBox else {
             return
         }
         
