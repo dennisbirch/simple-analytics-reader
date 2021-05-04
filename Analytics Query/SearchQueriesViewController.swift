@@ -211,52 +211,65 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         }
     }
     
-    private func searchDB() {
-        var itemsLimit = 0
-        var countersLimit = 0
-        if isLimitedSearch == true {
-            itemsLimit = searchLimits.limitForTable(.items, whatItems: whatItems)
-            countersLimit = searchLimits.limitForTable(.counters, whatItems: whatItems)
-            // correct for minor miscalculation of proportional limits
-            while itemsLimit + countersLimit < searchLimits.pageLimit {
-                if itemsLimit < searchLimits.itemsTotal {
-                    itemsLimit += 1
-                } else {
-                    countersLimit += 1
-                }
+    private func limitedSearchSQL() -> String {
+        var itemsLimit = searchLimits.limitForTable(.items, whatItems: whatItems)
+        var countersLimit = searchLimits.limitForTable(.counters, whatItems: whatItems)
+        // correct for minor miscalculation of proportional limits
+        while itemsLimit + countersLimit < searchLimits.pageLimit {
+            if itemsLimit < searchLimits.itemsTotal {
+                itemsLimit += 1
+            } else {
+                countersLimit += 1
             }
         }
-
+        
+        var statements = [String]()
+        if whatItems == .items || whatItems == .both {
+            let whereClause = whereStatements(for: .items)
+            let itemsSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Items.table, whereClause: whereClause, lastID: searchLimits.lastItemsIndex, limit: itemsLimit)
+            if itemsSQL.isEmpty == false {
+                statements.append(itemsSQL)
+            }
+        }
+        if whatItems == .counters || whatItems == .both {
+            let whereClause = whereStatements(for: .counters)
+            let countersSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Counters.table, whereClause: whereClause, lastID: searchLimits.lastCountersIndex, limit: countersLimit)
+            if countersSQL.isEmpty == false {
+                statements.append(countersSQL)
+            }
+        }
+        return statements.joined(separator: ";")
+    }
+    
+    private func fullSearchSQL() -> String {
         var statements = [String]()
 
         if whatItems == .items || whatItems == .both {
             let itemsWhereStatement = whereStatements(for: .items)
-            let itemsSQL: String
-            if isLimitedSearch == true {
-                itemsSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Items.table, lastID: searchLimits.lastItemsIndex, limit: itemsLimit)
-            } else {
-                itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
-            }
+            let itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
             statements.append(itemsSQL)
         }
         
         if whatItems == .counters || whatItems == .both {
             let countersWhereStatement = whereStatements(for: .counters)
-            let countersSQL: String
-            if isLimitedSearch == true {
-                countersSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Counters.table, lastID: searchLimits.lastCountersIndex, limit: countersLimit)
-            } else {
-                countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
-            }
+            let countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
             statements.append(countersSQL)
         }
+
+        return statements.joined(separator: ";")
+    }
+    
+    private func searchDB() {
+        let sql: String
+        if isLimitedSearch == true {
+            sql = limitedSearchSQL()
+        } else {
+            sql = fullSearchSQL()
+        }
         
-        // execute SQL statement
-        let sql = statements.joined(separator: "; ")
-        let showLimitInfo = self.isLimitedSearch
         let submitter = QuerySubmitter(query: sql, mode: .items) { result in
             if let result = result as? [AnalyticsItem] {
-                if showLimitInfo == true {
+                if self.isLimitedSearch == true {
                     self.updateSearchLimitInfo(results: result)
                 }
                 self.searchDelegate?.searchCompleted(results: result)
