@@ -1689,8 +1689,8 @@
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="641771099.71130097">
-                                                                                    <!--2021-05-03 21:44:59 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="641853912.572909">
+                                                                                    <!--2021-05-04 20:45:12 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2025,6 +2025,7 @@
                         <outlet property="limitHeightConstraint" destination="glJ-8G-0jm" id="31p-da-Tfz"/>
                         <outlet property="limitInfoLabel" destination="1RL-My-z26" id="4eW-nD-9u4"/>
                         <outlet property="limitSearchCheckbox" destination="h6W-Yh-nuI" id="IUr-If-pVY"/>
+                        <outlet property="performSearchButton" destination="cwp-iz-GQW" id="VXK-Y7-cFc"/>
                         <outlet property="queriesTableView" destination="3Cu-Ko-ig1" id="ydD-gd-Bji"/>
                         <outlet property="removeAllQueriesButton" destination="g5M-Rn-Bkc" id="Jtu-kd-ukO"/>
                         <outlet property="removeQueryButton" destination="k5J-Yr-xRS" id="d41-pQ-fKe"/>

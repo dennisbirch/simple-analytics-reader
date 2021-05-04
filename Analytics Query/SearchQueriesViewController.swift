@@ -36,6 +36,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     @IBOutlet private weak var queriesTableView: QueriesTable!
     @IBOutlet private weak var removeQueryButton: NSButton!
     @IBOutlet private weak var removeAllQueriesButton: NSButton!
+    @IBOutlet private weak var performSearchButton: NSButton!
     
     // Radio buttons
     @IBOutlet weak var allRadio: NSButton!
@@ -133,6 +134,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             setSearchLimitTotals()
         } else {
             newHeight = collapsedLimitViewHeight
+            performSearchButton.isEnabled = true
         }
         
         searchLimits.lastItemsIndex = 0
@@ -171,7 +173,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             }
         }
         
-        if queries.isEmpty == true { return }
+        if queries.isEmpty == true {
+            limitInfoLabel.stringValue = ""
+            return
+        }
         
         let submitter = QuerySubmitter(query: queries.joined(separator: ";"), mode: .array) { [weak self] (results) in
             if let results = results as? [[String]] {
@@ -191,6 +196,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
                 }
                 
                 self?.limitSearchTotal = total
+                
+                if let searchLimits = self?.searchLimits {
+                    self?.performSearchButton.isEnabled = searchLimits.currentFetchCount < searchLimits.totalCount
+                }
             }
         }
         
@@ -300,7 +309,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
 
         let format = NSLocalizedString("record range label with total %d %d %d", comment: "First record to last record fetched, plus total available to show")
         limitInfoLabel.stringValue = String.localizedStringWithFormat(format, searchLimits.lastFetchCount, searchLimits.currentFetchCount, searchLimits.totalCount)
-        print("Total fetched: \(results.count)")
+        
+        performSearchButton.isEnabled = searchLimits.currentFetchCount < searchLimits.totalCount
     }
     
     // MARK: - Actions
