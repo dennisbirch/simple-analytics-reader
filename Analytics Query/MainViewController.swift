@@ -55,6 +55,12 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         requestApplicationNames()
     }
     
+    @IBAction func showSearchUI(_ sender: Any) {
+        if let tabViewController = parent as? NSTabViewController {
+            tabViewController.selectedTabViewItemIndex = 1
+        }
+    }
+    
     // MARK: - Private Methods
     
     private func showActivityIndicator(_ shouldShow: Bool) {

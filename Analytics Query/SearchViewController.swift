@@ -52,6 +52,13 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         searchQueriesViewController?.searchQueriesChanged()
     }
     
+    @IBAction func showListUI(_ sender: Any) {
+        if let tabViewController = parent as? NSTabViewController {
+            tabViewController.selectedTabViewItemIndex = 0
+        }
+
+    }
+    
     // MARK: - Results TableView
     
     func numberOfRows(in tableView: NSTableView) -> Int {
