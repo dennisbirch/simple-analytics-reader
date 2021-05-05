@@ -122,7 +122,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     
     override func viewWillAppear() {
         super.viewWillAppear()
-        
+        enableRemoveQueryButtons()
     }
     
     // MARK: - Private Helpers
@@ -228,15 +228,15 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         var statements = [String]()
         if whatItems == .items || whatItems == .both {
             let whereClause = whereStatements(for: .items)
-            let itemsSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Items.table, whereClause: whereClause, lastID: searchLimits.lastItemsIndex, limit: itemsLimit)
-            if itemsSQL.isEmpty == false {
+            if whereClause.isEmpty == false {
+                let itemsSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Items.table, whereClause: whereClause, lastID: searchLimits.lastItemsIndex, limit: itemsLimit)
                 statements.append(itemsSQL)
             }
         }
         if whatItems == .counters || whatItems == .both {
             let whereClause = whereStatements(for: .counters)
-            let countersSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Counters.table, whereClause: whereClause, lastID: searchLimits.lastCountersIndex, limit: countersLimit)
-            if countersSQL.isEmpty == false {
+            if whereClause.isEmpty == false {
+                let countersSQL = DBAccess.limitQuery(what: DBAccess.selectAll, from: Counters.table, whereClause: whereClause, lastID: searchLimits.lastCountersIndex, limit: countersLimit)
                 statements.append(countersSQL)
             }
         }
@@ -248,14 +248,18 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
 
         if whatItems == .items || whatItems == .both {
             let itemsWhereStatement = whereStatements(for: .items)
-            let itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
-            statements.append(itemsSQL)
+            if itemsWhereStatement.isEmpty == false {
+                let itemsSQL = DBAccess.query(what: DBAccess.selectAll, from: Items.table, whereClause: itemsWhereStatement)
+                statements.append(itemsSQL)
+            }
         }
         
         if whatItems == .counters || whatItems == .both {
             let countersWhereStatement = whereStatements(for: .counters)
-            let countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
-            statements.append(countersSQL)
+            if countersWhereStatement.isEmpty == false {
+                let countersSQL = DBAccess.query(what: DBAccess.selectAll, from: Counters.table, whereClause: countersWhereStatement)
+                statements.append(countersSQL)
+            }
         }
 
         return statements.joined(separator: ";")
@@ -267,6 +271,14 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             sql = limitedSearchSQL()
         } else {
             sql = fullSearchSQL()
+        }
+        
+        if sql.isEmpty == true {
+            let title = NSLocalizedString("invalid-search-query-alert-title", comment: "Title for alert when there are no valid queries")
+            let message = NSLocalizedString("invalid-search-query-alert-message", comment: "Message for alert when there are no valid queries")
+            let alert = NSAlert.okAlertWithTitle(title, message: message)
+            alert.runModal()
+            return
         }
         
         let submitter = QuerySubmitter(query: sql, mode: .items) { result in
@@ -319,6 +331,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         displaySearchLimitControls(isLimitedSearch)
         UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
         self.limitSearchCheckbox.state = (isLimitedSearch) ? .on : .off
+        enableRemoveQueryButtons()
     }
     
     @IBAction func toggledShowSearchLimit(_ sender: NSButton) {
@@ -379,7 +392,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     
     private func enableRemoveQueryButtons() {
         removeQueryButton.isEnabled = selectedQueryRow >= 0
-        removeAllQueriesButton.isEnabled = selectedQueryRow >= 0
+        removeAllQueriesButton.isEnabled = queriesTableView.queryItems.isEmpty == false
     }
 
     // MARK: - NSComboBoxDelegate
