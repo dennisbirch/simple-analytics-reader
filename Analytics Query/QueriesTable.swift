@@ -56,6 +56,11 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
     override func didAdd(_ rowView: NSTableRowView, forRow row: Int) {
         rowView.backgroundColor = QueriesTableRow.baseColor
     }
+    
+    func loadQueries(_ queries: [QueryItem]) {
+        self.queryItems = queries
+        reloadData()
+    }
         
     func addQuery() {
         let item = QueryItem()

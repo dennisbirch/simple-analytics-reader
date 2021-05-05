@@ -84,8 +84,7 @@ extension SearchQueriesViewController: NSOpenSavePanelDelegate {
                 let decoder = JSONDecoder()
                 do {
                     let model = try decoder.decode(QueryModel.self, from: data)
-                    // TODO: Load UI from saved model
-                    print("Model opened: \(model)")
+                    loadSavedQueries(model)
                 } catch {
                     handleSaveOpenFileError(error: error, problem: "opening query file")
                 }

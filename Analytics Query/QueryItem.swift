@@ -50,12 +50,20 @@ struct QueryItem: Codable {
             queryType = QueryType.title
         }
         
-        let compareValue = try values.decode(String.self, forKey: .comparison)
+        let query = self.queryType
+        
+        let comparisonString = try values.decode(String.self, forKey: .comparison)
         var comparison: Comparison?
-        if let cType = StringComparison(rawValue: compareValue) {
-            comparison = cType
-        } else if let cType = DateComparison(rawValue: compareValue) {
-            comparison = cType
+        if query == .systemVersion || query == .appVersion {
+            if let cType = NumericComparison(rawValue: comparisonString) {
+                comparison = cType
+            }
+        } else {
+            if let cType = StringComparison(rawValue: comparisonString) {
+                comparison = cType
+            } else if let cType = DateComparison(rawValue: comparisonString) {
+                comparison = cType
+            }
         }
         self.comparison = comparison
         
@@ -63,7 +71,7 @@ struct QueryItem: Codable {
         let identifier = try values.decode(String.self, forKey: .id)
         id = UUID(uuidString: identifier) ?? UUID()
     }
-    
+        
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(queryType.rawValue, forKey: .queryType)
@@ -91,7 +99,7 @@ extension QueryItem {
     }
     
     func queryItemWithNewDate(_ newDate: Date) -> QueryItem {
-        let comparison = self.comparison as? DateComparison ?? DateComparison.equals
+        let comparison = self.comparison as? DateComparison ?? DateComparison.same
         var item = QueryItem(queryType: .datetime, dateComparison: comparison, value: newDate)
         item.id = self.id
         return item
@@ -128,7 +136,7 @@ extension QueryItem {
                 sql = "(\(queryType.dbColumnName) < \(likeValue) OR \(queryType.dbColumnName) LIKE \(likeValue))"
             case DateComparison.before:
                 sql = "\(queryType.dbColumnName) < \(likeValue)"
-            case DateComparison.equals:
+            case DateComparison.same:
                 sql = "\(queryType.dbColumnName) LIKE \(likeValue)"
             case DateComparison.after:
                 sql = "\(queryType.dbColumnName) > \(likeValue)"
@@ -183,6 +191,7 @@ extension ISO8601DateFormatter {
     static var queryFormatter: ISO8601DateFormatter {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withYear, .withMonth, .withDay, .withDashSeparatorInDate]
+        formatter.timeZone = TimeZone.current
         return formatter
     }
 }
