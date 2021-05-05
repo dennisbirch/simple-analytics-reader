@@ -33,6 +33,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         static let endsWith = NSLocalizedString("string-compare-ends", comment: "String comparison option for 'Ends with'")
         static let beforeOrEqual = NSLocalizedString("date-compare-before-equal", comment: "Date comparison option for 'Before or equals'")
         static let before = NSLocalizedString("date-compare-before", comment: "Date comparsion option for 'Before'")
+        static let same = NSLocalizedString("date-compare-same", comment: "Date comparison option for 'Same'")
         static let after = NSLocalizedString("date-compare-after", comment: "Date comparison option for 'After'")
         static let afterEquals = NSLocalizedString("date-compare-after-equals", comment: "Date comparison option for 'After or equals'")
         static let lessEquals = NSLocalizedString("numeric-compare-less-equals", comment: "Numeric comparison option for 'Less than or equal'")
@@ -103,7 +104,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
         equalityButton.removeAllItems()
         var items = [Localized.equals, Localized.contains, Localized.beginsWith, Localized.endsWith]
         if query.queryType == .datetime {
-            items = [Localized.beforeOrEqual, Localized.before, Localized.equals, Localized.after, Localized.afterEquals]
+            items = [Localized.beforeOrEqual, Localized.before, Localized.same, Localized.after, Localized.afterEquals]
         } else if query.queryType == .systemVersion || query.queryType == .appVersion {
             items = [Localized.lessEquals, Localized.less, Localized.equals, Localized.greater, Localized.greaterEquals]
         }
@@ -179,7 +180,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
                let item = queryItem {
                 comparison = item.comparison
             } else {
-                comparison = DateComparison.equals
+                comparison = DateComparison.same
             }
         case .appVersion, .systemVersion:
             if comparison is NumericComparison,

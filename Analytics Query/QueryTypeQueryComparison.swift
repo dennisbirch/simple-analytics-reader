@@ -46,7 +46,7 @@ enum QueryType: String, CaseIterable {
 enum DateComparison: String, Comparison, CaseIterable {
     case beforeOrEquals
     case before
-    case equals
+    case same
     case after
     case afterOrEquals
     
@@ -57,7 +57,7 @@ enum DateComparison: String, Comparison, CaseIterable {
     static func fromString(_ baseString: String) -> Comparison {
         let allCases = DateComparison.allCases
         let match = allCases.first(where: { $0.rawValue.lowercased() == baseString.reducedEnumElement() })
-        return match ?? DateComparison.equals
+        return match ?? DateComparison.same
     }
 }
 
