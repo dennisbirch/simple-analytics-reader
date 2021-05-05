@@ -103,7 +103,7 @@ extension QueryItem {
         return ISO8601DateFormatter.queryFormatter.date(from: self.value)
     }
     
-    func sqlWhereString(isCounter: Bool = false) -> String {
+    func sqlWhereString() -> String {
         var sql = ""
         switch queryType {
         case .title, .appName, .platform, .deviceID:

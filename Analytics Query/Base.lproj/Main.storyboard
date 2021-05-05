@@ -337,6 +337,25 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Search" id="D1S-Pc-cwC" userLabel="Search">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Search" id="1Uk-nS-n5r">
+                                    <items>
+                                        <menuItem title="Save Search…" id="S7r-Vf-BD7">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="saveSearch:" target="Ady-hI-5gd" id="kQ2-Pq-Blt"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Load Saved Search…" id="Xww-kj-rRj">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="loadSavedSearch:" target="Ady-hI-5gd" id="m0V-0c-l9z"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Format" id="jxT-CU-nIS">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Format" id="GEO-Iw-cKr">

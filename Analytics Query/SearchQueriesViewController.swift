@@ -8,13 +8,13 @@
 import Cocoa
 import os.log
 
-enum WhatItems: String {
+enum WhatItems: String, Codable {
     case items
     case counters
     case both
 }
 
-enum MatchCondition: String {
+enum MatchCondition: String, Codable {
     case any
     case all
 }
@@ -33,7 +33,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     
     var searchDelegate: QuerySearchDelegate?
     
-    @IBOutlet private weak var queriesTableView: QueriesTable!
+    @IBOutlet weak var queriesTableView: QueriesTable!
     @IBOutlet private weak var removeQueryButton: NSButton!
     @IBOutlet private weak var removeAllQueriesButton: NSButton!
     @IBOutlet private weak var performSearchButton: NSButton!
@@ -53,7 +53,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
 
     private var selectedQueryRow = -1
     var whatItems: WhatItems = .items
-    private var searchLimits: SearchLimit = SearchLimit(itemsTotal: 0, countersTotal: 0, lastItemsIndex: 0, lastCountersIndex: 0)
+    private(set) var searchLimits: SearchLimit = SearchLimit(itemsTotal: 0, countersTotal: 0, lastItemsIndex: 0, lastCountersIndex: 0)
     
     var matchCondition: MatchCondition = .all
     private let expandedLimitViewHeight: CGFloat = 64
@@ -207,17 +207,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
     
     private func whereStatements(for type: TableType) -> String {
-        let items = queriesTableView.queryItems.filter{ $0.value.isEmpty == false }
-        let sqlArray = items.map{ $0.sqlWhereString() }
+        let queryItems = queriesTableView.queryItems.filter{ $0.value.isEmpty == false }
+        let sqlArray = queryItems.map{ $0.sqlWhereString() }
         let how = (matchCondition == .all) ? " AND " : " OR "
-        
-        switch type {
-        case .items:
-            return sqlArray.joined(separator: how)
-        case .counters:
-            let counterSQLArray = items.map{ $0.sqlWhereString() }
-            return counterSQLArray.joined(separator: how)
-        }
+        return sqlArray.joined(separator: how)
     }
     
     private func limitedSearchSQL() -> String {
@@ -359,7 +352,6 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         searchDB()
     }
     
-
     // MARK: - QueriesTableDelegate
     
     func searchQueriesChanged() {
