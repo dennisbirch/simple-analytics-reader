@@ -10,8 +10,9 @@ import os.log
 
 class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
     static let viewControllerIdentifier = "SavedQueriesViewController"
-    var isLoading = true
-    var files = [URL]()
+    private var isLoading = false
+    private var files = [URL]()
+    private var loadingHandler: ((URL) -> Void)?
     
     @IBOutlet private weak var tableView: NSTableView!
     @IBOutlet private weak var deleteButton: NSButton!
@@ -25,6 +26,22 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
         cancelButton.title = (isLoading == true) ? "Cancel" : "Done"
     }
     
+    func configureForLoading(files: [URL], handler: @escaping(URL) -> Void) {
+        self.isLoading = true
+        self.files = files
+        loadingHandler = handler
+    }
+    
+    func configureForDeleting(files: [URL]) {
+        self.files = files
+        self.isLoading = false
+    }
+    
+    func configureForDisplaying(files: [URL]) {
+        self.files = files
+        self.isLoading = false
+    }
+
     @IBAction func deleteItem(_ sender: NSButton) {
         let row = tableView.selectedRow
         if row < 0 || row >= files.count {
@@ -50,7 +67,18 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
     }
     
     @IBAction func loadItem(_ sender: NSButton) {
+        let row = tableView.selectedRow
+        if row < 0 || row >= files.count {
+            NSSound.beep()
+            return
+        }
         
+        let url = files[row]
+        if FileManager.default.fileExists(atPath: url.path) {
+            if let handler = loadingHandler {
+                handler(url)
+            }
+        }
     }
 
     @IBAction func cancel(_ sender: NSButton) {
@@ -65,8 +93,8 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let file = files[row]
-        let path = file.path.replacingOccurrences(of: ".\(savedQueryFileExtension)", with: "").replacingOccurrences(of: "\(FileManager.queryFileFolder.path)/", with: "")
-        let label = NSTextField(labelWithString: path)
+        let fileName = file.path.replacingOccurrences(of: ".\(savedQueryFileExtension)", with: "").replacingOccurrences(of: "\(FileManager.queryFileFolder.path)/", with: "")
+        let label = NSTextField(labelWithString: fileName)
         return label
     }
     

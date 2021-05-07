@@ -18,7 +18,7 @@ struct QueryModel: Codable {
 
 let savedQueryFileExtension: String = "aqsavedquery"
 
-extension SearchViewController: NSOpenSavePanelDelegate {
+extension SearchViewController {
     @IBAction func saveSearch(_ sender: Any) {
         guard let searchQueriesVC = searchQueriesViewController else {
             os_log("Search view controller is nil")
@@ -48,9 +48,9 @@ extension SearchViewController: NSOpenSavePanelDelegate {
     }
     
     private func promptForQuerySaveName(for data: Data) {
-        let queryDialog = TextEntryAlertWindowController(prompt: "Enter a unique name for the Query", handler: { name in
+        let queryDialog = TextEntryAlertWindowController(prompt: "Enter a unique name for the Query", handler: { [weak self] name in
             if name.isEmpty { return }
-            self.saveSearchData(data, to: name)
+            self?.saveSearchData(data, to: name)
         },
         filterCharacters: "./:")
         guard let window = view.window else {
@@ -83,47 +83,42 @@ extension SearchViewController: NSOpenSavePanelDelegate {
     }
     
     @IBAction func loadSavedSearch(_ sender: Any) {
-        let openPanel = NSOpenPanel()
-        openPanel.delegate = self
-        openPanel.directoryURL = FileManager.queryFileFolder
-        openPanel.allowedFileTypes = [savedQueryFileExtension]
-        openPanel.canCreateDirectories = false
-        openPanel.allowsOtherFileTypes = false
-        openPanel.isExtensionHidden = true
-        openPanel.message = "Query to load..."
-        let result = openPanel.runModal()
-        if result == .OK {
-            guard let url = openPanel.url else {
-                let alert = NSAlert.okAlertWithTitle("Error", message: "There was an error opening the file")
-                alert.runModal()
-                return
-            }
-            
+        guard let savedQueriesVC = savedQueriesVC() else {
+            os_log("Can't instantiate saved queries view controller")
+            return
+        }
+ 
+        savedQueriesVC.configureForLoading(files: savedQueryFiles()) { [weak self] url in
             do {
                 let data = try Data(contentsOf: url)
                 let decoder = JSONDecoder()
                 do {
                     let model = try decoder.decode(QueryModel.self, from: data)
-                    loadSavedQueries(model)
+                    self?.dismiss(savedQueriesVC)
+                    self?.loadSavedQueries(model)
                 } catch {
-                    handleSaveOpenFileError(error: error, problem: "opening query file")
+                    self?.handleSaveOpenFileError(error: error, problem: "opening query file")
                 }
             } catch {
-                handleSaveOpenFileError(error: error, problem: "opening query file")
+                self?.handleSaveOpenFileError(error: error, problem: "opening query file")
             }
         }
+        
+        presentAsSheet(savedQueriesVC)
     }
     
     @IBAction func showSavedQueries(_ sender: Any) {
-        guard let savedQueriesVC = storyboard?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(SavedQueriesViewController.viewControllerIdentifier)) as? SavedQueriesViewController else {
+        guard let savedQueriesVC = savedQueriesVC() else {
             os_log("Can't instantiate saved queries view controller")
             return
         }
         
-        savedQueriesVC.files = savedQueryFiles()
-        savedQueriesVC.isLoading = false
-
+        savedQueriesVC.configureForDisplaying(files: savedQueryFiles())
         presentAsSheet(savedQueriesVC)
+    }
+    
+    private func savedQueriesVC() -> SavedQueriesViewController? {
+        return storyboard?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(SavedQueriesViewController.viewControllerIdentifier)) as? SavedQueriesViewController
     }
     
     private func savedQueryFiles() -> [URL] {
@@ -153,11 +148,5 @@ extension SearchViewController: NSOpenSavePanelDelegate {
         alert.runModal()
     }
     
-    func panel(_ sender: Any, shouldEnable url: URL) -> Bool {
-        if url.path.contains(FileManager.queryFileFolder.path) {
-            return true
-        } else {
-            return false
-        }
-    }
+
 }
