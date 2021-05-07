@@ -16,3 +16,25 @@ extension NSAlert {
 
     }
 }
+
+
+extension FileManager {
+    static var queryFileFolder: URL {
+        do {
+            let fileMgr = FileManager.default
+            let appSupportFolder = try fileMgr.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let queryFolder = appSupportFolder.appendingPathComponent("Analytics Query", isDirectory: true)
+            if fileMgr.fileExists(atPath: queryFolder.path) == false {
+                do {
+                    try fileMgr.createDirectory(at: queryFolder, withIntermediateDirectories: false, attributes: nil)
+                } catch {
+                    fatalError("Error creating queries folder: \(error)")
+                }
+            }
+
+            return queryFolder
+        } catch {
+            fatalError("Can't access the Application Support folder: \(error)")
+        }
+    }
+}

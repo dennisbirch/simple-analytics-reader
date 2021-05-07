@@ -42,3 +42,9 @@
 
 "total-count-label %d" = "Total: %d";
 "record range label with total %d %d %d" = "Showing records %d - %d (%d total)";
+
+"error-removing-query-file-title" = "Error";
+"error-removing-query-file-message" = "There was an error removing the selected file.";
+"duplicate-query-name-alert-title" = "Duplicate Name";
+"duplicate-query-name-alert-message %@" = "You already have a saved query named '%@'. Please enter a new name.";
+

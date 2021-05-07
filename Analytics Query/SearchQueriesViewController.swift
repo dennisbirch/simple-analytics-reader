@@ -320,21 +320,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     
     // MARK: - Actions
     
-    func loadSavedQueries(_ model: QueryModel) {
-        queriesTableView.loadQueries(model.queryItems)
-        self.matchCondition = model.matchType
-        self.whatItems = model.whatItems
-
-        self.isLimitedSearch = model.isLimitedSearch
-        self.searchLimits.pageLimit = model.pageLimit
-        limitComboBox.intValue = Int32(model.pageLimit)
-        displaySearchLimitControls(isLimitedSearch)
-        UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
-        self.limitSearchCheckbox.state = (isLimitedSearch) ? .on : .off
-        enableRemoveQueryButtons()
-    }
-    
-    @IBAction func toggledShowSearchLimit(_ sender: NSButton) {
+     @IBAction func toggledShowSearchLimit(_ sender: NSButton) {
         isLimitedSearch = sender.state == .on
         displaySearchLimitControls(isLimitedSearch)
         UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
@@ -378,6 +364,20 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         searchDB()
     }
     
+    func loadSavedQueries(_ model: QueryModel) {
+        queriesTableView.loadQueries(model.queryItems)
+        self.matchCondition = model.matchType
+        self.whatItems = model.whatItems
+
+        self.isLimitedSearch = model.isLimitedSearch
+        self.searchLimits.pageLimit = model.pageLimit
+        limitComboBox.intValue = Int32(model.pageLimit)
+        displaySearchLimitControls(isLimitedSearch)
+        UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
+        self.limitSearchCheckbox.state = (isLimitedSearch) ? .on : .off
+        enableRemoveQueryButtons()
+    }
+        
     // MARK: - QueriesTableDelegate
     
     func searchQueriesChanged() {

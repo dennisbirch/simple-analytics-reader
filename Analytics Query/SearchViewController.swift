@@ -12,7 +12,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     @IBOutlet private weak var queriesContainerView: NSView!
     
     private var items = [AnalyticsItem]()
-    private var searchQueriesViewController: SearchQueriesViewController?
+    var searchQueriesViewController: SearchQueriesViewController?
 
     private struct ColumnHeadings {
         static let timeStamp = "Date/Time"
