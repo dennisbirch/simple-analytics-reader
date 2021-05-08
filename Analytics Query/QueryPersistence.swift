@@ -24,7 +24,9 @@ extension SearchViewController {
             os_log("Search view controller is nil")
             return
         }
-
+        
+        dismissDetailView()
+        
         let queryItems = searchQueriesVC.queriesTableView.queryItems.filter{ $0.value.isEmpty == false }
         if queryItems.isEmpty {
             let title = NSLocalizedString("no-queries-to-save-alert-title", comment: "Title for alert when there are no valid queries to save")
@@ -112,6 +114,8 @@ extension SearchViewController {
             os_log("Can't instantiate saved queries view controller")
             return
         }
+        
+        dismissDetailView()
         
         savedQueriesVC.configureForDisplaying(files: savedQueryFiles())
         presentAsSheet(savedQueriesVC)

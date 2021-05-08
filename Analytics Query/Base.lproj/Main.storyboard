@@ -1855,8 +1855,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="642100421.89193106">
-                                                                                    <!--2021-05-07 17:13:41 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="642114901.68882203">
+                                                                                    <!--2021-05-07 21:15:01 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1920,6 +1920,9 @@ Gw
                                                 <buttonCell key="cell" type="push" title="Search" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="JhD-mn-PmV">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
+                                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
                                                 </buttonCell>
                                                 <connections>
                                                     <action selector="performSearch:" target="7fz-iM-JXA" id="ohH-yo-tXJ"/>

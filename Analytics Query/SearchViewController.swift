@@ -6,13 +6,18 @@
 //
 
 import Cocoa
+import os.log
 
 class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, QuerySearchDelegate {
     @IBOutlet private weak var resultsTableView: NSTableView!
     @IBOutlet private weak var queriesContainerView: NSView!
+    private var detailView: DetailView?
     
     private var items = [AnalyticsItem]()
     var searchQueriesViewController: SearchQueriesViewController?
+    private var cellTrackingArea: NSTrackingArea?
+    private var lastColumn = -1
+    private var lastRow = -1
 
     private struct ColumnHeadings {
         static let timeStamp = "Date/Time"
@@ -45,7 +50,28 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                                      queriesView.topAnchor.constraint(equalTo: queriesContainerView.topAnchor),
                                      queriesView.bottomAnchor.constraint(equalTo: queriesContainerView.bottomAnchor)])
         
+        updateTrackingAreas()
         searchQueriesViewController = queriesVC
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(tableViewScrolled(_:)), name: NSScrollView.didLiveScrollNotification, object: nil)
+    }
+    
+    override func viewWillDisappear() {
+        super.viewWillDisappear()
+        dismissDetailView()
+    }
+    
+    func updateTrackingAreas() {
+        if cellTrackingArea == nil {
+            cellTrackingArea = NSTrackingArea(rect: NSRect.zero,
+                                              options: [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow, .inVisibleRect],
+                                              owner: self, userInfo: nil)
+        }
+        
+        if let area = cellTrackingArea,
+           resultsTableView.trackingAreas.contains(area) == false {
+            resultsTableView.addTrackingArea(area)
+        }
     }
     
     func updateSearchQueriesViewController() {
@@ -53,10 +79,74 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     @IBAction func showListUI(_ sender: Any) {
+        dismissDetailView()
         if let tabViewController = parent as? NSTabViewController {
             tabViewController.selectedTabViewItemIndex = 0
         }
-
+    }
+    
+    func dismissDetailView() {
+        detailView?.removeFromSuperview()
+        detailView = nil
+    }
+    
+    private func showDetailsContent(row: Int, column: Int) {
+        dismissDetailView()
+        
+        if let view = resultsTableView.view(atColumn: column, row: row, makeIfNecessary: false) {
+            if let label = view as? NSTextField {
+                if label.stringValue.isEmpty == true {
+                    return
+                }
+                let detail = label.stringValue.replacingOccurrences(of: ", ", with: "\n")
+                showDetailString(detail, column: column, row: row)
+            }
+        }
+    }
+        
+    private func showDetailString(_ text: String, column: Int, row: Int) {
+        let tableColumn = resultsTableView.tableColumns[column]
+        let columnWidth = tableColumn.width
+        guard let detailView = DetailView.create(with: text, width: columnWidth) else {
+            os_log("Couldn't create a detail view")
+            return
+        }
+        
+        self.detailView = detailView
+        setDetailViewLocation(for: column, row: row)
+        view.addSubview(detailView)
+    }
+    
+    private func setDetailViewLocation(for column: Int, row: Int) {
+        guard let detailView = self.detailView else {
+            return
+        }
+        
+        let detailFrame = detailView.frame
+        guard let cellView = resultsTableView.view(atColumn: column, row: row, makeIfNecessary: false) else {
+            return
+        }
+        
+        let tableOrigin = resultsTableView.convert(resultsTableView.frame, to: view).origin
+        print("TableOrigin: \(tableOrigin)")
+        var cellFrame = cellView.convert(cellView.frame, to: view)
+        print("Cell frame: \(cellFrame)")
+        cellFrame.origin.x -= tableOrigin.x
+        print("Adjusted cell frame: \(cellFrame)")
+        
+        var originX = cellFrame.origin.x + cellView.bounds.width
+        print("origin x: \(originX)")
+        if originX + detailFrame.width > view.bounds.width {
+            originX = cellFrame.origin.x - detailFrame.width
+        }
+        
+        var originY = cellFrame.origin.y - cellFrame.height
+        if originY + detailFrame.height > view.bounds.height {
+            originY = cellFrame.origin.y - detailFrame.height
+        }
+        
+        let newLocation = CGPoint(x: originX, y: originY)
+        self.detailView?.frame.origin = newLocation
     }
     
     // MARK: - Results TableView
@@ -149,6 +239,39 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         return itemsSorted
     }
 
+    override func mouseMoved(with event: NSEvent) {
+        let winLocation = event.locationInWindow
+        let tableLoc = view.convert(winLocation, to: resultsTableView)
+        let column = resultsTableView.column(at: tableLoc)
+        let row = resultsTableView.row(at: tableLoc)
+        if row < 0 {
+            lastRow = row
+            return
+        }
+        
+        if column != lastColumn || row != lastRow {
+            lastColumn = column
+            lastRow = row
+            
+            let tableColumn = resultsTableView.tableColumns[column]
+            if tableColumn.title == ColumnHeadings.details {
+                showDetailsContent(row: row, column: column)
+            } else {
+                dismissDetailView()
+            }
+        }
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        super .mouseExited(with: event)
+        dismissDetailView()
+    }
+    
+    @objc func tableViewScrolled(_ notification: Notification) {
+        if notification.object as? NSScrollView != resultsTableView.enclosingScrollView { return }
+        dismissDetailView()
+    }
+    
     // MARK: - QuerySearchDelegate
     
     func searchCompleted(results: [AnalyticsItem]) {

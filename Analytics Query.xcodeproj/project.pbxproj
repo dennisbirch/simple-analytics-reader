@@ -26,6 +26,8 @@
 		D8EE21CE2644BD6300C4F554 /* TextEntryDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8EE21CC2644BD6300C4F554 /* TextEntryDialog.xib */; };
 		D8F0B4AC260CFD83008D6054 /* DBAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F0B4AB260CFD83008D6054 /* DBAccess.swift */; };
 		D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */; };
+		D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FAE0342646E8F200BA500B /* DetailView.swift */; };
+		D8FAE0372646E91300BA500B /* DetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8FAE0362646E91300BA500B /* DetailView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +53,8 @@
 		D8EE21CC2644BD6300C4F554 /* TextEntryDialog.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextEntryDialog.xib; sourceTree = "<group>"; };
 		D8F0B4AB260CFD83008D6054 /* DBAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBAccess.swift; sourceTree = "<group>"; };
 		D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueriesViewController.swift; sourceTree = "<group>"; };
+		D8FAE0342646E8F200BA500B /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		D8FAE0362646E91300BA500B /* DetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +99,7 @@
 				D829263C262386E600B16434 /* QueriesTable.swift */,
 				D87396ED26210D050050D602 /* QueryItemCell.swift */,
 				D8EE21CA2644BD6300C4F554 /* TextEntryDialog */,
+				D8FAE0382646E91C00BA500B /* DetailView */,
 				D87A5C41260AD37000D7B016 /* Network.swift */,
 				D8F0B4AB260CFD83008D6054 /* DBAccess.swift */,
 				D88B0D77263F87410055C196 /* Extensions.swift */,
@@ -114,6 +119,15 @@
 				D8EE21CC2644BD6300C4F554 /* TextEntryDialog.xib */,
 			);
 			path = TextEntryDialog;
+			sourceTree = "<group>";
+		};
+		D8FAE0382646E91C00BA500B /* DetailView */ = {
+			isa = PBXGroup;
+			children = (
+				D8FAE0342646E8F200BA500B /* DetailView.swift */,
+				D8FAE0362646E91300BA500B /* DetailView.xib */,
+			);
+			path = DetailView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +191,7 @@
 				D8ED4AD6262F713600A01593 /* Localizable.strings in Resources */,
 				D87A5C39260AD35700D7B016 /* Main.storyboard in Resources */,
 				D8EE21CE2644BD6300C4F554 /* TextEntryDialog.xib in Resources */,
+				D8FAE0372646E91300BA500B /* DetailView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +209,7 @@
 				D8EE21A42641F34E00C4F554 /* QueryPersistence.swift in Sources */,
 				D829263D262386E600B16434 /* QueriesTable.swift in Sources */,
 				D8EE21A6264341D800C4F554 /* SavedQueriesViewController.swift in Sources */,
+				D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */,
 				D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */,
 				D8F0B4AC260CFD83008D6054 /* DBAccess.swift in Sources */,
 				D88B0D78263F87410055C196 /* Extensions.swift in Sources */,
