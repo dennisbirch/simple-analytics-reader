@@ -287,13 +287,11 @@ extension SearchViewController {
         }
         
         cellFrame = cellView.convert(cellView.frame, to: view)
-        let cellYDelta = cellFrame.origin.y + (cellFrame.height * 2) + 12
-        // TODO: Accommodate scroll value
-        let visibleRect = resultsTableView.visibleRect
-        print("Visible rect: \(visibleRect)")
+        let cellYDelta = cellFrame.origin.y + (cellFrame.height * 2) + 20
+        let scrollY = resultsTableView.visibleRect.origin.y
         let viewHeight = view.frame.height
-        var originY = viewHeight - cellYDelta
-        let availableSpace = viewHeight - detailFrame.height - originY
+        var originY = viewHeight - cellYDelta + scrollY
+        let availableSpace = viewHeight - detailFrame.height - originY + scrollY
         if availableSpace < detailFrame.height {
             originY = viewHeight - cellFrame.origin.y - (detailFrame.height * 2)
         }
