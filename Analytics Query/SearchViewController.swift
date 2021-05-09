@@ -282,7 +282,8 @@ extension SearchViewController {
         let detailFrame = detailView.frame
         var cellFrame = cellView.frame
         var originX = cellFrame.origin.x + cellFrame.width
-        let availableWidth = view.convert(resultsTableView.frame, from: view).width
+        let convertedTableFrame = resultsTableView.convert(resultsTableView.frame, to: view)
+        let availableWidth = view.frame.width - convertedTableFrame.origin.x
         if originX + detailFrame.width > availableWidth {
             originX = cellFrame.origin.x - detailFrame.width
         }
