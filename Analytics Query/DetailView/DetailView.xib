@@ -5,14 +5,14 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="DetailView" customModule="Analytics_Query" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="DetailView" customModule="AlertWithText" customModuleProvider="target">
             <connections>
                 <outlet property="textView" destination="IbJ-qT-4Kq" id="bfu-VE-T1P"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView id="lmG-Au-uBf" customClass="DetailView" customModule="Analytics_Query" customModuleProvider="target">
+        <customView id="lmG-Au-uBf" customClass="DetailView" customModule="AlertWithText" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="454" height="322"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
@@ -23,16 +23,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView editable="NO" selectable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="bar" spellingCorrection="YES" smartInsertDelete="YES" id="IbJ-qT-4Kq">
-                                <rect key="frame" x="0.0" y="0.0" width="454" height="322"/>
+                                <rect key="frame" x="0.0" y="0.0" width="454" height="318"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                <size key="minSize" width="454" height="322"/>
+                                <size key="minSize" width="454" height="318"/>
                                 <size key="maxSize" width="454" height="10000000"/>
                                 <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             </textView>
                         </subviews>
                     </clipView>
+                    <edgeInsets key="contentInsets" left="0.0" right="0.0" top="4" bottom="0.0"/>
                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Kcl-Wf-fLg">
                         <rect key="frame" x="-100" y="-100" width="225" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>

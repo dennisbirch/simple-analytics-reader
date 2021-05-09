@@ -16,6 +16,7 @@ class DetailView: NSView {
                                             attributes: attributes)
         return styledText
     }
+    private let bgColor = NSColor.purple.withAlphaComponent(0.2)
         
     static func create(with text: String, width: CGFloat) -> DetailView? {
         guard let newNib = NSNib(nibNamed: "DetailView", bundle: nil) else {
@@ -23,18 +24,18 @@ class DetailView: NSView {
         }
         var newViewPointer: NSArray?
         newNib.instantiate(withOwner: self, topLevelObjects: &newViewPointer)
-        if let newView = newViewPointer?.first(where: { $0 is DetailView }) as? DetailView {
-            newView.detailText = text
-            newView.textView.string = text
-            newView.wantsLayer = true
-            
-            let rect = newView.calculateFrame(width: width, text: text)
-            newView.frame = rect
-                        
-            return newView
+        guard let newView = newViewPointer?.first(where: { $0 is DetailView }) as? DetailView else {
+            return nil
         }
+        newView.detailText = text
+        newView.textView.string = text
+        newView.wantsLayer = true
         
-        return nil
+        let rect = newView.calculateFrame(width: width, text: text)
+        newView.frame = rect
+        newView.textView.backgroundColor = newView.bgColor
+        
+        return newView
     }
     
     private func calculateFrame(width: CGFloat, text: String) -> CGRect {
@@ -50,6 +51,8 @@ class DetailView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         layer?.borderWidth = 0.5
         layer?.borderColor = NSColor.secondaryLabelColor.cgColor
+        // make it opaque
+        layer?.backgroundColor = NSColor.white.cgColor
     }
     
     override func prepareForReuse() {
