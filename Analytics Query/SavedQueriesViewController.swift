@@ -23,7 +23,11 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
         super.viewDidLoad()
         loadButton.isHidden = (isLoading == false)
         deleteButton.isHidden = (isLoading == true)
+        tableView.doubleAction = #selector(handleTableDoubleClick)
         cancelButton.title = (isLoading == true) ? "Cancel" : "Done"
+        if files.isEmpty == false {
+            tableView.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
+        }
     }
     
     func configureForLoading(files: [URL], handler: @escaping(URL) -> Void) {
@@ -40,6 +44,12 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
     func configureForDisplaying(files: [URL]) {
         self.files = files
         self.isLoading = false
+    }
+    
+    @objc private func handleTableDoubleClick() {
+        if isLoading == false { return }
+        
+        loadItem(self)
     }
 
     @IBAction func deleteItem(_ sender: NSButton) {
@@ -66,7 +76,7 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
         }
     }
     
-    @IBAction func loadItem(_ sender: NSButton) {
+    @IBAction func loadItem(_ sender: Any) {
         let row = tableView.selectedRow
         if row < 0 || row >= files.count {
             NSSound.beep()
