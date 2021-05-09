@@ -90,65 +90,6 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         detailView = nil
     }
     
-    private func showDetailsContent(row: Int, column: Int) {
-        dismissDetailView()
-        
-        if let view = resultsTableView.view(atColumn: column, row: row, makeIfNecessary: false) {
-            if let label = view as? NSTextField {
-                if label.stringValue.isEmpty == true {
-                    return
-                }
-                let detail = label.stringValue.replacingOccurrences(of: ", ", with: "\n")
-                showDetailString(detail, column: column, row: row)
-            }
-        }
-    }
-        
-    private func showDetailString(_ text: String, column: Int, row: Int) {
-        let tableColumn = resultsTableView.tableColumns[column]
-        let columnWidth = tableColumn.width
-        guard let detailView = DetailView.create(with: text, width: columnWidth) else {
-            os_log("Couldn't create a detail view")
-            return
-        }
-        
-        self.detailView = detailView
-        setDetailViewLocation(for: column, row: row)
-        view.addSubview(detailView)
-    }
-    
-    private func setDetailViewLocation(for column: Int, row: Int) {
-        guard let detailView = self.detailView else {
-            return
-        }
-        
-        let detailFrame = detailView.frame
-        guard let cellView = resultsTableView.view(atColumn: column, row: row, makeIfNecessary: false) else {
-            return
-        }
-        
-        let tableOrigin = resultsTableView.convert(resultsTableView.frame, to: view).origin
-        print("TableOrigin: \(tableOrigin)")
-        var cellFrame = cellView.convert(cellView.frame, to: view)
-        print("Cell frame: \(cellFrame)")
-        cellFrame.origin.x -= tableOrigin.x
-        print("Adjusted cell frame: \(cellFrame)")
-        
-        var originX = cellFrame.origin.x + cellView.bounds.width
-        print("origin x: \(originX)")
-        if originX + detailFrame.width > view.bounds.width {
-            originX = cellFrame.origin.x - detailFrame.width
-        }
-        
-        var originY = cellFrame.origin.y - cellFrame.height
-        if originY + detailFrame.height > view.bounds.height {
-            originY = cellFrame.origin.y - detailFrame.height
-        }
-        
-        let newLocation = CGPoint(x: originX, y: originY)
-        self.detailView?.frame.origin = newLocation
-    }
-    
     // MARK: - Results TableView
     
     func numberOfRows(in tableView: NSTableView) -> Int {
@@ -286,5 +227,63 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 alert.runModal()
             }
         }
+    }
+}
+
+extension SearchViewController {
+    private func showDetailsContent(row: Int, column: Int) {
+        dismissDetailView()
+        
+        if let view = resultsTableView.view(atColumn: column, row: row, makeIfNecessary: false) {
+            if let label = view as? NSTextField {
+                let text = label.stringValue.replacingOccurrences(of: "{", with: "").replacingOccurrences(of: "}", with: "")
+                if text.isEmpty == true {
+                    return
+                }
+                let detail = text.replacingOccurrences(of: ", ", with: "\n")
+                showDetailString(detail, column: column, row: row, cellView: view)
+            }
+        }
+    }
+        
+    private func showDetailString(_ text: String, column: Int, row: Int, cellView: NSView) {
+        let columnWidth: CGFloat = 240
+        guard let detailView = DetailView.create(with: text, width: columnWidth) else {
+            os_log("Couldn't create a detail view")
+            return
+        }
+        
+        self.detailView = detailView
+        setDetailViewLocation(for: column, row: row, cellView: cellView)
+        resultsTableView.addSubview(detailView)
+    }
+    
+    private func setDetailViewLocation(for column: Int, row: Int, cellView: NSView) {
+        guard let detailView = self.detailView else {
+            return
+        }
+        
+        let detailFrame = detailView.frame
+        var cellFrame = cellView.frame
+        
+        var originX = cellFrame.origin.x + cellView.bounds.width
+        if originX + detailFrame.width > view.bounds.width {
+            originX = cellFrame.origin.x - detailFrame.width
+        }
+        
+        cellFrame = cellView.convert(cellView.frame, to: view)
+        let cellYDelta = cellFrame.origin.y + (cellFrame.height * 2) + 12
+        // TODO: Accommodate scroll value
+        let visibleRect = resultsTableView.visibleRect
+        print("Visible rect: \(visibleRect)")
+        let viewHeight = view.frame.height
+        var originY = viewHeight - cellYDelta
+        let availableSpace = viewHeight - detailFrame.height - originY
+        if availableSpace < detailFrame.height {
+            originY = viewHeight - cellFrame.origin.y - (detailFrame.height * 2)
+        }
+        
+        let newLocation = CGPoint(x: originX, y: originY)
+        self.detailView?.frame.origin = newLocation
     }
 }

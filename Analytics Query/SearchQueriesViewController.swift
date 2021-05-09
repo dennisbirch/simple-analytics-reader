@@ -277,6 +277,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             let title = NSLocalizedString("invalid-search-query-alert-title", comment: "Title for alert when there are no valid queries")
             let message = NSLocalizedString("invalid-search-query-alert-message", comment: "Message for alert when there are no valid queries")
             let alert = NSAlert.okAlertWithTitle(title, message: message)
+            NSSound.beep()
             alert.runModal()
             return
         }
