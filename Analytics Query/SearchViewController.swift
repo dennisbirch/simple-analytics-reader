@@ -195,6 +195,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         let tableLoc = view.convert(winLocation, to: resultsTableView)
         let column = resultsTableView.column(at: tableLoc)
         let row = resultsTableView.row(at: tableLoc)
+        if column < 0 { return }
         if row < 0 {
             lastRow = row
             return
@@ -280,9 +281,9 @@ extension SearchViewController {
         
         let detailFrame = detailView.frame
         var cellFrame = cellView.frame
-        
-        var originX = cellFrame.origin.x + cellView.bounds.width
-        if originX + detailFrame.width > view.bounds.width {
+        var originX = cellFrame.origin.x + cellFrame.width
+        let availableWidth = view.convert(resultsTableView.frame, from: view).width
+        if originX + detailFrame.width > availableWidth {
             originX = cellFrame.origin.x - detailFrame.width
         }
         
