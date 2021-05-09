@@ -26,6 +26,7 @@ enum TableType {
 
 protocol QuerySearchDelegate {
     func searchCompleted(results: [AnalyticsItem])
+    func searchBegan()
 }
 
 class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSComboBoxDelegate {
@@ -282,6 +283,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             return
         }
         
+        searchDelegate?.searchBegan()
         let submitter = QuerySubmitter(query: sql, mode: .items) { result in
             if let result = result as? [AnalyticsItem] {
                 if self.isLimitedSearch == true {

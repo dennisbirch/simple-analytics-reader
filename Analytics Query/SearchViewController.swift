@@ -11,6 +11,7 @@ import os.log
 class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, QuerySearchDelegate {
     @IBOutlet private weak var resultsTableView: NSTableView!
     @IBOutlet private weak var queriesContainerView: NSView!
+    @IBOutlet private weak var networkActivityIndicator: NSProgressIndicator!
     private var detailView: DetailView?
     
     private var items = [AnalyticsItem]()
@@ -76,6 +77,15 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     func updateSearchQueriesViewController() {
         searchQueriesViewController?.searchQueriesChanged()
+    }
+    
+    private func showActivity(_ shouldShow: Bool) {
+        networkActivityIndicator.isHidden = (shouldShow == false)
+        if shouldShow == true {
+            networkActivityIndicator.startAnimation(nil)
+        } else {
+            networkActivityIndicator.stopAnimation(nil)
+        }
     }
     
     @IBAction func showListUI(_ sender: Any) {
@@ -215,7 +225,12 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     // MARK: - QuerySearchDelegate
     
+    func searchBegan() {
+        showActivity(true)
+    }
+    
     func searchCompleted(results: [AnalyticsItem]) {
+        showActivity(false)
         items = results
         resultsTableView.reloadData()
         
