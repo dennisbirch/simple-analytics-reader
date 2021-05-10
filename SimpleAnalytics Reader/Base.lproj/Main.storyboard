@@ -1071,7 +1071,7 @@
                                             <rect key="frame" x="1" y="1" width="361" height="396"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveName="mainView.detailsTable" rowHeight="7" rowSizeStyle="automatic" headerView="MVx-Gx-7F5" viewBased="YES" id="eib-hf-nk9">
+                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnSelection="YES" multipleSelection="NO" autosaveName="mainView.detailsTable" rowHeight="7" rowSizeStyle="automatic" headerView="MVx-Gx-7F5" viewBased="YES" id="eib-hf-nk9">
                                                     <rect key="frame" x="0.0" y="0.0" width="361" height="368"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <size key="intercellSpacing" width="17" height="0.0"/>
