@@ -19,8 +19,10 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     private var cellTrackingArea: NSTrackingArea?
     private var lastColumn = -1
     private var lastRow = -1
+    private var currentRow = 0
 
     private struct ColumnHeadings {
+        static let number = "#"
         static let timeStamp = "Date/Time"
         static let description = "Description"
         static let details = "Details"
@@ -100,6 +102,17 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         detailView = nil
     }
     
+    private func resetTableView() {
+        currentRow = 0
+        let countString = String(items.count)
+        let width = CGFloat(countString.count * 12)
+        guard let countColumn = resultsTableView.tableColumns.first(where: { $0.title == ColumnHeadings.number }) else {
+            os_log("Count column is nil")
+            return
+        }
+        countColumn.width = width
+    }
+    
     // MARK: - Results TableView
     
     func numberOfRows(in tableView: NSTableView) -> Int {
@@ -109,7 +122,12 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let item = items[row]
         
-        if tableColumn?.title == ColumnHeadings.timeStamp {
+        if tableColumn?.title == ColumnHeadings.number {
+            currentRow += 1
+            let label = NSTextField(labelWithString: "\(currentRow)")
+            label.alignment = .right
+            return label
+        } else if tableColumn?.title == ColumnHeadings.timeStamp {
             return NSTextField(labelWithString: item.timestamp)
         } else if tableColumn?.title == ColumnHeadings.description {
             return NSTextField(labelWithString: item.description)
@@ -138,6 +156,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         if let sorter = tableColumn.sortDescriptorPrototype,
            let reversed = sorter.reversedSortDescriptor as? NSSortDescriptor {
             if sortItems(with: reversed) == true {
+                resetTableView()
                 tableView.reloadData()
             }
         }
@@ -233,6 +252,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     func searchCompleted(results: [AnalyticsItem]) {
         showActivity(false)
         items = results
+        resetTableView()
         resultsTableView.reloadData()
         
         if items.isEmpty {
