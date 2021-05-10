@@ -966,7 +966,7 @@
                                                     <rect key="frame" x="1" y="1" width="266" height="219"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveName="mainView.countersTable" rowSizeStyle="automatic" headerView="qYP-Af-C7J" viewBased="YES" id="9Um-Gz-NXH">
+                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnSelection="YES" multipleSelection="NO" autosaveName="mainView.countersTable" rowSizeStyle="automatic" headerView="qYP-Af-C7J" viewBased="YES" id="9Um-Gz-NXH">
                                                             <rect key="frame" x="0.0" y="0.0" width="266" height="191"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <size key="intercellSpacing" width="17" height="0.0"/>
