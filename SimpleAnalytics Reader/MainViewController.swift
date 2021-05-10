@@ -18,7 +18,8 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private var applications = [String]()
     private var platforms = [String]()
-    private var actions = [String]()
+    private var actions = [String : String]()
+    private var actionsArray = [String]()
     private var counters = [String : String]()
     private var countsArray = [String]()
     private var details = [[String : String]]()
@@ -32,7 +33,6 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         super.viewDidLoad()
         
         platformTable.tableColumns[0].width = platformTable.bounds.width
-        actionsTable.tableColumns[0].width = actionsTable.bounds.width
         
         requestApplicationNames()
     }
@@ -156,14 +156,26 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         resetDataStorage(startingTable: actionsTable)
         
-        let query = DBAccess.query(what: Items.description, from: Items.table, whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'")
-        let itemSubmitter = QuerySubmitter(query: query, mode: .array) { [weak self] result in
-            guard let result = result as? [[String]] else {
+        let query = "SELECT description, COUNT(description) AS 'count' FROM items WHERE (app_name = \(app.sqlify()) AND platform = \(platform.sqlify())) GROUP BY description"
+
+        let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
+            guard let result = result as? [[String : String]] else {
                 return
             }
-            let actions = result.compactMap{ $0.first }
-            self?.actions = actions.sorted()
             
+            var actions = [String : String]()
+            var actionsArray = [String]()
+            for item in result {
+                if let name = item["description"],
+                   let count = item["count"] {
+                    actions[name] = count
+                    actionsArray.append(name)
+                }
+            }
+                            
+            self?.actions = actions
+            self?.actionsArray = actionsArray.sorted()
+
             self?.actionsTable.reloadData()
             self?.showActivityIndicator(false)
             
@@ -239,6 +251,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         }
         if resetTables.contains(actionsTable) {
             actions.removeAll()
+            actionsArray.removeAll()
         }
         if resetTables.contains(countersTable) {
             counters.removeAll()
@@ -261,8 +274,16 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             let field = NSTextField(labelWithString: application)
             return field
         } else if tableView == self.actionsTable {
-            let action = actions[row]
-            let field = NSTextField(labelWithString: action)
+            let action = actionsArray[row]
+            
+            let field: NSTextField
+            if tableColumn == actionsTable.tableColumns[0] {
+                field = NSTextField(labelWithString: action)
+            } else {
+                let count = actions[action] ?? ""
+                field = NSTextField(labelWithString: count)
+                field.alignment = .right
+            }
             return field
         } else if tableView == self.countersTable {
             let counter = countsArray[row]
@@ -334,7 +355,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 requestAppActivity(app: applications[appRow], platform: platforms[platformRow])
             } else if table == actionsTable {
                 if appRow < 0 || platformRow < 0 || actionRow < 0 { return }
-                requestDetails(app: applications[appRow], platform: platforms[platformRow], action: actions[actionRow])
+                requestDetails(app: applications[appRow], platform: platforms[platformRow], action: actionsArray[actionRow])
             }
         }
     }
