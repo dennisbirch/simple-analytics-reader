@@ -35,12 +35,12 @@
 		D829263C262386E600B16434 /* QueriesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueriesTable.swift; sourceTree = "<group>"; };
 		D87396E9262106C40050D602 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		D87396ED26210D050050D602 /* QueryItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItemCell.swift; sourceTree = "<group>"; };
-		D87A5C2E260AD35500D7B016 /* Analytics Query.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Analytics Query.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D87A5C2E260AD35500D7B016 /* SimpleAnalytics Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SimpleAnalytics Reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87A5C31260AD35500D7B016 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D87A5C35260AD35700D7B016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D87A5C38260AD35700D7B016 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D87A5C3A260AD35700D7B016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D87A5C3B260AD35700D7B016 /* Analytics_Query.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Analytics_Query.entitlements; sourceTree = "<group>"; };
+		D87A5C3B260AD35700D7B016 /* SimpleAnalytics_Reader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimpleAnalytics_Reader.entitlements; sourceTree = "<group>"; };
 		D87A5C41260AD37000D7B016 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		D87A5C43260BCC2900D7B016 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryTypeQueryComparison.swift; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 		D87A5C25260AD35500D7B016 = {
 			isa = PBXGroup;
 			children = (
-				D87A5C30260AD35500D7B016 /* Analytics Query */,
+				D87A5C30260AD35500D7B016 /* SimpleAnalytics Reader */,
 				D87A5C2F260AD35500D7B016 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -79,12 +79,12 @@
 		D87A5C2F260AD35500D7B016 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D87A5C2E260AD35500D7B016 /* Analytics Query.app */,
+				D87A5C2E260AD35500D7B016 /* SimpleAnalytics Reader.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D87A5C30260AD35500D7B016 /* Analytics Query */ = {
+		D87A5C30260AD35500D7B016 /* SimpleAnalytics Reader */ = {
 			isa = PBXGroup;
 			children = (
 				D87A5C37260AD35700D7B016 /* Main.storyboard */,
@@ -107,9 +107,9 @@
 				D8ED4AD5262F713600A01593 /* Localizable.strings */,
 				D87A5C35260AD35700D7B016 /* Assets.xcassets */,
 				D87A5C3A260AD35700D7B016 /* Info.plist */,
-				D87A5C3B260AD35700D7B016 /* Analytics_Query.entitlements */,
+				D87A5C3B260AD35700D7B016 /* SimpleAnalytics_Reader.entitlements */,
 			);
-			path = "Analytics Query";
+			path = "SimpleAnalytics Reader";
 			sourceTree = "<group>";
 		};
 		D8EE21CA2644BD6300C4F554 /* TextEntryDialog */ = {
@@ -133,9 +133,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D87A5C2D260AD35500D7B016 /* Analytics Query */ = {
+		D87A5C2D260AD35500D7B016 /* SimpleAnalytics Reader */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D87A5C3E260AD35700D7B016 /* Build configuration list for PBXNativeTarget "Analytics Query" */;
+			buildConfigurationList = D87A5C3E260AD35700D7B016 /* Build configuration list for PBXNativeTarget "SimpleAnalytics Reader" */;
 			buildPhases = (
 				D87A5C2A260AD35500D7B016 /* Sources */,
 				D87A5C2B260AD35500D7B016 /* Frameworks */,
@@ -145,9 +145,9 @@
 			);
 			dependencies = (
 			);
-			name = "Analytics Query";
+			name = "SimpleAnalytics Reader";
 			productName = "Analytics Query";
-			productReference = D87A5C2E260AD35500D7B016 /* Analytics Query.app */;
+			productReference = D87A5C2E260AD35500D7B016 /* SimpleAnalytics Reader.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -164,7 +164,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D87A5C29260AD35500D7B016 /* Build configuration list for PBXProject "Analytics Query" */;
+			buildConfigurationList = D87A5C29260AD35500D7B016 /* Build configuration list for PBXProject "SimpleAnalytics Reader" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -177,7 +177,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D87A5C2D260AD35500D7B016 /* Analytics Query */,
+				D87A5C2D260AD35500D7B016 /* SimpleAnalytics Reader */,
 			);
 		};
 /* End PBXProject section */
@@ -355,17 +355,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Analytics Query/Analytics_Query.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "SimpleAnalytics Reader/SimpleAnalytics_Reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = B75Q6TLYBM;
 				ENABLE_HARDENED_RUNTIME = NO;
-				INFOPLIST_FILE = "Analytics Query/Info.plist";
+				INFOPLIST_FILE = "SimpleAnalytics Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.dennisbirch.Analytics-Query";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dennisbirch.SimpleAnalytics-Reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -376,17 +376,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Analytics Query/Analytics_Query.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "SimpleAnalytics Reader/SimpleAnalytics_Reader.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = B75Q6TLYBM;
 				ENABLE_HARDENED_RUNTIME = NO;
-				INFOPLIST_FILE = "Analytics Query/Info.plist";
+				INFOPLIST_FILE = "SimpleAnalytics Reader/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.dennisbirch.Analytics-Query";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dennisbirch.SimpleAnalytics-Reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -395,7 +395,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D87A5C29260AD35500D7B016 /* Build configuration list for PBXProject "Analytics Query" */ = {
+		D87A5C29260AD35500D7B016 /* Build configuration list for PBXProject "SimpleAnalytics Reader" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D87A5C3C260AD35700D7B016 /* Debug */,
@@ -404,7 +404,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D87A5C3E260AD35700D7B016 /* Build configuration list for PBXNativeTarget "Analytics Query" */ = {
+		D87A5C3E260AD35700D7B016 /* Build configuration list for PBXNativeTarget "SimpleAnalytics Reader" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D87A5C3F260AD35700D7B016 /* Debug */,
