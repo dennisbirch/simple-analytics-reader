@@ -107,7 +107,7 @@ class QueriesTable: NSTableView, NSTableViewDelegate, NSTableViewDataSource {
 }
 
 class QueriesTableRow: NSTableRowView {
-    static let baseColor = NSColor.yellow.withAlphaComponent(0.4)
+    static let baseColor = NSColor.yellow.withAlphaComponent(0.2)
     private var cellTrackingArea: NSTrackingArea?
     private var mouseIsInside = false
     
