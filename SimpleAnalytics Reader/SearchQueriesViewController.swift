@@ -25,7 +25,7 @@ enum TableType {
 }
 
 protocol QuerySearchDelegate {
-    func searchCompleted(results: [AnalyticsItem])
+    func searchCompleted(results: [AnalyticsItem], lastRowNumber: Int)
     func searchBegan()
 }
 
@@ -283,13 +283,14 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             return
         }
         
+        let nextRow = searchLimits.lastItemsIndex
         searchDelegate?.searchBegan()
         let submitter = QuerySubmitter(query: sql, mode: .items) { result in
             if let result = result as? [AnalyticsItem] {
                 if self.isLimitedSearch == true {
                     self.updateSearchLimitInfo(results: result)
                 }
-                self.searchDelegate?.searchCompleted(results: result)
+                self.searchDelegate?.searchCompleted(results: result, lastRowNumber: nextRow)
             } else {
                 os_log("Search query failed")
                 return

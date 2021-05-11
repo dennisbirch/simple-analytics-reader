@@ -251,9 +251,9 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         showActivity(true)
     }
     
-    func searchCompleted(results: [AnalyticsItem]) {
+    func searchCompleted(results: [AnalyticsItem], lastRowNumber: Int) {
         showActivity(false)
-        var rowNum = 0
+        var rowNum = lastRowNumber
         items = results.map{
             rowNum += 1
             return $0.newItemWithRowNumber(rowNum)
