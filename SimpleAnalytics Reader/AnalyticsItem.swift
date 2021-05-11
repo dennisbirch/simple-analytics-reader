@@ -28,7 +28,8 @@ struct AnalyticsItem: Hashable, Decodable {
     let platform: String
     let id: Int
     let table: TableType
-    
+    var rowNumber = 0
+ 
     enum CodingKeys: String, CodingKey {
         case description
         case count
@@ -66,6 +67,27 @@ struct AnalyticsItem: Hashable, Decodable {
         } else {
             table = .counters
         }
+    }
+    
+    public init(description: String, count: String, timestamp: String, details: String, deviceID: String, appName: String, appVersion: String, systemVersion: String, platform: String, id: Int, table: TableType) {
+        self.description = description
+        self.count = count
+        self.timestamp = timestamp
+        self.details = details
+        self.deviceID = deviceID
+        self.appName = appName
+        self.appVersion = appVersion
+        self.systemVersion = systemVersion
+        self.platform = platform
+        self.table = table
+        self.id = id
+        self.rowNumber = 0
+    }
+    
+    func newItemWithRowNumber(_ number: Int) -> AnalyticsItem {
+        var newItem = AnalyticsItem(description: self.description, count: self.count, timestamp: self.timestamp, details: self.details, deviceID: self.deviceID, appName: self.appName, appVersion: self.appVersion, systemVersion: self.systemVersion, platform: self.platform, id: self.id, table: self.table)
+        newItem.rowNumber = number
+        return newItem
     }
 }
 

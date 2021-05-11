@@ -19,7 +19,6 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     private var cellTrackingArea: NSTrackingArea?
     private var lastColumn = -1
     private var lastRow = -1
-    private var currentRow = 0
 
     private struct ColumnHeadings {
         static let number = "#"
@@ -103,7 +102,6 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     private func resetTableView() {
-        currentRow = 0
         let countString = String(items.count)
         let width = CGFloat(countString.count * 12)
         guard let countColumn = resultsTableView.tableColumns.first(where: { $0.title == ColumnHeadings.number }) else {
@@ -123,8 +121,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         let item = items[row]
         
         if tableColumn?.title == ColumnHeadings.number {
-            currentRow += 1
-            let label = NSTextField(labelWithString: "\(currentRow)")
+            let label = NSTextField(labelWithString: "\(item.rowNumber)")
             label.alignment = .right
             return label
         } else if tableColumn?.title == ColumnHeadings.timeStamp {
@@ -153,11 +150,12 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
         
     func tableView(_ tableView: NSTableView, didClick tableColumn: NSTableColumn) {
-        if let sorter = tableColumn.sortDescriptorPrototype,
+          if let sorter = tableColumn.sortDescriptorPrototype,
            let reversed = sorter.reversedSortDescriptor as? NSSortDescriptor {
             if sortItems(with: reversed) == true {
                 resetTableView()
                 tableView.reloadData()
+                tableColumn.sortDescriptorPrototype = reversed
             }
         }
     }
@@ -165,6 +163,10 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     private func sortItems(with sorter: NSSortDescriptor) -> Bool {
         var itemsSorted = true
         switch sorter.key {
+        case "number":
+            items.sort { (item1, item2) in
+                return (item1.rowNumber < item2.rowNumber) == (sorter.ascending == true)
+            }
         case "timestamp":
             items.sort { (item1, item2) in
                 return (item1.timestamp > item2.timestamp) == (sorter.ascending == true)
@@ -251,7 +253,11 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     func searchCompleted(results: [AnalyticsItem]) {
         showActivity(false)
-        items = results
+        var rowNum = 0
+        items = results.map{
+            rowNum += 1
+            return $0.newItemWithRowNumber(rowNum)
+        }
         resetTableView()
         resultsTableView.reloadData()
         
