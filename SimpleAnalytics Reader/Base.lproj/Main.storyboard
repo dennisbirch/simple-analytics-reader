@@ -1840,21 +1840,21 @@ Gw
         <scene sceneID="6fn-pd-iam">
             <objects>
                 <viewController storyboardIdentifier="SearchQueriesViewController" id="7fz-iM-JXA" customClass="SearchQueriesViewController" customModule="SimpleAnalytics_Reader" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="5Vh-7f-RbM">
-                        <rect key="frame" x="0.0" y="0.0" width="200" height="459"/>
+                    <view key="view" misplaced="YES" id="5Vh-7f-RbM">
+                        <rect key="frame" x="0.0" y="0.0" width="200" height="463"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Zfj-kd-txO">
-                                <rect key="frame" x="0.0" y="0.0" width="200" height="459"/>
+                                <rect key="frame" x="0.0" y="0.0" width="200" height="483"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="96" horizontalPageScroll="10" verticalLineScroll="96" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lm4-Y7-6Qb">
-                                        <rect key="frame" x="0.0" y="224" width="200" height="235"/>
+                                        <rect key="frame" x="0.0" y="298" width="200" height="185"/>
                                         <clipView key="contentView" id="4In-RA-S5A">
-                                            <rect key="frame" x="1" y="1" width="198" height="233"/>
+                                            <rect key="frame" x="1" y="1" width="198" height="183"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="96" usesAutomaticRowHeights="YES" viewBased="YES" id="3Cu-Ko-ig1" customClass="QueriesTable" customModule="SimpleAnalytics_Reader" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="198" height="233"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="198" height="183"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <size key="intercellSpacing" width="17" height="0.0"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1925,8 +1925,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="642534695.67170501">
-                                                                                    <!--2021-05-12 17:51:35 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="642544630.55851805">
+                                                                                    <!--2021-05-12 20:37:10 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1970,7 +1970,7 @@ Gw
                                             </subviews>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="dnS-jj-gwl">
-                                            <rect key="frame" x="1" y="219" width="198" height="15"/>
+                                            <rect key="frame" x="1" y="169" width="198" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="wVT-cq-agK">
@@ -1978,8 +1978,37 @@ Gw
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                     </scrollView>
-                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="KvR-VJ-Msi">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="224"/>
+                                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FkV-1i-YPN">
+                                        <rect key="frame" x="0.0" y="218" width="200" height="80"/>
+                                        <clipView key="contentView" drawsBackground="NO" id="XKF-06-hUC">
+                                            <rect key="frame" x="0.0" y="0.0" width="185" height="80"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <subviews>
+                                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" smartInsertDelete="YES" id="xlo-mm-hdQ">
+                                                    <rect key="frame" x="0.0" y="0.0" width="185" height="80"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    <size key="minSize" width="185" height="80"/>
+                                                    <size key="maxSize" width="225" height="10000000"/>
+                                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                </textView>
+                                            </subviews>
+                                        </clipView>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="80" id="Faw-km-znN"/>
+                                        </constraints>
+                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="tRt-WI-LT6">
+                                            <rect key="frame" x="-100" y="-100" width="225" height="15"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="pug-Fh-Nd7">
+                                            <rect key="frame" x="185" y="0.0" width="15" height="80"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                    </scrollView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="KvR-VJ-Msi" userLabel="Query Controls Container">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="214"/>
                                         <subviews>
                                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="f1x-yd-iXd" userLabel="Remove/Search/Add">
                                                 <rect key="frame" x="0.0" y="0.0" width="200" height="68"/>
@@ -2226,6 +2255,7 @@ DQ
                                         <constraints>
                                             <constraint firstItem="oZu-o7-6Fk" firstAttribute="top" secondItem="9Xa-7F-iVa" secondAttribute="bottom" constant="8" id="48p-Jc-sAU"/>
                                             <constraint firstItem="Xg7-7x-XEb" firstAttribute="top" secondItem="h6W-Yh-nuI" secondAttribute="bottom" constant="8" symbolic="YES" id="4x0-ue-lwE"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="214" id="GRU-JL-tw8"/>
                                             <constraint firstAttribute="trailing" secondItem="Xg7-7x-XEb" secondAttribute="trailing" id="Gfs-CA-arT"/>
                                             <constraint firstAttribute="trailing" secondItem="oZu-o7-6Fk" secondAttribute="trailing" constant="4" id="OHk-iS-SwN"/>
                                             <constraint firstItem="9Xa-7F-iVa" firstAttribute="top" secondItem="Xg7-7x-XEb" secondAttribute="bottom" constant="8" symbolic="YES" id="SlR-67-jJj"/>
@@ -2243,11 +2273,14 @@ DQ
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="KvR-VJ-Msi" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" id="4Ay-S8-m99"/>
+                                    <constraint firstAttribute="trailing" secondItem="FkV-1i-YPN" secondAttribute="trailing" id="4NN-Zt-SV1"/>
                                     <constraint firstItem="Lm4-Y7-6Qb" firstAttribute="top" secondItem="Zfj-kd-txO" secondAttribute="top" id="B1B-xp-TPK"/>
                                     <constraint firstAttribute="width" constant="200" id="Hat-hp-Qzc"/>
-                                    <constraint firstItem="KvR-VJ-Msi" firstAttribute="top" secondItem="Lm4-Y7-6Qb" secondAttribute="bottom" id="JNq-Jv-puX"/>
+                                    <constraint firstItem="FkV-1i-YPN" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" id="LHF-AZ-Vvf"/>
+                                    <constraint firstItem="FkV-1i-YPN" firstAttribute="top" secondItem="Lm4-Y7-6Qb" secondAttribute="bottom" id="TGi-lP-Khz"/>
                                     <constraint firstAttribute="bottom" secondItem="KvR-VJ-Msi" secondAttribute="bottom" id="Uxw-dU-mJX"/>
                                     <constraint firstAttribute="trailing" secondItem="Lm4-Y7-6Qb" secondAttribute="trailing" id="VH7-Pf-uvD"/>
+                                    <constraint firstItem="KvR-VJ-Msi" firstAttribute="top" secondItem="FkV-1i-YPN" secondAttribute="bottom" constant="4" id="brb-Aj-GnF"/>
                                     <constraint firstAttribute="trailing" secondItem="KvR-VJ-Msi" secondAttribute="trailing" id="xWI-th-mUk"/>
                                     <constraint firstItem="Lm4-Y7-6Qb" firstAttribute="leading" secondItem="Zfj-kd-txO" secondAttribute="leading" id="xet-ws-aXt"/>
                                 </constraints>
@@ -2276,13 +2309,15 @@ DQ
                         <outlet property="limitSearchCheckbox" destination="h6W-Yh-nuI" id="IUr-If-pVY"/>
                         <outlet property="performSearchButton" destination="cwp-iz-GQW" id="VXK-Y7-cFc"/>
                         <outlet property="queriesTableView" destination="3Cu-Ko-ig1" id="ydD-gd-Bji"/>
+                        <outlet property="queryControlsHeightConstraint" destination="GRU-JL-tw8" id="2Xe-hY-xM7"/>
                         <outlet property="removeAllQueriesButton" destination="g5M-Rn-Bkc" id="Jtu-kd-ukO"/>
                         <outlet property="removeQueryButton" destination="k5J-Yr-xRS" id="d41-pQ-fKe"/>
+                        <outlet property="sqlTextView" destination="xlo-mm-hdQ" id="CE7-CG-lbd"/>
                     </connections>
                 </viewController>
                 <customObject id="gne-JX-lar" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="150" y="2367"/>
+            <point key="canvasLocation" x="150" y="2366.5"/>
         </scene>
     </scenes>
     <resources>

@@ -38,7 +38,9 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     @IBOutlet private weak var removeQueryButton: NSButton!
     @IBOutlet private weak var removeAllQueriesButton: NSButton!
     @IBOutlet private weak var performSearchButton: NSButton!
-    
+    @IBOutlet private weak var sqlTextView: NSTextView!
+    @IBOutlet private weak var queryControlsHeightConstraint: NSLayoutConstraint!
+
     // Radio buttons
     @IBOutlet weak var allRadio: NSButton!
     @IBOutlet private weak var anyRadio: NSButton!
@@ -57,6 +59,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     private(set) var searchLimits: SearchLimit = SearchLimit(pageLimit: 100)
     
     var matchCondition: MatchCondition = .all
+    private let queryControlsHeight: CGFloat = 214
     private let expandedLimitViewHeight: CGFloat = 64
     private let collapsedLimitViewHeight: CGFloat = 4
     var isLimitedSearch = false
@@ -126,15 +129,24 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         enableRemoveQueryButtons()
     }
     
+    // MARK: - Public & Internal Methods
+    
+    func displayQuerySQL(_ sql: String) {
+        sqlTextView.string = sql
+    }
+    
     // MARK: - Private Helpers
     
     private func displaySearchLimitControls(_ shouldDisplay: Bool) {
-        let newHeight: CGFloat
+        let newLimitHeight: CGFloat
+        let queryContainerHeight: CGFloat
         if shouldDisplay == true {
-            newHeight = expandedLimitViewHeight
+            newLimitHeight = expandedLimitViewHeight
+            queryContainerHeight = queryControlsHeight
             setSearchLimitTotals()
         } else {
-            newHeight = collapsedLimitViewHeight
+            newLimitHeight = collapsedLimitViewHeight
+            queryContainerHeight = queryControlsHeight - expandedLimitViewHeight
             performSearchButton.isEnabled = true
         }
         
@@ -143,7 +155,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         
         limitInfoLabel.stringValue = ""
 
-        limitHeightConstraint.constant = newHeight
+        limitHeightConstraint.constant = newLimitHeight
+        queryControlsHeightConstraint.constant = queryContainerHeight
         NSAnimationContext.runAnimationGroup { [weak self] (context) in
             context.allowsImplicitAnimation = true
             context.duration = 0.25
@@ -281,7 +294,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             sql = fullSearchSQL()
         }
         
+        sqlTextView.string = sql
+        
         if sql.isEmpty == true {
+            sqlTextView.string = ""
             let title = NSLocalizedString("invalid-search-query-alert-title", comment: "Title for alert when there are no valid queries")
             let message = NSLocalizedString("invalid-search-query-alert-message", comment: "Message for alert when there are no valid queries")
             let alert = NSAlert.okAlertWithTitle(title, message: message)
