@@ -102,7 +102,14 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     private func resetTableView() {
-        let countString = String(items.count)
+        let sortedItems = items.sorted { item1, item2 in
+            return item1.rowNumber < item2.rowNumber
+        }
+        guard let lastItem = sortedItems.last else {
+            os_log("Last sorted item is nil")
+            return
+        }
+        let countString = String(lastItem.rowNumber)
         let width = CGFloat(countString.count * 12)
         guard let countColumn = resultsTableView.tableColumns.first(where: { $0.title == ColumnHeadings.number }) else {
             os_log("Count column is nil")

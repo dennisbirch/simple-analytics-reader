@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D829263B262360D600B16434 /* QueryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263A262360D600B16434 /* QueryItem.swift */; };
 		D829263D262386E600B16434 /* QueriesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263C262386E600B16434 /* QueriesTable.swift */; };
+		D8399F45264B2ED600AA2A81 /* SearchLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8399F44264B2ED600AA2A81 /* SearchLimit.swift */; };
 		D87396EB262106C40050D602 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87396E9262106C40050D602 /* SearchViewController.swift */; };
 		D87396EE26210D050050D602 /* QueryItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87396ED26210D050050D602 /* QueryItemCell.swift */; };
 		D87A5C32260AD35500D7B016 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87A5C31260AD35500D7B016 /* AppDelegate.swift */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		D829263A262360D600B16434 /* QueryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItem.swift; sourceTree = "<group>"; };
 		D829263C262386E600B16434 /* QueriesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueriesTable.swift; sourceTree = "<group>"; };
+		D8399F44264B2ED600AA2A81 /* SearchLimit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchLimit.swift; sourceTree = "<group>"; };
 		D87396E9262106C40050D602 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		D87396ED26210D050050D602 /* QueryItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItemCell.swift; sourceTree = "<group>"; };
 		D87A5C2E260AD35500D7B016 /* SimpleAnalytics Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SimpleAnalytics Reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +104,7 @@
 				D8FAE0382646E91C00BA500B /* DetailView */,
 				D87A5C41260AD37000D7B016 /* Network.swift */,
 				D8F0B4AB260CFD83008D6054 /* DBAccess.swift */,
+				D8399F44264B2ED600AA2A81 /* SearchLimit.swift */,
 				D88B0D77263F87410055C196 /* Extensions.swift */,
 				D87DCA71262A6325000668A3 /* AnalyticsItem.swift */,
 				D8ED4AD5262F713600A01593 /* Localizable.strings */,
@@ -211,6 +214,7 @@
 				D8EE21A6264341D800C4F554 /* SavedQueriesViewController.swift in Sources */,
 				D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */,
 				D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */,
+				D8399F45264B2ED600AA2A81 /* SearchLimit.swift in Sources */,
 				D8F0B4AC260CFD83008D6054 /* DBAccess.swift in Sources */,
 				D88B0D78263F87410055C196 /* Extensions.swift in Sources */,
 				D87A5C44260BCC2900D7B016 /* MainViewController.swift in Sources */,
