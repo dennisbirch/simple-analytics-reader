@@ -1,6 +1,6 @@
 //
 //  Extensions.swift
-//  Analytics Query
+//  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 5/2/21.
 //
@@ -19,11 +19,11 @@ extension NSAlert {
 
 
 extension FileManager {
-    static var queryFileFolder: URL {
+    static var simpleAnalyticsSupportFolder: URL {
         do {
             let fileMgr = FileManager.default
             let appSupportFolder = try fileMgr.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            let queryFolder = appSupportFolder.appendingPathComponent("Analytics Query", isDirectory: true)
+            let queryFolder = appSupportFolder.appendingPathComponent("SimpleAnalytics Reader", isDirectory: true)
             if fileMgr.fileExists(atPath: queryFolder.path) == false {
                 do {
                     try fileMgr.createDirectory(at: queryFolder, withIntermediateDirectories: false, attributes: nil)

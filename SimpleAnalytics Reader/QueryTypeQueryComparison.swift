@@ -1,6 +1,6 @@
 //
 //  QueryTypeQueryComparison.swift
-//  Analytics Query
+//  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 4/16/21.
 //

@@ -1,6 +1,6 @@
 //
 //  QueryModel.swift
-//  Analytics Query
+//  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 5/4/21.
 //
@@ -16,7 +16,7 @@ struct QueryModel: Codable {
     var matchType: MatchCondition
 }
 
-let savedQueryFileExtension: String = "aqsavedquery"
+let savedQueryFileExtension: String = "sarsavedquery"
 
 extension SearchViewController {
     @IBAction func saveSearch(_ sender: Any) {
@@ -63,7 +63,7 @@ extension SearchViewController {
     }
     
     private func saveSearchData(_ data: Data, to fileName: String) {
-        let url = FileManager.queryFileFolder.appendingPathComponent("\(fileName).\(savedQueryFileExtension)")
+        let url = FileManager.simpleAnalyticsSupportFolder.appendingPathComponent("\(fileName).\(savedQueryFileExtension)")
         if FileManager.default.fileExists(atPath: url.path) {
             // show an error alert
             let title = NSLocalizedString("duplicate-query-name-alert-title", comment: "Title for duplicate query name alert")
@@ -127,7 +127,7 @@ extension SearchViewController {
     
     private func savedQueryFiles() -> [URL] {
         var files = [URL]()
-        guard let fileEnumerator = FileManager.default.enumerator(at: FileManager.queryFileFolder, includingPropertiesForKeys: nil) else {
+        guard let fileEnumerator = FileManager.default.enumerator(at: FileManager.simpleAnalyticsSupportFolder, includingPropertiesForKeys: nil) else {
             os_log("Can't instantiate a file enumerator")
             return files
         }

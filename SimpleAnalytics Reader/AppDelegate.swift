@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Analytics Query
+//  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 3/23/21.
 //

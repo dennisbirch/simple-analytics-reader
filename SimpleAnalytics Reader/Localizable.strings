@@ -1,6 +1,6 @@
 /* 
   Localizable.strings
-  Analytics Query
+  SimpleAnalytics Reader
 
   Created by Dennis Birch on 4/20/21.
   
@@ -47,4 +47,8 @@
 "error-removing-query-file-message" = "There was an error removing the selected file.";
 "duplicate-query-name-alert-title" = "Duplicate Name";
 "duplicate-query-name-alert-message %@" = "You already have a saved query named '%@'. Please enter a new name.";
+"duplicate-snippet-name-alert-title" = "Duplicate Name";
+"duplicate-snippet-name-alert-message %@" = "You already have a saved SQL snippet named '%@'. Please enter a new name.";
 
+"save-button-title" = "Save";
+"execute-button-title" = "Execute";

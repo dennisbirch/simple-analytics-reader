@@ -1,6 +1,6 @@
 //
 //  SearchQueriesViewController.swift
-//  Analytics Query
+//  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 4/17/21.
 //
@@ -306,9 +306,13 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             return
         }
         
-        let nextRow = searchLimits.currentFetchCount
         searchDelegate?.searchBegan()
         let isLimitedSearch = isLimitedSearch
+        executeSQL(sql, isLimitedSearch: isLimitedSearch)
+    }
+    
+    func executeSQL(_ sql: String, isLimitedSearch: Bool) {
+        let nextRow = searchLimits.currentFetchCount
         let submitter = QuerySubmitter(query: sql, mode: .items) { [weak self] result in
             if let result = result as? [AnalyticsItem] {
                 if isLimitedSearch == true {
@@ -400,6 +404,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
     
     func loadSavedQueries(_ model: QueryModel) {
+        sqlTextView.string = ""
+        
         queriesTableView.loadQueries(model.queryItems)
         self.matchCondition = model.matchType
         self.whatItems = model.whatItems

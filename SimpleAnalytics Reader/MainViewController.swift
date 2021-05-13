@@ -1,6 +1,6 @@
 //
 //  MainViewController.swift
-//  Analytics Query
+//  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 3/24/21.
 //

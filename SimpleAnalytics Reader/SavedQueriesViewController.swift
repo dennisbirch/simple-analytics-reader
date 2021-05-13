@@ -1,6 +1,6 @@
 //
 //  SavedQueriesViewController.swift
-//  Analytics Query
+//  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 5/5/21.
 //
@@ -103,7 +103,7 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let file = files[row]
-        let fileName = file.path.replacingOccurrences(of: ".\(savedQueryFileExtension)", with: "").replacingOccurrences(of: "\(FileManager.queryFileFolder.path)/", with: "")
+        let fileName = file.path.replacingOccurrences(of: ".\(savedQueryFileExtension)", with: "").replacingOccurrences(of: "\(FileManager.simpleAnalyticsSupportFolder.path)/", with: "")
         let label = NSTextField(labelWithString: fileName)
         return label
     }
