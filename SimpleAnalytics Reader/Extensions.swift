@@ -38,3 +38,12 @@ extension FileManager {
         }
     }
 }
+
+extension NSWindow {
+    func stripTitleChrome() {
+        self.titleVisibility = .hidden
+        self.standardWindowButton(.closeButton)?.isHidden = true
+        self.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        self.standardWindowButton(.zoomButton)?.isHidden = true
+    }
+}

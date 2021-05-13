@@ -11,27 +11,39 @@ import os.log
 class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
     static let viewControllerIdentifier = "SavedQueriesViewController"
     private var isLoading = false
+    private var isExecutingSQL = false
     private var files = [URL]()
     private var loadingHandler: ((URL) -> Void)?
     
     @IBOutlet private weak var tableView: NSTableView!
     @IBOutlet private weak var deleteButton: NSButton!
-    @IBOutlet private weak var loadButton: NSButton!
+    @IBOutlet private weak var loadButton: NSButton! // doubles as "Execute" button
     @IBOutlet private weak var cancelButton: NSButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadButton.isHidden = (isLoading == false)
+        
+        loadButton.isHidden = (isLoading == false && isExecutingSQL == false)
         deleteButton.isHidden = (isLoading == true)
         tableView.doubleAction = #selector(handleTableDoubleClick)
         cancelButton.title = (isLoading == true) ? "Cancel" : "Done"
         if files.isEmpty == false {
             tableView.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
         }
+        
+        if isExecutingSQL == true {
+            loadButton.title = NSLocalizedString("execute-button-title", comment: "Title for button to execute SQL snippet")
+        }
     }
     
     func configureForLoading(files: [URL], handler: @escaping(URL) -> Void) {
         self.isLoading = true
+        self.files = files
+        loadingHandler = handler
+    }
+    
+    func configureForExecutingSQL(files: [URL], handler: @escaping(URL) -> Void) {
+        self.isExecutingSQL = true
         self.files = files
         loadingHandler = handler
     }
@@ -47,9 +59,11 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
     }
     
     @objc private func handleTableDoubleClick() {
-        if isLoading == false { return }
-        
-        loadItem(self)
+        if isLoading == true {
+            loadItem(self)
+        } else if isExecutingSQL == true {
+            loadItem(self)
+        }
     }
 
     @IBAction func deleteItem(_ sender: NSButton) {
@@ -87,6 +101,7 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
         if FileManager.default.fileExists(atPath: url.path) {
             if let handler = loadingHandler {
                 handler(url)
+                dismiss(self)
             }
         }
     }
@@ -103,13 +118,13 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let file = files[row]
-        let fileName = file.path.replacingOccurrences(of: ".\(savedQueryFileExtension)", with: "").replacingOccurrences(of: "\(FileManager.simpleAnalyticsSupportFolder.path)/", with: "")
+        let fileName = file.path.replacingOccurrences(of: ".\(savedQueryFileExtension)", with: "").replacingOccurrences(of: ".\(savedSnippetFileExtension)", with: "").replacingOccurrences(of: "\(FileManager.simpleAnalyticsSupportFolder.path)/", with: "")
         let label = NSTextField(labelWithString: fileName)
         return label
     }
     
     func tableViewSelectionDidChange(_ notification: Notification) {
-        if isLoading == true {
+        if isLoading == true || isExecutingSQL == true {
             loadButton.isEnabled = tableView.selectedRow >= 0
         } else {
             deleteButton.isEnabled = tableView.selectedRow >= 0

@@ -366,7 +366,7 @@
                                                 <action selector="saveSQLSnippet:" target="Ady-hI-5gd" id="vu2-46-Np4"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Load Saved Snippet…" keyEquivalent="L" id="ke0-x7-vub">
+                                        <menuItem title="Execute Saved Snippet…" keyEquivalent="E" id="ke0-x7-vub">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
                                                 <action selector="loadSQLSnippet:" target="Ady-hI-5gd" id="4SR-5V-y0k"/>

@@ -96,7 +96,6 @@ extension SearchViewController {
                 let decoder = JSONDecoder()
                 do {
                     let model = try decoder.decode(QueryModel.self, from: data)
-                    self?.dismiss(savedQueriesVC)
                     self?.loadSavedQueries(model)
                 } catch {
                     self?.handleSaveOpenFileError(error: error, problem: "opening query file")
