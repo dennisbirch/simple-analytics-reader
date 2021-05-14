@@ -12,7 +12,6 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     @IBOutlet private weak var platformTable: NSTableView!
     @IBOutlet private weak var actionsTable: NSTableView!
     @IBOutlet private weak var countersTable: NSTableView!
-    @IBOutlet private weak var detailsTable: NSTableView!
     @IBOutlet private weak var activityIndicator: NSProgressIndicator!
     @IBOutlet private weak var refreshButton: NSButton!
     
@@ -22,7 +21,6 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var actionsArray = [String]()
     private var counters = [String : String]()
     private var countsArray = [String]()
-    private var details = [[String : String]]()
     
     private let windowFrameKey = "main.window.frame"
     private let noDetails = "----"
