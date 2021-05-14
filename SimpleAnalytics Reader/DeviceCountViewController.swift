@@ -7,10 +7,16 @@
 
 import Cocoa
 
-class DetailsViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
+enum DeviceCountTableType {
+    case detail
+    case platform
+    case actions
+}
+
+class DeviceCountViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
     static let viewControllerIdentifier = "DetailsViewController"
     
-    @IBOutlet private weak var detailsTable: NSTableView!
+    @IBOutlet private weak var tableView: NSTableView!
     @IBOutlet private weak var deviceCountContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet private weak var deviceCountLabel: NSTextField!
     @IBOutlet private weak var deviceCountContainer: NSView!
@@ -32,7 +38,7 @@ class DetailsViewController: NSViewController, NSTableViewDelegate, NSTableViewD
         details = result
         self.deviceCount = deviceCount
         
-        detailsTable.reloadData()
+        tableView.reloadData()
         displayDeviceCountContent(deviceCount.isEmpty == false)
     }
     

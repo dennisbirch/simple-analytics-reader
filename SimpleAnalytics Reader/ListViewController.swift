@@ -22,7 +22,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var counters = [String : String]()
     private var countsArray = [String]()
     
-    private var detailsViewController: DetailsViewController?
+    private var detailsViewController: DeviceCountViewController?
     
     private let windowFrameKey = "main.window.frame"
     private let deviceCountKey = "deviceCount"
@@ -42,7 +42,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         view.window?.setFrameUsingName(windowFrameKey)
 
-        if let detailsVC = children.first(where: { $0 is DetailsViewController }) as? DetailsViewController {
+        if let detailsVC = children.first(where: { $0 is DeviceCountViewController }) as? DeviceCountViewController {
             detailsViewController = detailsVC
         }
     }

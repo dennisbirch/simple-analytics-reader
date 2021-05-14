@@ -1307,10 +1307,10 @@ Gw
             </objects>
             <point key="canvasLocation" x="985" y="906"/>
         </scene>
-        <!--Details View Controller-->
+        <!--Device Count View Controller-->
         <scene sceneID="HZG-Br-UbN">
             <objects>
-                <viewController storyboardIdentifier="DetailsViewController" id="8Ye-FS-XFW" customClass="DetailsViewController" customModule="SimpleAnalytics_Reader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailsViewController" id="8Ye-FS-XFW" customClass="DeviceCountViewController" customModule="SimpleAnalytics_Reader" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="sj7-1t-r4b">
                         <rect key="frame" x="0.0" y="0.0" width="431" height="479"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1476,10 +1476,10 @@ Gw
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="detailsTable" destination="tuf-xX-q8w" id="U4a-zZ-HVv"/>
                         <outlet property="deviceCountContainer" destination="rwe-Z1-LVG" id="Rge-eW-MEE"/>
                         <outlet property="deviceCountContainerHeightConstraint" destination="Yer-Sj-miJ" id="1qZ-A1-weV"/>
                         <outlet property="deviceCountLabel" destination="C81-Cm-Gxc" id="U7O-Lw-6z7"/>
+                        <outlet property="tableView" destination="tuf-xX-q8w" id="U4a-zZ-HVv"/>
                     </connections>
                 </viewController>
                 <customObject id="z1k-lq-qql" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
