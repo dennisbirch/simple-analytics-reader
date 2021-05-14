@@ -22,8 +22,10 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var counters = [String : String]()
     private var countsArray = [String]()
     
+    private var detailsViewController: DetailsViewController?
+    
     private let windowFrameKey = "main.window.frame"
-    private let noDetails = "----"
+    private let deviceCountKey = "deviceCount"
     
     // MARK: - ViewController Lifecycle
     
@@ -39,6 +41,10 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         super.viewWillAppear()
         
         view.window?.setFrameUsingName(windowFrameKey)
+
+        if let detailsVC = children.first(where: { $0 is DetailsViewController }) as? DetailsViewController {
+            detailsViewController = detailsVC
+        }
     }
     
     override func viewWillDisappear() {
@@ -213,37 +219,37 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private func requestDetails(app: String, platform: String, action: String) {
         showActivityIndicator(true)
-        resetDataStorage(startingTable: detailsTable)
         let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)'"
         let query = DBAccess.query(what: "\(Items.details), \(Items.timestamp), \(Common.deviceID)",
                                    from: Items.table,
                                    whereClause: whereClause,
                                    sorting: "\(Common.deviceID), \(Items.timestamp)")
-        let userCountQuery = "SELECT COUNT(DISTINCT device_id) AS userCount FROM items WHERE (\(whereClause))"
+        let userCountQuery = "SELECT COUNT(DISTINCT device_id) AS \(deviceCountKey) FROM items WHERE (\(whereClause))"
         
+        let counterKey = deviceCountKey
         let submitter = QuerySubmitter(query: "\(query);\(userCountQuery)", mode: .dictionary) { [weak self] result in
             guard var result = result as? [[String : String]] else {
                 self?.showActivityIndicator(false)
                 return
             }
             
-            if let userCountPair = result.first(where: { $0.first?.key == "userCount" }),
+            var userCountString = ""
+            if let userCountPair = result.first(where: { $0.first?.key == counterKey }),
                let index = result.firstIndex(of: userCountPair),
                let userCount = userCountPair.first?.value {
-                    print("User count: \(userCount)")
+                    userCountString = userCount
                 result.remove(at: index)
             }
             
-            self?.details = result
             self?.showActivityIndicator(false)
-            self?.detailsTable.reloadData()
+            self?.detailsViewController?.configureWithResult(result, deviceCount: userCountString)
         }
 
         submitter.submit()
     }
     
     private func resetDataStorage(startingTable: NSTableView) {
-        let tables = [appTable, platformTable, actionsTable, countersTable, detailsTable]
+        let tables = [appTable, platformTable, actionsTable, countersTable]
         guard let tableIndex = tables.firstIndex(of: startingTable) else {
             return
         }
@@ -264,10 +270,9 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             counters.removeAll()
             countsArray.removeAll()
         }
-        if resetTables.contains(detailsTable) {
-            details.removeAll()
-        }
         
+        detailsViewController?.configureWithResult([], deviceCount: "")
+
         for table in resetTables {
             table?.reloadData()
         }
@@ -308,26 +313,6 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             let platform = platforms[row]
             let field = NSTextField(labelWithString: platform)
             return field
-        } else if tableView == self.detailsTable {
-            let item = details[row]
-            if tableColumn == tableView.tableColumns[1] {
-               var detail = item["details"] ?? noDetails
-                if detail.isEmpty {
-                    detail = noDetails
-                }
-                return NSTextField(labelWithString: detail)
-                
-            } else if tableColumn == tableView.tableColumns[0],
-                      let timestamp = item["timestamp"] {
-                if let date = timestamp.dateFromISOString() {
-                    return NSTextField(labelWithString: DateFormatter.shortDateTimeFormatter.string(from: date))
-                } else {
-                    return NSTextField(labelWithString: timestamp)
-                }
-            } else if tableColumn == tableView.tableColumns[2] {
-                let device = item["device_id"] ?? noDetails
-                return NSTextField(labelWithString: String("...\(device.suffix(8))"))
-            }
         }
         
         return nil
@@ -342,8 +327,6 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             return countsArray.count
         } else if tableView == self.platformTable {
             return platforms.count
-        } else if tableView == self.detailsTable {
-            return details.count
         } else {
             return 0
         }

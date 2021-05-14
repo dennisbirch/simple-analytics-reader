@@ -52,3 +52,5 @@
 
 "save-button-title" = "Save";
 "execute-button-title" = "Execute";
+
+"unique-devices-label %@" = "Unique devices: %@";
