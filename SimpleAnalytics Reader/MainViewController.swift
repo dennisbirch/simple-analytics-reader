@@ -216,15 +216,24 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private func requestDetails(app: String, platform: String, action: String) {
         showActivityIndicator(true)
         resetDataStorage(startingTable: detailsTable)
-        
+        let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)'"
         let query = DBAccess.query(what: "\(Items.details), \(Items.timestamp), \(Common.deviceID)",
                                    from: Items.table,
-                                   whereClause: "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)'",
+                                   whereClause: whereClause,
                                    sorting: "\(Common.deviceID), \(Items.timestamp)")
-        let submitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
-            guard let result = result as? [[String : String]] else {
+        let userCountQuery = "SELECT COUNT(DISTINCT device_id) AS userCount FROM items WHERE (\(whereClause))"
+        
+        let submitter = QuerySubmitter(query: "\(query);\(userCountQuery)", mode: .dictionary) { [weak self] result in
+            guard var result = result as? [[String : String]] else {
                 self?.showActivityIndicator(false)
                 return
+            }
+            
+            if let userCountPair = result.first(where: { $0.first?.key == "userCount" }),
+               let index = result.firstIndex(of: userCountPair),
+               let userCount = userCountPair.first?.value {
+                    print("User count: \(userCount)")
+                result.remove(at: index)
             }
             
             self?.details = result
