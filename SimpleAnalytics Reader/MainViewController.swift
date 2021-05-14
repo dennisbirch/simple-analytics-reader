@@ -319,7 +319,7 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 }
             } else if tableColumn == tableView.tableColumns[2] {
                 let device = item["device_id"] ?? noDetails
-                return NSTextField(labelWithString: String(device.suffix(8)))
+                return NSTextField(labelWithString: String("...\(device.suffix(8))"))
             }
         }
         
