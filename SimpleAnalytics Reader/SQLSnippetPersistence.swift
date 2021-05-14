@@ -36,6 +36,16 @@ extension SearchViewController: SQLSnippetPersistenceDelegate {
         presentAsSheet(savedSnippetsVC)
     }
     
+    @IBAction func executeNewSQLSnippet(_ sender: Any) {
+        guard let executeSQLVC = executeAndSaveViewController() else {
+            return
+        }
+        
+        executeSQLVC.configureForExecuting(sql: "")
+        executeSQLVC.delegate = self
+        showModelessWindow(from: executeSQLVC)
+    }
+    
     private func savedSnippetsViewController() -> SavedQueriesViewController? {
         guard let savedSnippetsVC = storyboard?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(SavedQueriesViewController.viewControllerIdentifier)) as? SavedQueriesViewController else {
             os_log("Can't instantiate saved queries view controller")
@@ -43,6 +53,15 @@ extension SearchViewController: SQLSnippetPersistenceDelegate {
         }
         
         return savedSnippetsVC
+    }
+    
+    private func executeAndSaveViewController() -> ExecuteAndSaveSQLViewController? {
+        guard let saveVC = storyboard?.instantiateController(withIdentifier: ExecuteAndSaveSQLViewController.viewControllerIdentifier) as? ExecuteAndSaveSQLViewController else {
+            os_log("Can't instantiate view controller to save snippet")
+            return nil
+        }
+
+        return saveVC
     }
     
     private func showModelessWindow(from viewController: NSViewController) {
@@ -79,8 +98,7 @@ extension SearchViewController: SQLSnippetPersistenceDelegate {
     }
 
     private func promptForSnippetSQLAndName(_ sqlSnippet: String = "") {
-        guard let saveVC = storyboard?.instantiateController(withIdentifier: ExecuteAndSaveSQLViewController.viewControllerIdentifier) as? ExecuteAndSaveSQLViewController else {
-            os_log("Can't instantiate view controller to save snippet")
+        guard let saveVC = executeAndSaveViewController() else {
             return
         }
         

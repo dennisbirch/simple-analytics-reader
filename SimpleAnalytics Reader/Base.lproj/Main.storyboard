@@ -378,6 +378,12 @@
                                                 <action selector="showSQLSnippets:" target="Ady-hI-5gd" id="C3D-xV-Voa"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Execute New Snippet" id="z9m-Vy-XnW">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="executeNewSQLSnippet:" target="Ady-hI-5gd" id="Jx0-0k-pp5"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -1526,7 +1532,7 @@ Gw
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <size key="minSize" width="393" height="70"/>
-                                                            <size key="maxSize" width="408" height="10000000"/>
+                                                            <size key="maxSize" width="410" height="10000000"/>
                                                             <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         </textView>
                                                     </subviews>
@@ -2144,8 +2150,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="642544630.55851805">
-                                                                                    <!--2021-05-12 20:37:10 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="642647515.97087002">
+                                                                                    <!--2021-05-14 01:11:55 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
