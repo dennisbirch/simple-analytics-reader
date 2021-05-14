@@ -7,7 +7,7 @@
 
 import Cocoa
 
-class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
+class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
     @IBOutlet private weak var appTable: NSTableView!
     @IBOutlet private weak var platformTable: NSTableView!
     @IBOutlet private weak var actionsTable: NSTableView!

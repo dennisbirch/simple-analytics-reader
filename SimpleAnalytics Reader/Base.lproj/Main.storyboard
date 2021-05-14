@@ -747,7 +747,7 @@
         <!--List View-->
         <scene sceneID="InJ-Ib-Rx9">
             <objects>
-                <viewController title="List View" id="hbc-7o-DXU" customClass="MainViewController" customModule="SimpleAnalytics_Reader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="List View" id="hbc-7o-DXU" customClass="ListViewController" customModule="SimpleAnalytics_Reader" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="GdB-Wz-q4P">
                         <rect key="frame" x="0.0" y="0.0" width="860" height="436"/>
                         <autoresizingMask key="autoresizingMask"/>
