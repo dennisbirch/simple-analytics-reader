@@ -28,7 +28,10 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private let noDetails = "----"
     
     private let windowFrameKey = "main.window.frame"
-    
+    private let detailsTimestampColumnKey = "mainView.details.timestampColumn"
+    private let detailsDetailColumnKey = "mainView.details.detail"
+    private let detailsDeviceColumnKey = "mainView.details.device"
+
     private enum TableStorageResetStrategy: Int {
         case apps
         case platforms
@@ -37,10 +40,19 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         case details
     }
     
+    private enum DetailTableIdentifier: String {
+        case timestamp
+        case details
+        case device
+    }
+    
     // MARK: - ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        detailsTable.autosaveName = "listView.detailsTable"
+        detailsTable.autosaveTableColumns = true
         
         platformTable.tableColumns[0].width = platformTable.bounds.width
         addDeviceCounterViews()
@@ -59,7 +71,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         view.window?.saveFrame(usingName: windowFrameKey)
     }
-    
+        
     private func addDeviceCounterViews() {
         guard let actionsVC = DeviceCountDisplayViewController.viewController(for: .actions) else {
             return
@@ -285,6 +297,8 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     // MARK: - TableView DataSource & Delegate
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        guard let tableColumn = tableColumn else { return nil }
+        
         if tableView == self.appTable {
             let application = applications[row]
             let field = NSTextField(labelWithString: application)
@@ -292,20 +306,20 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
 
         } else if tableView == self.detailsTable {
             let item = details[row]
-            if tableColumn == tableView.tableColumns[1] {
+            if tableColumn.identifier.rawValue == DetailTableIdentifier.details.rawValue {
                 var detail = item["details"] ?? noDetails
                 if detail.isEmpty {
                     detail = noDetails
                 }
                 return NSTextField(labelWithString: detail)
-            } else if tableColumn == tableView.tableColumns[0],
+            } else if tableColumn.identifier.rawValue == DetailTableIdentifier.timestamp.rawValue,
                       let timestamp = item["timestamp"] {
                 if let date = timestamp.dateFromISOString() {
                     return NSTextField(labelWithString: DateFormatter.shortDateTimeFormatter.string(from: date))
                 } else {
                     return NSTextField(labelWithString: timestamp)
                 }
-            } else if tableColumn == tableView.tableColumns[2] {
+            } else if tableColumn.identifier.rawValue == DetailTableIdentifier.device.rawValue {
                 let device = item["device_id"] ?? noDetails
                 return NSTextField(labelWithString: String("...\(device.suffix(8))"))
             }
