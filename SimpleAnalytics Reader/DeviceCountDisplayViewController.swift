@@ -1,5 +1,5 @@
 //
-//  DetailsViewController.swift
+//  DeviceCountDisplayViewController.swift
 //  SimpleAnalytics Reader
 //
 //  Created by Dennis Birch on 5/13/21.
@@ -44,8 +44,13 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     
     private let collapsedUserCountHeight: CGFloat = 0
     private let expandedUserCountHeight: CGFloat = 60
-    private let deviceCountKey = "deviceCount"
 
+    // Column width Defaults keys
+    private let actionsNameColumnKey = "actionsTableNameColumn"
+    private let actionsCountColumnKey = "actionsTableCountColumn"
+    private let countersNameColumnKey = "countersTableNameColumn"
+    private let countersCountColumnKey = "countersTableCountColumn"
+    
     required init?(coder: NSCoder) {
         self.tableType = .actions
         super.init(coder: coder)
@@ -64,7 +69,19 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        displayDeviceCountContent(false, deviceCount: "")
         setupTableView()
+    }
+    
+    override func viewWillDisappear() {
+        super.viewWillDisappear()
+        if tableType == .actions {
+            UserDefaults.standard.set(tableView.tableColumns[0].width, forKey: actionsNameColumnKey)
+            UserDefaults.standard.set(tableView.tableColumns[1].width, forKey: actionsCountColumnKey)
+        } else {
+            UserDefaults.standard.set(tableView.tableColumns[0].width, forKey: countersNameColumnKey)
+            UserDefaults.standard.set(tableView.tableColumns[1].width, forKey: countersCountColumnKey)
+        }
     }
     
     func setupTableView() {
@@ -78,6 +95,24 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         }
         
         tableView.tableColumns[1].title = "Count"
+        
+        var nameColumnWidth: CGFloat
+        var countColumnWidth: CGFloat
+        if tableType == .actions {
+            nameColumnWidth = CGFloat(UserDefaults.standard.float(forKey: actionsNameColumnKey))
+            countColumnWidth = CGFloat(UserDefaults.standard.float(forKey: actionsCountColumnKey))
+        } else {
+            nameColumnWidth = CGFloat(UserDefaults.standard.float(forKey: countersNameColumnKey))
+            countColumnWidth = CGFloat(UserDefaults.standard.float(forKey: countersNameColumnKey))
+        }
+        
+        if nameColumnWidth == 0 && countColumnWidth == 0 {
+            nameColumnWidth = tableView.frame.width/2
+            countColumnWidth = tableView.frame.width/2
+        }
+        
+        tableView.tableColumns[0].width = nameColumnWidth
+        tableView.tableColumns[1].width = countColumnWidth
     }
     
     func resetTableView() {
@@ -153,17 +188,16 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         let itemName = sortedKeys[row]
         
         let fromTable = tableType.tableName
-        let userCountQuery = "SELECT COUNT(DISTINCT device_id) AS \(deviceCountKey) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
+        let userCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
         
-        let counterKey = deviceCountKey
-        let submitter = QuerySubmitter(query: userCountQuery, mode: .dictionary) { [weak self] result in
-            guard let result = result as? [[String : String]] else {
+        let submitter = QuerySubmitter(query: userCountQuery, mode: .array) { [weak self] result in
+            guard let result = result as? [[String]] else {
                 self?.delegate?.deviceCountDataFetchEnded()
                 return
             }
             
             self?.delegate?.deviceCountDataFetchEnded()
-            if let countDef = result.first, let countStr = countDef[counterKey] {
+            if let countDef = result.first, let countStr = countDef.first {
                 self?.displayDeviceCountContent(true, deviceCount: countStr)
             }
         }
