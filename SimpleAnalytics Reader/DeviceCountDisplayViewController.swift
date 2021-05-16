@@ -72,47 +72,21 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         displayDeviceCountContent(false, deviceCount: "")
         setupTableView()
     }
-    
-    override func viewWillDisappear() {
-        super.viewWillDisappear()
-        if tableType == .actions {
-            UserDefaults.standard.set(tableView.tableColumns[0].width, forKey: actionsNameColumnKey)
-            UserDefaults.standard.set(tableView.tableColumns[1].width, forKey: actionsCountColumnKey)
-        } else {
-            UserDefaults.standard.set(tableView.tableColumns[0].width, forKey: countersNameColumnKey)
-            UserDefaults.standard.set(tableView.tableColumns[1].width, forKey: countersCountColumnKey)
-        }
-    }
-    
+        
     func setupTableView() {
         let firstColumn = tableView.tableColumns[0]
 
         switch self.tableType {
         case .actions:
             firstColumn.title = "User interactions"
+            tableView.autosaveName = "listview.useractionsTable"
         case .counters:
             firstColumn.title = "Counters"
+            tableView.autosaveName = "listView.countersTable"
         }
         
         tableView.tableColumns[1].title = "Count"
-        
-        var nameColumnWidth: CGFloat
-        var countColumnWidth: CGFloat
-        if tableType == .actions {
-            nameColumnWidth = CGFloat(UserDefaults.standard.float(forKey: actionsNameColumnKey))
-            countColumnWidth = CGFloat(UserDefaults.standard.float(forKey: actionsCountColumnKey))
-        } else {
-            nameColumnWidth = CGFloat(UserDefaults.standard.float(forKey: countersNameColumnKey))
-            countColumnWidth = CGFloat(UserDefaults.standard.float(forKey: countersNameColumnKey))
-        }
-        
-        if nameColumnWidth == 0 && countColumnWidth == 0 {
-            nameColumnWidth = tableView.frame.width/2
-            countColumnWidth = tableView.frame.width/2
-        }
-        
-        tableView.tableColumns[0].width = nameColumnWidth
-        tableView.tableColumns[1].width = countColumnWidth
+        tableView.autosaveTableColumns = true
     }
     
     func resetTableView() {
