@@ -1008,7 +1008,7 @@
                                                                 </tableCellView>
                                                             </prototypeCellViews>
                                                         </tableColumn>
-                                                        <tableColumn identifier="device" width="113" minWidth="10" maxWidth="3.4028234663852886e+38" id="efL-bl-gTF">
+                                                        <tableColumn identifier="device" width="118" minWidth="10" maxWidth="3.4028234663852886e+38" id="efL-bl-gTF">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Device">
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1021,11 +1021,11 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="1hX-I1-Oid">
-                                                                    <rect key="frame" x="237" y="0.0" width="110" height="45"/>
+                                                                    <rect key="frame" x="237" y="0.0" width="115" height="45"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZiP-9H-IUO">
-                                                                            <rect key="frame" x="0.0" y="29" width="110" height="16"/>
+                                                                            <rect key="frame" x="0.0" y="29" width="115" height="16"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="yLH-FO-MPR">
                                                                                 <font key="font" usesAppearanceFont="YES"/>
@@ -1960,8 +1960,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="642805676.08055902">
-                                                                                    <!--2021-05-15 21:07:56 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="642879695.95242">
+                                                                                    <!--2021-05-16 17:41:35 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2407,7 +2407,7 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9Ht-F8-Neu">
-                                                            <rect key="frame" x="8" y="0.0" width="198" height="24"/>
+                                                            <rect key="frame" x="18" y="0.0" width="198" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y8A-pn-S8X">
@@ -2426,7 +2426,7 @@ DQ
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn width="200" minWidth="10" maxWidth="3.4028234663852886e+38" id="jKs-8w-rIy">
+                                                <tableColumn width="185" minWidth="10" maxWidth="3.4028234663852886e+38" id="jKs-8w-rIy">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2439,11 +2439,11 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9L3-Kt-ds1">
-                                                            <rect key="frame" x="223" y="0.0" width="197" height="17"/>
+                                                            <rect key="frame" x="233" y="0.0" width="182" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BxV-05-2gR">
-                                                                    <rect key="frame" x="0.0" y="1" width="197" height="16"/>
+                                                                    <rect key="frame" x="0.0" y="1" width="182" height="16"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="nKa-Kk-0GM">
                                                                         <font key="font" usesAppearanceFont="YES"/>
