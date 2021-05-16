@@ -17,7 +17,7 @@ struct AnalyticsItem: Hashable, Decodable {
         hasher.combine(description.hashValue & timestamp.hashValue)
     }
     
-    let timestamp: String
+    let timestamp: String?
     let description: String
     let details: String
     let count: String
@@ -85,7 +85,8 @@ struct AnalyticsItem: Hashable, Decodable {
     }
     
     func newItemWithRowNumber(_ number: Int) -> AnalyticsItem {
-        var newItem = AnalyticsItem(description: self.description, count: self.count, timestamp: self.timestamp, details: self.details, deviceID: self.deviceID, appName: self.appName, appVersion: self.appVersion, systemVersion: self.systemVersion, platform: self.platform, id: self.id, table: self.table)
+        let timestamp = self.timestamp ?? "N/A"
+        var newItem = AnalyticsItem(description: self.description, count: self.count, timestamp: timestamp, details: self.details, deviceID: self.deviceID, appName: self.appName, appVersion: self.appVersion, systemVersion: self.systemVersion, platform: self.platform, id: self.id, table: self.table)
         newItem.rowNumber = number
         return newItem
     }

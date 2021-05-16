@@ -22,15 +22,14 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var applications = [String]()
     private var platforms = [String]()
     private var details = [[String : String]]()
+    private var lastDetailsRequestSource: DetailsRequestSource = .items
+    
     //dummy data stores for bookkeeping purposes
     private var actions = [String]()
     private var counters = [String]()
     private let noDetails = "----"
     
     private let windowFrameKey = "main.window.frame"
-    private let detailsTimestampColumnKey = "mainView.details.timestampColumn"
-    private let detailsDetailColumnKey = "mainView.details.detail"
-    private let detailsDeviceColumnKey = "mainView.details.device"
 
     private enum TableStorageResetStrategy: Int {
         case apps
@@ -44,6 +43,11 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         case timestamp
         case details
         case device
+    }
+    
+    private enum DetailsRequestSource {
+        case items
+        case counters
     }
     
     // MARK: - ViewController Lifecycle
@@ -231,7 +235,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         resetDataStorage(strategy: .counters)
         
         let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'"
-        let query = DBAccess.query(what: "\(Counters.description), \(Counters.count)", from: Counters.table, whereClause: whereClause)
+        let query = "SELECT \(Counters.description), SUM(\(Counters.count)) AS count FROM \(Counters.table) WHERE (\(Common.appName) = \(app.sqlify()) AND \(Common.platform) = \(platform.sqlify())) GROUP BY \(Counters.description)"
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
             guard let result = result as? [[String : String]] else {
                 self?.showActivityIndicator(false)
@@ -245,13 +249,13 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         itemSubmitter.submit()
     }
     
-    private func requestDetails(app: String, platform: String, action: String) {
+    private func requestItemDetails(app: String, platform: String, action: String) {
         showActivityIndicator(true)
         let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)'"
-        let query = DBAccess.query(what: "\(Items.details), \(Items.timestamp), \(Common.deviceID)",
+        let query = DBAccess.query(what: "\(Items.details), \(Common.timestamp), \(Common.deviceID)",
                                    from: Items.table,
                                    whereClause: whereClause,
-                                   sorting: "\(Common.deviceID), \(Items.timestamp)")
+                                   sorting: "\(Common.deviceID), \(Common.timestamp)")
         let submitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
             guard let result = result as? [[String : String]] else {
                 self?.showActivityIndicator(false)
@@ -264,6 +268,30 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             self?.showActivityIndicator(false)
         }
 
+        lastDetailsRequestSource = .items
+        submitter.submit()
+    }
+    
+    private func requestCounterDetails(app: String, platform: String, action: String) {
+        showActivityIndicator(true)
+        let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Counters.description) = '\(action)'"
+        let query = DBAccess.query(what: "\(Counters.count), \(Common.timestamp), \(Common.deviceID)",
+                                   from: Counters.table,
+                                   whereClause: whereClause,
+                                   sorting: "\(Common.deviceID), \(Common.timestamp)")
+        let submitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
+            guard let result = result as? [[String : String]] else {
+                self?.showActivityIndicator(false)
+                return
+            }
+            
+            self?.details = result
+                        
+            self?.detailsTable.reloadData()
+            self?.showActivityIndicator(false)
+        }
+
+        lastDetailsRequestSource = .counters
         submitter.submit()
     }
     
@@ -307,7 +335,12 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         } else if tableView == self.detailsTable {
             let item = details[row]
             if tableColumn.identifier.rawValue == DetailTableIdentifier.details.rawValue {
-                var detail = item["details"] ?? noDetails
+                var detail: String
+                if lastDetailsRequestSource == .items {
+                    detail = item["details"] ?? noDetails
+                } else {
+                    detail = item["count"] ?? noDetails
+                }
                 if detail.isEmpty {
                     detail = noDetails
                 }
@@ -363,12 +396,23 @@ extension ListViewController: DeviceCountTableViewDelegate {
     func selectedTableViewRow(_ row: Int, tableType: DeviceCountTableType, selectedItem: String) {
         showActivityIndicator(true)
         
+        let appRow = appTable.selectedRow
+        let platformRow = platformTable.selectedRow
+        if appRow < 0 || platformRow < 0 || row < 0 { return }
+        
+        let detailColumnTitle: String
         if tableType == .actions {
-            let appRow = appTable.selectedRow
-            let platformRow = platformTable.selectedRow
-            if appRow < 0 || platformRow < 0 || row < 0 { return }
-            requestDetails(app: applications[appRow], platform: platforms[platformRow], action: selectedItem)
+            requestItemDetails(app: applications[appRow], platform: platforms[platformRow], action: selectedItem)
+            detailColumnTitle = "Details"
+        } else {
+            requestCounterDetails(app: applications[appRow], platform: platforms[platformRow], action: selectedItem)
+            detailColumnTitle = "Count"
         }
+        
+        if let detailsColumn = detailsTable.tableColumns.first(where: { $0.identifier.rawValue == DetailTableIdentifier.details.rawValue }) {
+            detailsColumn.title = detailColumnTitle
+        }
+
     }
     
     func deviceCountDataFetchEnded() {

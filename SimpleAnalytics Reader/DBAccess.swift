@@ -11,7 +11,6 @@ struct Items {
     static let table = "items"
     static let description = "description"
     static let details = "details"
-    static let timestamp = "timestamp"
 }
 
 struct Counters {
@@ -24,6 +23,7 @@ struct Common {
     static let appName = "app_name"
     static let deviceID = "device_id"
     static let platform = "platform"
+    static let timestamp = "timestamp"
 }
 
 struct DBAccess {
@@ -33,7 +33,8 @@ struct DBAccess {
                       from: String,
                       whereClause: String = "",
                       isDistinct: Bool = false,
-                      sorting: String = "") -> String {
+                      sorting: String = "",
+                      grouping: String = "") -> String {
         var sql = "SELECT "
         if isDistinct == true {
             sql.append("DISTINCT (\(what)) ")
@@ -51,7 +52,11 @@ struct DBAccess {
         }
         
         if sorting.isEmpty == false {
-            sql.append("ORDER BY \(sorting)")
+            sql.append("ORDER BY \(sorting) ")
+        }
+        
+        if grouping.isEmpty == false {
+            sql.append("GROUP BY \(grouping) ")
         }
         
         return sql

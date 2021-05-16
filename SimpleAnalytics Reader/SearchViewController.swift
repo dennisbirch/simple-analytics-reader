@@ -132,7 +132,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             label.alignment = .right
             return label
         } else if tableColumn?.title == ColumnHeadings.timeStamp {
-            return NSTextField(labelWithString: item.timestamp)
+            return NSTextField(labelWithString: item.timestamp ?? "N/A")
         } else if tableColumn?.title == ColumnHeadings.description {
             return NSTextField(labelWithString: item.description)
         } else if tableColumn?.title == ColumnHeadings.details {
@@ -176,7 +176,11 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             }
         case "timestamp":
             items.sort { (item1, item2) in
-                return (item1.timestamp > item2.timestamp) == (sorter.ascending == true)
+                if let timeStamp1 = item1.timestamp, let timeStamp2 = item2.timestamp {
+                    return (timeStamp1 > timeStamp2) == (sorter.ascending == true)
+                } else {
+                    return true
+                }
             }
         case "details":
             items.sort { (item1, item2) in
