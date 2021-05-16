@@ -31,7 +31,7 @@
 		D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */; };
 		D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FAE0342646E8F200BA500B /* DetailView.swift */; };
 		D8FAE0372646E91300BA500B /* DetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8FAE0362646E91300BA500B /* DetailView.xib */; };
-		D8FB831B264E171A00218700 /* DeviceCountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FB8319264E171A00218700 /* DeviceCountViewController.swift */; };
+		D8FB831B264E171A00218700 /* DeviceCountDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FB8319264E171A00218700 /* DeviceCountDisplayViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,7 +62,7 @@
 		D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueriesViewController.swift; sourceTree = "<group>"; };
 		D8FAE0342646E8F200BA500B /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		D8FAE0362646E91300BA500B /* DetailView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailView.xib; sourceTree = "<group>"; };
-		D8FB8319264E171A00218700 /* DeviceCountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCountViewController.swift; sourceTree = "<group>"; };
+		D8FB8319264E171A00218700 /* DeviceCountDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCountDisplayViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +98,7 @@
 				D87A5C37260AD35700D7B016 /* Main.storyboard */,
 				D87A5C31260AD35500D7B016 /* AppDelegate.swift */,
 				D87A5C43260BCC2900D7B016 /* ListViewController.swift */,
-				D8FB8319264E171A00218700 /* DeviceCountViewController.swift */,
+				D8FB8319264E171A00218700 /* DeviceCountDisplayViewController.swift */,
 				D87396E9262106C40050D602 /* SearchViewController.swift */,
 				D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */,
 				D8EE21A5264341D800C4F554 /* SavedQueriesViewController.swift */,
@@ -233,7 +233,7 @@
 				D8EE21CD2644BD6300C4F554 /* TextEntryAlertDialog.swift in Sources */,
 				D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */,
 				D87396EE26210D050050D602 /* QueryItemCell.swift in Sources */,
-				D8FB831B264E171A00218700 /* DeviceCountViewController.swift in Sources */,
+				D8FB831B264E171A00218700 /* DeviceCountDisplayViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
