@@ -62,14 +62,13 @@ runQuery($conn, $queryString, $queryMode);
 
 function runQuery($conn, $query, $mode) {
 	$mode_for_query = MYSQLI_ASSOC;
-	if ($mode === 'MYSQLI_ASSOC') {
-		$mode_for_query = MYSQLI_ASSOC;
-	 } else {
+	if ($mode === 'array') {
 	 	$mode_for_query = MYSQLI_NUM;
 	 }
 
 	 if (mysqli_multi_query($conn, $query)) {
-		$full_results = array();
+
+	 $full_results = array();
 
 	 	do {
 	 		if ($result = mysqli_store_result($conn)) {
@@ -88,7 +87,7 @@ function runQuery($conn, $query, $mode) {
 	 	$encoded = json_encode($full_results);        
         echo($encoded);
 	 }
-}
+
 
 
 function generateErrorResponse($message, $code) {
