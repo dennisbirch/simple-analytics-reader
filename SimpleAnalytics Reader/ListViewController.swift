@@ -421,19 +421,4 @@ extension ListViewController: DeviceCountTableViewDelegate {
 
 }
 
-extension DateFormatter {
-    static var shortDateTimeFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
-    }
-}
 
-extension String {
-    func dateFromISOString() -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return formatter.date(from: self)
-    }
-}

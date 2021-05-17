@@ -164,34 +164,3 @@ extension QueryItem {
 }
 
 
-extension String {
-    func reducedEnumElement() -> String {
-        return self.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "/", with: "").lowercased()
-    }
-    
-    func sqlify() -> String {
-        let sqlified = self.replacingOccurrences(of: "'", with: "''")
-        return "'\(sqlified)'"
-    }
-    
-    func versionNumber() -> Double {
-        let numberString = self.lowercased().trimmingCharacters(in: CharacterSet.lowercaseLetters).replacingOccurrences(of: ",", with: ".")
-        guard let majorRange = numberString.range(of: ".") else {
-            return Double(numberString) ?? 0
-        }
-        let replaceRange = numberString.startIndex..<majorRange.lowerBound
-        let major = numberString[replaceRange] + "."
-        let remainder = numberString.replacingCharacters(in: replaceRange, with: "").replacingOccurrences(of: ".", with: "")
-        let composite = major + remainder
-        return Double(composite) ?? 0
-    }
-}
-
-extension ISO8601DateFormatter {
-    static var queryFormatter: ISO8601DateFormatter {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withYear, .withMonth, .withDay, .withDashSeparatorInDate]
-        formatter.timeZone = TimeZone.current
-        return formatter
-    }
-}
