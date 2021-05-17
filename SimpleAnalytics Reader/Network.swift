@@ -27,12 +27,11 @@ struct QuerySubmitter {
     let query: String
     let mode: QueryMode
     let completion: (Any) -> Void
-    private let endpoint = ""
     private let queryModeKey = "queryMode"
     private let queryKey = "query"
     
     func submit() {
-        guard let url = URL(string: endpoint) else {
+        guard let url = URL(string: Endpoint.shared.urlString) else {
             os_log("URL is nil")
             DispatchQueue.main.async {
                 self.completion([[]])

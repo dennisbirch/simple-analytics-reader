@@ -20,6 +20,8 @@
 		D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */; };
 		D87DCA72262A6325000668A3 /* AnalyticsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA71262A6325000668A3 /* AnalyticsItem.swift */; };
 		D88B0D78263F87410055C196 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B0D77263F87410055C196 /* Extensions.swift */; };
+		D89AB8BB26531FD600A69833 /* Endpoint.txt in Resources */ = {isa = PBXBuildFile; fileRef = D89AB8BA26531FD600A69833 /* Endpoint.txt */; };
+		D89AB8BD2653210800A69833 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89AB8BC2653210800A69833 /* Endpoint.swift */; };
 		D8D4C558264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4C557264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift */; };
 		D8D4C55A264CAAEC0041F12F /* SQLSnippetPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4C559264CAAEC0041F12F /* SQLSnippetPersistence.swift */; };
 		D8ED4AD6262F713600A01593 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8ED4AD5262F713600A01593 /* Localizable.strings */; };
@@ -51,6 +53,8 @@
 		D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryTypeQueryComparison.swift; sourceTree = "<group>"; };
 		D87DCA71262A6325000668A3 /* AnalyticsItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsItem.swift; sourceTree = "<group>"; };
 		D88B0D77263F87410055C196 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		D89AB8BA26531FD600A69833 /* Endpoint.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Endpoint.txt; sourceTree = "<group>"; };
+		D89AB8BC2653210800A69833 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		D8D4C557264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecuteAndSaveSQLViewController.swift; sourceTree = "<group>"; };
 		D8D4C559264CAAEC0041F12F /* SQLSnippetPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLSnippetPersistence.swift; sourceTree = "<group>"; };
 		D8ED4AD5262F713600A01593 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -112,6 +116,8 @@
 				D8EE21CA2644BD6300C4F554 /* TextEntryDialog */,
 				D8FAE0382646E91C00BA500B /* DetailView */,
 				D87A5C41260AD37000D7B016 /* Network.swift */,
+				D89AB8BC2653210800A69833 /* Endpoint.swift */,
+				D89AB8BA26531FD600A69833 /* Endpoint.txt */,
 				D8F0B4AB260CFD83008D6054 /* DBAccess.swift */,
 				D8399F44264B2ED600AA2A81 /* SearchLimit.swift */,
 				D88B0D77263F87410055C196 /* Extensions.swift */,
@@ -202,6 +208,7 @@
 				D87A5C36260AD35700D7B016 /* Assets.xcassets in Resources */,
 				D8ED4AD6262F713600A01593 /* Localizable.strings in Resources */,
 				D87A5C39260AD35700D7B016 /* Main.storyboard in Resources */,
+				D89AB8BB26531FD600A69833 /* Endpoint.txt in Resources */,
 				D8EE21CE2644BD6300C4F554 /* TextEntryDialog.xib in Resources */,
 				D8FAE0372646E91300BA500B /* DetailView.xib in Resources */,
 			);
@@ -221,6 +228,7 @@
 				D8D4C558264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift in Sources */,
 				D8EE21A42641F34E00C4F554 /* QueryPersistence.swift in Sources */,
 				D829263D262386E600B16434 /* QueriesTable.swift in Sources */,
+				D89AB8BD2653210800A69833 /* Endpoint.swift in Sources */,
 				D8EE21A6264341D800C4F554 /* SavedQueriesViewController.swift in Sources */,
 				D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */,
 				D8D4C55A264CAAEC0041F12F /* SQLSnippetPersistence.swift in Sources */,
