@@ -1,8 +1,13 @@
 <?php
 /*
-Here is an example script written in PHP for handling data queries from SimpleAnalytics Reader on a 
-web service that hosts MySQL databases. Please consider this as a starting point, or an 
-inspiration for your own solution.
+SimpleAnalytics Reader Example Backend Script
+
+This example is meant to provide a working back-end solution for reading data saved to a database by 
+the SimpleAnalytics package (https://github.com/dennisbirch/simple-analytics), or as inspiration for
+those who want to create their own.
+
+It provides the data structures expected by the SimpleAnalytics Reader app, when queried with the 
+requests it sends.
 
 CAVEAT EMPTOR: This script was created by a relatively new PHP programmer, using documentation
 and solutions found online. It may have serious unknown flaws as it has only been lightly 
@@ -33,6 +38,22 @@ platform: VarChar
 system_version: VarChar
 timestamp: DateTime
 id: Auto incrementing primary key
+
+If you are writing your own implementation, you should be able to handle two incoming parameters:
+
+"query" is a String with semi-colon delimited SQL queries (usually two at the most)
+"queryMode" is a String with a value of either "dictionary" or "array"
+
+Your script should send the query on to your database and request the results back in one of two 
+forms depending on the queryMode parameter's value. The results of that query should be sent back 
+to the SimpleAnalytics Reader app as a JSON object.
+
+If queryMode is "array", the app is expecting a [String] array in the JSON payload containing the 
+retrieved values as strings. In PHP this is a numeric Array.
+
+If queryMode is "dictionary", the app is expecting a [[String : String]] (array of dictionaries) 
+structure. The inner dictionary's key is the database column name, and the value is the row's value 
+for that column. In PHP this is an associative array.
 
 ****************
 Be sure to configure the following four properties in order to be able to connect to your database.
