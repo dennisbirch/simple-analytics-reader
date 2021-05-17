@@ -31,6 +31,9 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     static let viewControllerIdentifier = "DetailsViewController"
     
     var delegate: DeviceCountTableViewDelegate?
+    var selectedRow: Int {
+        return tableView.selectedRow
+    }
     
     @IBOutlet private weak var tableView: NSTableView!
     @IBOutlet private weak var deviceCountContainerHeightConstraint: NSLayoutConstraint!
@@ -42,8 +45,8 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     private var sortedKeys = [String]()
     private var baseWhereClause = ""
     
-    private let collapsedUserCountHeight: CGFloat = 0
-    private let expandedUserCountHeight: CGFloat = 60
+    private let collapsedDeviceCountHeight: CGFloat = 0
+    private let expandedDeviceCountHeight: CGFloat = 60
 
     // Column width Defaults keys
     private let actionsNameColumnKey = "actionsTableNameColumn"
@@ -93,6 +96,7 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         dataDictionary.removeAll()
         sortedKeys.removeAll()
         tableView.reloadData()
+        displayDeviceCountContent(false, deviceCount: "")
     }
     
     func configureWithFetchedResult(_ result: [[String : String]], tableType: DeviceCountTableType, whereClause: String) {
@@ -113,6 +117,14 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         self.dataDictionary = dataDict
 
         tableView.reloadData()
+    }
+    
+    func restoreSelection(row: Int) {
+        if row < sortedKeys.count {
+            tableView.selectRowIndexes(IndexSet([row]), byExtendingSelection: false)
+        }
+
+        fetchCountForRow(row)
     }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
@@ -154,6 +166,10 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     
     func tableViewSelectionDidChange(_ notification: Notification) {
         let row = tableView.selectedRow
+        fetchCountForRow(row)
+    }
+
+    private func fetchCountForRow(_ row: Int) {
         if row < 0 {
             displayDeviceCountContent(false, deviceCount: "")
             return
@@ -162,9 +178,9 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         let itemName = sortedKeys[row]
         
         let fromTable = tableType.tableName
-        let userCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
+        let deviceCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
         
-        let submitter = QuerySubmitter(query: userCountQuery, mode: .array) { [weak self] result in
+        let submitter = QuerySubmitter(query: deviceCountQuery, mode: .array) { [weak self] result in
             guard let result = result as? [[String]] else {
                 self?.delegate?.deviceCountDataFetchEnded()
                 return
@@ -179,15 +195,14 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         submitter.submit()
         delegate?.selectedTableViewRow(row, tableType: tableType, selectedItem: sortedKeys[row])
     }
-
     
     private func displayDeviceCountContent(_ isVisible: Bool, deviceCount: String) {
         if isVisible == true {
             let formatStr = NSLocalizedString("unique-devices-label %@", comment: "String for 'Unique devices count' label")
             deviceCountLabel.stringValue = String(format: formatStr, deviceCount)
-            deviceCountContainerHeightConstraint?.constant = expandedUserCountHeight
+            deviceCountContainerHeightConstraint?.constant = expandedDeviceCountHeight
         } else {
-            deviceCountContainerHeightConstraint?.constant = collapsedUserCountHeight
+            deviceCountContainerHeightConstraint?.constant = collapsedDeviceCountHeight
         }
 
         NSAnimationContext.runAnimationGroup { [weak self] (context) in

@@ -23,6 +23,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var platforms = [String]()
     private var details = [[String : String]]()
     private var lastDetailsRequestSource: DetailsRequestSource = .items
+    private var refreshUpdater: ListViewRefreshRestoration?
     
     //dummy data stores for bookkeeping purposes
     private var actions = [String]()
@@ -109,6 +110,15 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     // MARK: - Actions
     
     @IBAction func refreshTapped(_ sender: Any) {
+        let actionsRow = actionsViewController?.selectedRow ?? -1
+        let countersRow = countersViewController?.selectedRow ?? -1
+        actionsViewController?.resetTableView()
+        actionsViewController?.resetTableView()
+        refreshUpdater = ListViewRefreshRestoration(appsTableSelection: appTable.selectedRow,
+                                                    platformsTableSelection: platformTable.selectedRow,
+                                                    actionsTableSelection: actionsRow,
+                                                    countersTableSelection: countersRow)
+        refreshUpdater?.activeControl = view.window?.firstResponder
         requestApplicationNames()
     }
     
@@ -160,6 +170,9 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 self?.applications = apps.sorted()
                 self?.showActivityIndicator(false)
                 self?.appTable.reloadData()
+                if let restoration = self?.refreshUpdater, apps.count > restoration.appsTableSelection {
+                    self?.appTable.selectRowIndexes(IndexSet([restoration.appsTableSelection]), byExtendingSelection: false)
+                }
             }
             
             countsSubmitter.submit()
@@ -196,9 +209,13 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 
                 self?.showActivityIndicator(false)
                 self?.platformTable.reloadData()
-                if let count = self?.platforms.count,
-                   count > 0 {
-                    self?.platformTable.selectRowIndexes(IndexSet(0...0), byExtendingSelection: false)
+                if let restoration = self?.refreshUpdater, platforms.count > restoration.platformsTableSelection {
+                    self?.platformTable.selectRowIndexes(IndexSet([restoration.platformsTableSelection]), byExtendingSelection: false)
+                } else {
+                    if let count = self?.platforms.count,
+                       count > 0 {
+                        self?.platformTable.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
+                    }
                 }
             }
             
@@ -225,6 +242,9 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             
             self?.actionsViewController?.configureWithFetchedResult(result, tableType: .actions, whereClause: whereClause)
             self?.showActivityIndicator(false)
+            if let restoration = self?.refreshUpdater {
+                self?.actionsViewController?.restoreSelection(row: restoration.actionsTableSelection)
+            }
         }
 
         itemSubmitter.submit()
@@ -244,6 +264,13 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             
             self?.showActivityIndicator(false)
             self?.countersViewController?.configureWithFetchedResult(result, tableType: .counters, whereClause: whereClause)
+            if let restoration = self?.refreshUpdater {
+                self?.countersViewController?.restoreSelection(row: restoration.countersTableSelection)
+                if let activeControl = restoration.activeControl {
+                    self?.view.window?.makeFirstResponder(activeControl)
+                }
+            }
+            self?.refreshUpdater = nil
         }
 
         itemSubmitter.submit()
@@ -387,6 +414,8 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             } else if table == platformTable {
                 if appRow < 0 || platformRow < 0 { return }
                 requestAppActivity(app: applications[appRow], platform: platforms[platformRow])
+                actionsViewController?.resetTableView()
+                countersViewController?.resetTableView()
             }
         }
     }
@@ -412,7 +441,6 @@ extension ListViewController: DeviceCountTableViewDelegate {
         if let detailsColumn = detailsTable.tableColumns.first(where: { $0.identifier.rawValue == DetailTableIdentifier.details.rawValue }) {
             detailsColumn.title = detailColumnTitle
         }
-
     }
     
     func deviceCountDataFetchEnded() {
@@ -421,4 +449,10 @@ extension ListViewController: DeviceCountTableViewDelegate {
 
 }
 
-
+struct ListViewRefreshRestoration {
+    var appsTableSelection: Int
+    var platformsTableSelection: Int
+    var actionsTableSelection: Int
+    var countersTableSelection: Int
+    var activeControl: NSResponder? = nil
+}
