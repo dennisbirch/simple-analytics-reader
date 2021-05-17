@@ -20,7 +20,7 @@ class QueryItemCell: NSTableCellView, NSTextFieldDelegate, NSTextViewDelegate {
     private var searchTextObserver: AnyCancellable?
     
     private struct Localized {
-        static let title = NSLocalizedString("title-item", comment: "Selector for a title query")
+        static let title = NSLocalizedString("description-item", comment: "Selector for a description query")
         static let appName = NSLocalizedString("app-name-item", comment: "Selector for an application name query")
         static let appVersion = NSLocalizedString("app-version-item", comment: "Selector for an application version query")
         static let platform = NSLocalizedString("platform-item", comment: "Selector for a platform query")

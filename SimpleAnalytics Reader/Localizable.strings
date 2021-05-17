@@ -6,7 +6,7 @@
   
 */
 
-"title-item" = "Title";
+"description-item" = "Description";
 "app-name-item" = "App name";
 "app-version-item" = "App version";
 "platform-item" = "Platform";
