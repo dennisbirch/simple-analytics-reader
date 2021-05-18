@@ -7,15 +7,18 @@ The [SimpleAnalytics package](https://github.com/dennisbirch/simple-analytics) a
 ### Setup
 SimpleAnalytics Reader works by sending database queries to a backend app, which forwards them to the database that's collecting your analytics data. Therefore you need to make a web app available, and add a text file with the URL for it in the SimpleAnalytics Reader project folder.
 
+##### Web app
 The __query.php__ file at the top level of the project's repository folder is the best starting point for providing a web app. If you have PHP and MySQL available on your web service (and you're using MySQL for collecting your data), you can configure the file for database access and upload it to your service. 
 
 If that's not the case, or you prefer to build your web app with another language, you can use the documentation in the query.php file to guide your web app development project.
 
-Once your web app is available, you need to let SimpleAnalytics Reader know where it is by creating a text file named "Endpoint.txt" at the project folder's top level. If you open the SimpleAnalytics Reader in Xcode before having done so, you'll see a placeholder in red in the Project navigator for that file. After you create the file in the specified location, the placeholder should appear as a normal file reference.
+##### Endpoint file
+Once your web app is available, you need to let SimpleAnalytics Reader know where it is by creating a text file named "Endpoint.txt" at the project folder's top level. If you open the SimpleAnalytics Reader in Xcode before having done so, you'll see a placeholder for that file in red in the Project navigator. After you create the file in the specified location, the placeholder should appear as a normal file reference.
 
+##### Running and debugging
 With those two steps complete, you are ready to begin running SimpleAnalytics Reader.
 
-If things are not working as expected, it's probably because the app isn't getting data back in the format expected. You may find information logged in the Xcode Console can help you make the necessary adjustments.
+If things are not working as expected, it's probably because the app isn't getting data back in the format expected. You may find the information logged in the Xcode Console can help you make the necessary adjustments.
 
 ### Functionality
 SimpleAnalytics Reader has two main views you can toggle between to review collected analytics data in different modes: _List_ and _Search_. 
@@ -29,7 +32,7 @@ The Search view lets you generate specific search queries to see pretty much wha
 ##### Query generator
 Along the left edge of the window is a Query generator that lets you build up the pieces of your query one condition at a time. Each condition block lets you choose the field to match on, and how and what to match. 
 
-You can add additional query blocks by clicking the __+__ button. You can remove a single block by selecting it and clicking the _-_ button, or start from scratch by clicking the __Remove All__ button.
+You can add additional query blocks by clicking the __+__ button. You can remove a single block by selecting it and clicking the _—_ button, or start from scratch by clicking the __Remove All__ button.
 
 You can choose to require all the conditions or any condition from the radio buttons available. You can choose whether to include "Items", "Counters", or "Both" from a separate set of radio buttons.
 
