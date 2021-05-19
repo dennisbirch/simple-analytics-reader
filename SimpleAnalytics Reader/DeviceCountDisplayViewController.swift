@@ -9,15 +9,32 @@ import Cocoa
 import os.log
 
 enum DeviceCountTableType {
+    case applications
+    case platforms
     case actions
     case counters
     
     var tableName: String {
         switch self {
+        case .applications, .platforms:
+            return "both"
         case .actions:
             return "items"
         case .counters:
             return "counters"
+        }
+    }
+    
+    var tableResetStrategy: ListViewController.TableStorageResetStrategy {
+        switch self {
+        case .applications:
+            return .platforms
+        case .platforms:
+            return .actions
+        case .actions:
+            return .details
+        case .counters:
+            return .details
         }
     }
 }
@@ -78,18 +95,32 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         
     func setupTableView() {
         let firstColumn = tableView.tableColumns[0]
-
+        let secondColumn = tableView.tableColumns[1]
+        var showsSecondColumn = false
+        
         switch self.tableType {
+        case .applications:
+            firstColumn.title = "Applications"
+            tableView.removeTableColumn(secondColumn)
+            firstColumn.width = tableView.frame.width
+        case .platforms:
+            firstColumn.title = "Platforms"
+            tableView.removeTableColumn(secondColumn)
+            firstColumn.width = tableView.frame.width
         case .actions:
             firstColumn.title = "User interactions"
             tableView.autosaveName = "listview.useractionsTable"
+            showsSecondColumn = true
         case .counters:
             firstColumn.title = "Counters"
             tableView.autosaveName = "listView.countersTable"
+            showsSecondColumn = true
         }
-        
-        tableView.tableColumns[1].title = "Count"
-        tableView.autosaveTableColumns = true
+
+        if showsSecondColumn == true {
+            tableView.tableColumns[1].title = "Count"
+            tableView.autosaveTableColumns = true
+        }
     }
     
     func resetTableView() {
@@ -99,7 +130,7 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         displayDeviceCountContent(false, deviceCount: "")
     }
     
-    func configureWithFetchedResult(_ result: [[String : String]], tableType: DeviceCountTableType, whereClause: String) {
+    func configureWithDictionary(_ result: [[String : String]], tableType: DeviceCountTableType, whereClause: String) {
         self.tableType = tableType
         displayDeviceCountContent(false, deviceCount: "")
         baseWhereClause = whereClause
@@ -119,6 +150,18 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         tableView.reloadData()
     }
     
+    func configureWithArray(_ array: [[String]], tableType: DeviceCountTableType, whereClause: String) {
+        self.tableType = tableType
+        displayDeviceCountContent(false, deviceCount: "")
+        baseWhereClause = whereClause
+        sortedKeys = array.compactMap{ $0.first}.sorted()
+        tableView.reloadData()
+    }
+    
+    func updateWhereClause(_ whereClause: String) {
+        baseWhereClause = whereClause
+    }
+    
     func restoreSelection(row: Int) {
         if row < sortedKeys.count {
             tableView.selectRowIndexes(IndexSet([row]), byExtendingSelection: false)
@@ -131,6 +174,9 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         let item = sortedKeys[row]
         
         switch tableType {
+        case .applications, .platforms:
+            let item = sortedKeys[row]
+            return NSTextField(labelWithString: item)
         case .actions:
             let action = sortedKeys[row]
             let field: NSTextField
@@ -166,36 +212,87 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     
     func tableViewSelectionDidChange(_ notification: Notification) {
         let row = tableView.selectedRow
+        var selectedItem = ""
+        if row >= 0 {
+            selectedItem = sortedKeys[row]
+        }
+        delegate?.selectedTableViewRow(row, tableType: tableType, selectedItem: selectedItem)
         fetchCountForRow(row)
     }
 
     private func fetchCountForRow(_ row: Int) {
+        if tableType == .applications || tableType == .platforms {
+            getAppsAndPlatformsCounts(row: row)
+        } else {
+            if row < 0 {
+                displayDeviceCountContent(false, deviceCount: "")
+                return
+            }
+            
+            let itemName = sortedKeys[row]
+            
+            let fromTable = tableType.tableName
+            let deviceCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
+            
+            let submitter = QuerySubmitter(query: deviceCountQuery, mode: .array) { [weak self] result in
+                guard let result = result as? [[String]] else {
+                    self?.delegate?.deviceCountDataFetchEnded()
+                    return
+                }
+                
+                self?.delegate?.deviceCountDataFetchEnded()
+                if let countDef = result.first, let countStr = countDef.first {
+                    self?.displayDeviceCountContent(true, deviceCount: countStr)
+                }
+            }
+            
+            submitter.submit()
+        }
+    }
+    
+    private func getAppsAndPlatformsCounts(row: Int) {
         if row < 0 {
             displayDeviceCountContent(false, deviceCount: "")
             return
         }
         
         let itemName = sortedKeys[row]
+        let whereClause = baseWhereClause + itemName.sqlify()
+        let itemsQuery = "SELECT DISTINCT (\(Common.deviceID)) FROM \(Items.table) WHERE \(whereClause)"
+        let countersQuery = "SELECT DISTINCT (\(Common.deviceID)) FROM \(Counters.table) WHERE \(whereClause)"
         
-        let fromTable = tableType.tableName
-        let deviceCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
-        
-        let submitter = QuerySubmitter(query: deviceCountQuery, mode: .array) { [weak self] result in
-            guard let result = result as? [[String]] else {
+        let itemsSubmitter = QuerySubmitter(query: itemsQuery, mode: .array) { [weak self] itemsCount in
+            guard let itemsCount = itemsCount as? [[String]] else {
                 self?.delegate?.deviceCountDataFetchEnded()
                 return
             }
             
-            self?.delegate?.deviceCountDataFetchEnded()
-            if let countDef = result.first, let countStr = countDef.first {
-                self?.displayDeviceCountContent(true, deviceCount: countStr)
+            let countersSubmitter = QuerySubmitter(query: countersQuery, mode: .array) { [weak self] countersCount in
+                guard let countersCount = countersCount as? [[String]] else {
+                    self?.delegate?.deviceCountDataFetchEnded()
+                    return
+                }
+                
+                self?.delegate?.deviceCountDataFetchEnded()
+                let itemsFirstsArray = itemsCount.compactMap{ $0.first }
+                let countersFirstArray = countersCount.compactMap{ $0.first }
+                if let uniqueIDs = self?.uniqueItems(array1: itemsFirstsArray, array2: countersFirstArray) {
+                    self?.displayDeviceCountContent(true, deviceCount: String(uniqueIDs.count))
+                }
             }
+
+            countersSubmitter.submit()
         }
         
-        submitter.submit()
-        delegate?.selectedTableViewRow(row, tableType: tableType, selectedItem: sortedKeys[row])
+        itemsSubmitter.submit()
     }
     
+    private func uniqueItems(array1: [String], array2: [String]) -> [String] {
+        let theSet = Set(array1)
+        return Array(theSet.union(array2))
+    }
+
+        
     private func displayDeviceCountContent(_ isVisible: Bool, deviceCount: String) {
         if isVisible == true {
             let formatStr = NSLocalizedString("unique-devices-label %@", comment: "String for 'Unique devices count' label")

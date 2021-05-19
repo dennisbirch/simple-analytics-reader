@@ -8,14 +8,16 @@
 import Cocoa
 
 class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
-    @IBOutlet private weak var appTable: NSTableView!
-    @IBOutlet private weak var platformTable: NSTableView!
     @IBOutlet private weak var detailsTable: NSTableView!
     @IBOutlet private weak var activityIndicator: NSProgressIndicator!
     @IBOutlet private weak var refreshButton: NSButton!
+    @IBOutlet private weak var applicationsTableContainer: NSView!
+    @IBOutlet private weak var platformsTableContainer: NSView!
     @IBOutlet private weak var actionsTableContainer: NSView!
     @IBOutlet private weak var countersTableContainer: NSView!
     
+    private var applicationsViewController: DeviceCountDisplayViewController?
+    private var platformsViewController: DeviceCountDisplayViewController?
     private var actionsViewController: DeviceCountDisplayViewController?
     private var countersViewController: DeviceCountDisplayViewController?
 
@@ -32,7 +34,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private let windowFrameKey = "main.window.frame"
 
-    private enum TableStorageResetStrategy: Int {
+    enum TableStorageResetStrategy: Int {
         case apps
         case platforms
         case actions
@@ -59,7 +61,6 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         detailsTable.autosaveName = "listView.detailsTable"
         detailsTable.autosaveTableColumns = true
         
-        platformTable.tableColumns[0].width = platformTable.bounds.width
         addDeviceCounterViews()
         
         requestApplicationNames()
@@ -85,12 +86,24 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         actionsVC.delegate = self
         addChild(actionsVC)
         let actionView = actionsVC.view
-        actionsTableContainer.addSubview(actionView)
-        actionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([actionView.leadingAnchor.constraint(equalTo: actionsTableContainer.leadingAnchor),
-                                     actionView.topAnchor.constraint(equalTo: actionsTableContainer.topAnchor),
-                                     actionView.trailingAnchor.constraint(equalTo: actionsTableContainer.trailingAnchor),
-                                     actionView.bottomAnchor.constraint(equalTo: actionsTableContainer.bottomAnchor)])
+        addCountViewController(actionView, to: actionsTableContainer)
+        
+        guard let appsVC = DeviceCountDisplayViewController.viewController(for: .applications) else {
+            return
+        }
+        self.applicationsViewController = appsVC
+        appsVC.delegate = self
+        addChild(appsVC)
+        let appView = appsVC.view
+        addCountViewController(appView, to: applicationsTableContainer)
+        
+        guard let platformsVC = DeviceCountDisplayViewController.viewController(for: .platforms) else {
+            return
+        }
+        self.platformsViewController = platformsVC
+        platformsVC.delegate = self
+        addChild(platformsVC)
+        addCountViewController(platformsVC.view, to: platformsTableContainer)
         
         guard let countersVC = DeviceCountDisplayViewController.viewController(for: .counters) else {
             return
@@ -98,24 +111,29 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         self.countersViewController = countersVC
         countersVC.delegate = self
         addChild(countersVC)
-        let countersView = countersVC.view
-        countersTableContainer.addSubview(countersView)
-        countersView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([countersView.leadingAnchor.constraint(equalTo: countersTableContainer.leadingAnchor),
-                                     countersView.topAnchor.constraint(equalTo: countersTableContainer.topAnchor),
-                                     countersView.trailingAnchor.constraint(equalTo: countersTableContainer.trailingAnchor),
-                                     countersView.bottomAnchor.constraint(equalTo: countersTableContainer.bottomAnchor)])
+        addCountViewController(countersVC.view, to: countersTableContainer)
+    }
+    
+    private func addCountViewController(_ countTableView: NSView, to container: NSView) {
+        container.addSubview(countTableView)
+        countTableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([countTableView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                                     countTableView.topAnchor.constraint(equalTo: container.topAnchor),
+                                     countTableView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+                                     countTableView.bottomAnchor.constraint(equalTo: container.bottomAnchor)])
     }
     
     // MARK: - Actions
     
     @IBAction func refreshTapped(_ sender: Any) {
+        let applicationsRow = applicationsViewController?.selectedRow ?? -1
+        let platformsRow = platformsViewController?.selectedRow ?? -1
         let actionsRow = actionsViewController?.selectedRow ?? -1
         let countersRow = countersViewController?.selectedRow ?? -1
         actionsViewController?.resetTableView()
         actionsViewController?.resetTableView()
-        refreshUpdater = ListViewRefreshRestoration(appsTableSelection: appTable.selectedRow,
-                                                    platformsTableSelection: platformTable.selectedRow,
+        refreshUpdater = ListViewRefreshRestoration(appsTableSelection: applicationsRow,
+                                                    platformsTableSelection: platformsRow,
                                                     actionsTableSelection: actionsRow,
                                                     countersTableSelection: countersRow)
         refreshUpdater?.activeControl = view.window?.firstResponder
@@ -169,9 +187,11 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 
                 self?.applications = apps.sorted()
                 self?.showActivityIndicator(false)
-                self?.appTable.reloadData()
-                if let restoration = self?.refreshUpdater, apps.count > restoration.appsTableSelection {
-                    self?.appTable.selectRowIndexes(IndexSet([restoration.appsTableSelection]), byExtendingSelection: false)
+                
+                self?.applicationsViewController?.configureWithArray(result, tableType: .applications, whereClause: "\(Common.appName) = ")
+
+                if let restoration = self?.refreshUpdater {
+                    self?.applicationsViewController?.restoreSelection(row: restoration.appsTableSelection)
                 }
             }
             
@@ -182,7 +202,8 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
     
     private func requestPlatforms(appName: String) {
-        let itemQuery = DBAccess.query(what: Common.platform, from: Items.table, whereClause: "\(Common.appName) = '\(appName)'", isDistinct: true)
+        let baseWhereClause = "\(Common.appName) = '\(appName)'"
+        let itemQuery = DBAccess.query(what: Common.platform, from: Items.table, whereClause: baseWhereClause, isDistinct: true)
         let countersQuery = DBAccess.query(what: Common.platform, from: Counters.table, whereClause: "\(Common.appName) = '\(appName)'", isDistinct: true)
         
         showActivityIndicator(true)
@@ -206,15 +227,16 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 }
                 
                 self?.platforms = platforms.sorted()
+                let whereClause = "\(baseWhereClause) AND \(Common.platform) = "
                 
                 self?.showActivityIndicator(false)
-                self?.platformTable.reloadData()
+                self?.platformsViewController?.configureWithArray(result, tableType: .platforms, whereClause: whereClause)
+
                 if let restoration = self?.refreshUpdater, platforms.count > restoration.platformsTableSelection {
-                    self?.platformTable.selectRowIndexes(IndexSet([restoration.platformsTableSelection]), byExtendingSelection: false)
+                    self?.platformsViewController?.configureWithArray([platforms], tableType: .platforms, whereClause: whereClause)
                 } else {
-                    if let count = self?.platforms.count,
-                       count > 0 {
-                        self?.platformTable.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
+                    if let count = self?.platforms.count, count > 0 {
+                        self?.platformsViewController?.restoreSelection(row: 0)
                     }
                 }
             }
@@ -240,7 +262,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 return
             }
             
-            self?.actionsViewController?.configureWithFetchedResult(result, tableType: .actions, whereClause: whereClause)
+            self?.actionsViewController?.configureWithDictionary(result, tableType: .actions, whereClause: whereClause)
             self?.showActivityIndicator(false)
             if let restoration = self?.refreshUpdater {
                 self?.actionsViewController?.restoreSelection(row: restoration.actionsTableSelection)
@@ -263,7 +285,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             }
             
             self?.showActivityIndicator(false)
-            self?.countersViewController?.configureWithFetchedResult(result, tableType: .counters, whereClause: whereClause)
+            self?.countersViewController?.configureWithDictionary(result, tableType: .counters, whereClause: whereClause)
             if let restoration = self?.refreshUpdater {
                 self?.countersViewController?.restoreSelection(row: restoration.countersTableSelection)
                 if let activeControl = restoration.activeControl {
@@ -330,11 +352,11 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         if resetIndices.contains(applications) {
             applications.removeAll()
-            appTable.reloadData()
+            applicationsViewController?.resetTableView()
         }
         if resetIndices.contains(platforms) {
             platforms.removeAll()
-            platformTable.reloadData()
+            platformsViewController?.resetTableView()
         }
         if resetIndices.contains(actions) {
             actionsViewController?.resetTableView()
@@ -353,13 +375,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard let tableColumn = tableColumn else { return nil }
-        
-        if tableView == self.appTable {
-            let application = applications[row]
-            let field = NSTextField(labelWithString: application)
-            return field
-
-        } else if tableView == self.detailsTable {
+        if tableView == self.detailsTable {
             let item = details[row]
             if tableColumn.identifier.rawValue == DetailTableIdentifier.details.rawValue {
                 var detail: String
@@ -383,40 +399,15 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 let device = item["device_id"] ?? noDetails
                 return NSTextField(labelWithString: String("...\(device.suffix(8))"))
             }
-
-        } else if tableView == self.platformTable {
-            let platform = platforms[row]
-            let field = NSTextField(labelWithString: platform)
-            return field
         }
-        
         return nil
     }
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        if tableView == self.appTable {
-            return applications.count
-        } else if tableView == self.detailsTable {
+        if tableView == self.detailsTable {
             return details.count
-        } else if tableView == self.platformTable {
-            return platforms.count
         } else {
             return 0
-        }
-    }
-    
-    func tableViewSelectionDidChange(_ notification: Notification) {
-        if let table = notification.object as? NSTableView {
-            let appRow = appTable.selectedRow
-            let platformRow = platformTable.selectedRow
-            if table == appTable {
-                requestPlatforms(appName: applications[appRow])
-            } else if table == platformTable {
-                if appRow < 0 || platformRow < 0 { return }
-                requestAppActivity(app: applications[appRow], platform: platforms[platformRow])
-                actionsViewController?.resetTableView()
-                countersViewController?.resetTableView()
-            }
         }
     }
 }
@@ -425,12 +416,26 @@ extension ListViewController: DeviceCountTableViewDelegate {
     func selectedTableViewRow(_ row: Int, tableType: DeviceCountTableType, selectedItem: String) {
         showActivityIndicator(true)
         
-        let appRow = appTable.selectedRow
-        let platformRow = platformTable.selectedRow
+        let appRow = applicationsViewController?.selectedRow ?? -1
+        let platformRow = platformsViewController?.selectedRow ?? -1
+        if row < 0 {
+            let resetStrategy = tableType.tableResetStrategy
+            resetDataStorage(strategy: resetStrategy)
+            return
+        }
+        
+        if tableType == .applications {
+            requestPlatforms(appName: applications[row])
+            return
+        }
+        
         if appRow < 0 || platformRow < 0 || row < 0 { return }
         
-        let detailColumnTitle: String
-        if tableType == .actions {
+        var detailColumnTitle: String = "Details"
+        if tableType == .platforms {
+            requestAppActivity(app: applications[appRow], platform: platforms[platformRow])
+            platformsViewController?.updateWhereClause("\(Common.appName) = '\(applications[appRow])' AND \(Common.platform) = ")
+        } else if tableType == .actions {
             requestItemDetails(app: applications[appRow], platform: platforms[platformRow], action: selectedItem)
             detailColumnTitle = "Details"
         } else {

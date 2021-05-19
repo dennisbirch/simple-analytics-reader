@@ -77,17 +77,17 @@ struct QuerySubmitter {
                             self.completion(message)
                             return
                         }
-                    }
-                    
-                    if mode == .array {
-                        message = handleArrayResult(data)
-                    } else if mode == .dictionary {
-                        message = handleDictionaryResult(data)
-                    } else if mode == .items {
-                        message = handleItemsResult(data)
-                    }
-                    DispatchQueue.main.async {
-                        self.completion(message)
+                    } else {
+                        if mode == .array {
+                            message = handleArrayResult(data)
+                        } else if mode == .dictionary {
+                            message = handleDictionaryResult(data)
+                        } else if mode == .items {
+                            message = handleItemsResult(data)
+                        }
+                        DispatchQueue.main.async {
+                            self.completion(message)
+                        }
                     }
                 } else {
                     os_log("Error: data is nil")
