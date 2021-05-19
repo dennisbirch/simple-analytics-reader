@@ -87,21 +87,8 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             }
         }
         
-        switch self.whatItems {
-        case .items:
-            itemsRadio.state = .on
-        case .counters:
-            countersRadio.state = .on
-        default:
-            bothRadio.state = .on
-        }
-        
-        switch matchCondition {
-        case .any:
-            anyRadio.state = .on
-        default:
-            allRadio.state = .on
-        }
+        updateWhatToSelectRadioButtons()
+        updateMatchConditionsRadioButtons()
              
         if let limitPageSize = UserDefaults.standard.string(forKey: limitPageSizeKey) {
             if let index = limitComboBox.objectValues.firstIndex(where: { $0 as? String == limitPageSize }) {
@@ -195,13 +182,18 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         let submitter = QuerySubmitter(query: queries.joined(separator: ";"), mode: .array) { [weak self] (results) in
             if let results = results as? [[String]] {
                 var total = 0
-                if let items = results.first, let itemsTotal = items.first, let itemCount = Int(itemsTotal) {
-                    self?.searchLimits.itemsTotal = itemCount
-                    total += itemCount
+                if self?.whatItems == .items || self?.whatItems == .both {
+                    if var items = results.first, let itemsTotal = items.first, let itemCount = Int(itemsTotal) {
+                        self?.searchLimits.itemsTotal = itemCount
+                        total += itemCount
+                        items.remove(at: 0)
+                    }
                 }
-                if let counters = results.last, let counterTotal = counters.first, let countersCount = Int(counterTotal) {
-                    self?.searchLimits.countersTotal = countersCount
-                    total += countersCount
+                if self?.whatItems == .counters || self?.whatItems == .both {
+                    if let counters = results.last, let counterTotal = counters.first, let countersCount = Int(counterTotal) {
+                        self?.searchLimits.countersTotal = countersCount
+                        total += countersCount
+                    }
                 }
                 
                 if total > 0 {
@@ -232,7 +224,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
     
     private func limitedSearchSQL() -> String {
-        let itemsLimit = searchLimits.limitForTable(.items, whatItems: whatItems, currentLimit: 0)
+        var itemsLimit = 0
+        if (whatItems == .items || whatItems == .both) {
+            itemsLimit = searchLimits.limitForTable(.items, whatItems: whatItems, currentLimit: 0)
+        }
         var countersLimit: Int = 0
         if itemsLimit < searchLimits.pageLimit {
             countersLimit = searchLimits.limitForTable(.counters, whatItems: whatItems, currentLimit: itemsLimit)
@@ -356,6 +351,26 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         performSearchButton.isEnabled = searchLimits.currentFetchCount < searchLimits.totalCount
     }
     
+    private func updateWhatToSelectRadioButtons() {
+        switch self.whatItems {
+        case .items:
+            itemsRadio.state = .on
+        case .counters:
+            countersRadio.state = .on
+        default:
+            bothRadio.state = .on
+        }
+    }
+    
+    private func updateMatchConditionsRadioButtons() {
+        switch matchCondition {
+        case .any:
+            anyRadio.state = .on
+        default:
+            allRadio.state = .on
+        }
+    }
+    
     // MARK: - Actions
         
     @IBAction func toggledShowSearchLimit(_ sender: NSButton) {
@@ -374,6 +389,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         let what = WhatItems(rawValue: sender.title.lowercased())
         self.whatItems = what ?? .items
         UserDefaults.standard.set(sender.title, forKey: searchWhatKey)
+        searchQueriesChanged()
     }
     
     @IBAction func selectedMatchRadioButton(_ sender: NSButton) {
@@ -381,6 +397,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         let match = MatchCondition(rawValue: sender.title)
         self.matchCondition = match ?? .all
         UserDefaults.standard.set(sender.title, forKey: searchWhatKey)
+        searchQueriesChanged()
     }
     
     @IBAction func removeQuery(_ sender: NSButton) {
@@ -409,6 +426,9 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         queriesTableView.loadQueries(model.queryItems)
         self.matchCondition = model.matchType
         self.whatItems = model.whatItems
+        
+        updateWhatToSelectRadioButtons()
+        updateMatchConditionsRadioButtons()
 
         self.isLimitedSearch = model.isLimitedSearch
         if model.pageLimit > 0 {
@@ -459,12 +479,14 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             return
         }
         
-        guard let value = combo.objectValueOfSelectedItem as? String else {
+        guard let items = combo.objectValues as? [String] else {
             return
         }
+
+        let value = items[combo.indexOfSelectedItem]
         let intValue = Int(value) ?? 100
+        combo.intValue = Int32(intValue)
         searchLimits = SearchLimit(pageLimit: intValue)
-        searchLimits.pageLimit = intValue
         searchQueriesChanged()
         UserDefaults.standard.set(value, forKey: limitPageSizeKey)
     }
