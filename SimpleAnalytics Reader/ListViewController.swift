@@ -233,7 +233,9 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 self?.platformsViewController?.configureWithArray(result, tableType: .platforms, whereClause: whereClause)
 
                 if let restoration = self?.refreshUpdater, platforms.count > restoration.platformsTableSelection {
-                    self?.platformsViewController?.configureWithArray([platforms], tableType: .platforms, whereClause: whereClause)
+                    let platformsParam = platforms.map{ [$0] }
+                    self?.platformsViewController?.configureWithArray(platformsParam, tableType: .platforms, whereClause: whereClause)
+                    self?.platformsViewController?.restoreSelection(row: restoration.platformsTableSelection)
                 } else {
                     if let count = self?.platforms.count, count > 0 {
                         self?.platformsViewController?.restoreSelection(row: 0)
@@ -281,6 +283,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
             guard let result = result as? [[String : String]] else {
                 self?.showActivityIndicator(false)
+                self?.refreshUpdater = nil
                 return
             }
             
