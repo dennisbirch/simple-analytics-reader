@@ -55,6 +55,7 @@
 		D88B0D77263F87410055C196 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D89AB8BA26531FD600A69833 /* Endpoint.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Endpoint.txt; sourceTree = "<group>"; };
 		D89AB8BC2653210800A69833 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		D8CA9C9E26549811008708E0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = "../simple-analytics-reader 2/README.md"; sourceTree = "<group>"; };
 		D8D4C557264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecuteAndSaveSQLViewController.swift; sourceTree = "<group>"; };
 		D8D4C559264CAAEC0041F12F /* SQLSnippetPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLSnippetPersistence.swift; sourceTree = "<group>"; };
 		D8ED4AD5262F713600A01593 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -83,6 +84,7 @@
 		D87A5C25260AD35500D7B016 = {
 			isa = PBXGroup;
 			children = (
+				D8CA9C9E26549811008708E0 /* README.md */,
 				D87A5C30260AD35500D7B016 /* SimpleAnalytics Reader */,
 				D87A5C2F260AD35500D7B016 /* Products */,
 			);
