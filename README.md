@@ -13,7 +13,7 @@ The __query.php__ file at the top level of the project's repository folder is th
 If that's not the case, or you prefer to build your web app with another language, you can use the documentation in the query.php file to guide your web app development project.
 
 ##### Endpoint file
-Once your web app is available, you need to let SimpleAnalytics Reader know where it is by creating a text file named "Endpoint.txt" at the project folder's top level. If you open the SimpleAnalytics Reader in Xcode before having done so, you'll see a placeholder for that file in red in the Project navigator. After you create the file in the specified location, the placeholder should appear as a normal file reference.
+Once your web app is available, you need to let SimpleAnalytics Reader know where it is by creating a text file named "Endpoint.txt" at the project folder's top level. Then add the file to the project, selecting the "Create folder references" option.
 
 ##### Running and debugging
 With those two steps complete, you are ready to begin running SimpleAnalytics Reader.

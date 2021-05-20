@@ -31,7 +31,11 @@ struct QuerySubmitter {
     private let queryKey = "query"
     
     func submit() {
-        guard let url = URL(string: Endpoint.shared.urlString) else {
+        let endpointString = Endpoint.shared.urlString
+        guard endpointString.isEmpty == false else {
+            fatalError("The endpoint string is empty. Please make sure your \"Endpoint.txt\" file contains a URL string for your web app.")
+        }
+        guard let url = URL(string: endpointString) else {
             os_log("URL is nil")
             DispatchQueue.main.async {
                 self.completion([[]])
