@@ -10,7 +10,71 @@ SimpleAnalytics Reader works by sending database queries to a backend app, which
 ##### Web app
 The __query.php__ file at the top level of the project's repository folder is the best starting point for providing a web app. If you have PHP and MySQL available on your web service (and you're using MySQL for collecting your data), you can configure the file for database access and upload it to your service. 
 
-If that's not the case, or you prefer to build your web app with another language, you can use the documentation in the query.php file to guide your web app development project.
+If that's not the case, or you prefer to build your web app with another language, your web app should be able to handle POST requests with two parameters encoded in JSON in the request body: 
+
+|Label         | Contents                                                                                                      |
+|------------- | --------------------------------                                                                              |
+| __query__     | A String with semi-colon delimited SQL queries (usually two at the most)                                                   |
+| __queryMode__ | A String with a value of either "array" or "dictionary"
+
+Your web app should pass the request on to your database, and return the search results as a JSON object whose format depends on the _queryMode_ parameter passed in:
+
+|Query Mode         | Format                                                                                                      |
+|------------- | --------------------------------                                                                              |
+| __Array__ |`[[String]]` Array of arrays containing the retrieved values as strings. In PHP this is a numeric Array. 
+| __Dictionary__     |`[[String : String]]` (array of dictionaries) structure. The inner dictionary's key is the database column name, and the value is the row's value for that column. In PHP this is an associative array.
+
+Example of an _Array_ return value: 
+
+```
+▿ 2 elements
+  ▿ 0 : 1 element
+    - 0 : "iOS (iPad)"
+  ▿ 1 : 1 element
+    - 0 : "iOS (iPhone)"
+```
+
+Example of a _Dictionary_ return value:
+
+```
+▿ 4 elements
+  ▿ 0 : 2 elements
+    ▿ 0 : 2 elements
+      - key : "count"
+      ▿ value : <String>
+        - some : "9"
+    ▿ 1 : 2 elements
+      - key : "description"
+      ▿ value : <String>
+        - some : "Added observation from phone"
+  ▿ 1 : 2 elements
+    ▿ 0 : 2 elements
+      - key : "description"
+      ▿ value : <String>
+        - some : "Added observation from watch"
+    ▿ 1 : 2 elements
+      - key : "count"
+      ▿ value : <String>
+        - some : "17"
+  ▿ 2 : 2 elements
+    ▿ 0 : 2 elements
+      - key : "description"
+      ▿ value : <String>
+        - some : "Displayed session summary"
+    ▿ 1 : 2 elements
+      - key : "count"
+      ▿ value : <String>
+        - some : "9"
+  ▿ 3 : 2 elements
+    ▿ 0 : 2 elements
+      - key : "description"
+      ▿ value : <String>
+        - some : "Edited Session title"
+    ▿ 1 : 2 elements
+      - key : "count"
+      ▿ value : <String>
+        - some : "2"
+```
 
 ##### Endpoint file
 Once your web app is available, you need to let SimpleAnalytics Reader know where it is by creating a text file named "Endpoint.txt" at the project folder's top level. Then add the file to the project, selecting the "Create folder references" option.
