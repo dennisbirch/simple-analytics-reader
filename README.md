@@ -21,7 +21,7 @@ Your web app should pass the request on to your database, and return the search 
 
 |Query Mode         | Format                                                                                                      |
 |------------- | --------------------------------                                                                              |
-| __Array__ |`[[String]]` Array of arrays containing the retrieved values as strings. In PHP this is a numeric Array. 
+| __Array__ |`[[String]]` Array of arrays containing the retrieved values as strings. The outer array may contain any number of inner arrays. Inner arrays always contain a single value. In PHP this is a numeric Array. 
 | __Dictionary__     |`[[String : String]]` (array of dictionaries) structure. The inner dictionary's key is the database column name, and the value is the row's value for that column. In PHP this is an associative array.
 
 Example of an _Array_ return value: 
