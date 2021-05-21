@@ -48,12 +48,11 @@ Your script should send the query on to your database and request the results ba
 forms depending on the queryMode parameter's value. The results of that query should be sent back 
 to the SimpleAnalytics Reader app as a JSON object.
 
-If queryMode is "array", the app is expecting a [String] array in the JSON payload containing the 
-retrieved values as strings. In PHP this is a numeric Array.
+If queryMode is "array", the app is expecting a [[String]] array of arrays containing the retrieved values as strings. The outer array may contain any number of inner arrays. Each inner array contains a single value.
 
 If queryMode is "dictionary", the app is expecting a [[String : String]] (array of dictionaries) 
 structure. The inner dictionary's key is the database column name, and the value is the row's value 
-for that column. In PHP this is an associative array.
+for that column.
 
 ****************
 Be sure to configure the following four properties in order to be able to connect to your database.
