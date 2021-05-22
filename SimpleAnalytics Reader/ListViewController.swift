@@ -178,12 +178,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                     return
                 }
                 let countApps = result.compactMap{ $0.first }
-                for item in countApps {
-                    let countApp = item
-                    if apps.contains(countApp) == false {
-                        apps.append(countApp)
-                    }
-                }
+                apps = apps.uniqueValues(countApps)
                 
                 self?.applications = apps.sorted()
                 self?.showActivityIndicator(false)
@@ -220,11 +215,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                     return
                 }
                 let countPlatforms = result.compactMap{ $0.first }
-                for platform in countPlatforms {
-                    if platforms.contains(platform) == false {
-                        platforms.append(platform)
-                    }
-                }
+                platforms = platforms.uniqueValues(countPlatforms)
                 
                 self?.platforms = platforms.sorted()
                 let whereClause = "\(baseWhereClause) AND \(Common.platform) = "

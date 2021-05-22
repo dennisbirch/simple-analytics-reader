@@ -276,23 +276,16 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
                 self?.delegate?.deviceCountDataFetchEnded()
                 let itemsFirstsArray = itemsCount.compactMap{ $0.first }
                 let countersFirstArray = countersCount.compactMap{ $0.first }
-                if let uniqueIDs = self?.uniqueItems(array1: itemsFirstsArray, array2: countersFirstArray) {
-                    self?.displayDeviceCountContent(true, deviceCount: String(uniqueIDs.count))
-                }
+                let uniqueIDs = itemsFirstsArray.uniqueValues(countersFirstArray)
+                self?.displayDeviceCountContent(true, deviceCount: String(uniqueIDs.count))
             }
-
+            
             countersSubmitter.submit()
         }
         
         itemsSubmitter.submit()
     }
-    
-    private func uniqueItems(array1: [String], array2: [String]) -> [String] {
-        let theSet = Set(array1)
-        return Array(theSet.union(array2))
-    }
-
-        
+            
     private func displayDeviceCountContent(_ isVisible: Bool, deviceCount: String) {
         if isVisible == true {
             let formatStr = NSLocalizedString("unique-devices-label %@", comment: "String for 'Unique devices count' label")

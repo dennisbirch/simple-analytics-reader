@@ -57,6 +57,15 @@ extension DateFormatter {
     }
 }
 
+extension Array where Element : Hashable {
+    func uniqueValues(_ otherArray: Array) -> Array {
+        let theSet = Set(self)
+        let newSet = theSet.union(otherArray)
+        let newArray = Array(newSet)
+        return newArray
+    }
+}
+
 extension String {
     func dateFromISOString() -> Date? {
         let formatter = DateFormatter()
