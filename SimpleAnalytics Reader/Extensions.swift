@@ -53,7 +53,14 @@ extension DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = .short
+        formatter.timeZone = TimeZone.current
         return formatter
+    }    
+}
+
+extension Date {
+    func shortDateString() -> String {
+        return DateFormatter.shortDateTimeFormatter.string(from: self)
     }
 }
 
