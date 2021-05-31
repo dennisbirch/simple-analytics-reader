@@ -326,7 +326,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
                     if let lastCounter = counters.last {
                         lastCounterID = lastCounter.id
                     }
-                    self?.searchLimits.updateIndices(itemsID: lastItemID, countersID: lastCounterID, itemsCount: items.count, countersCount: counters.count)
+                    self?.searchLimits.updateForNextLimitedSeek(itemsID: lastItemID, countersID: lastCounterID, itemsCount: items.count, countersCount: counters.count)
                     self?.updateSearchLimitInfo(results: result)
                 }
                 self?.searchDelegate?.searchCompleted(results: result, lastRowNumber: nextRow)

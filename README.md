@@ -4,6 +4,8 @@
 
 The [SimpleAnalytics package](https://github.com/dennisbirch/simple-analytics) allows you to collect data user interaction analytic data in iOS and macOS applications. This _SimpleAnalytics Reader_ app project allows you to more easily make sense of that collected data by displaying it on your Mac. It can run right out of the box with one minor configuration step.
 
+![SimpleAnalytics Reader screenshots.](https://github.com/dennisbirch/simple-analytics/blob/master/images/simpleanalytics-reader.png)
+
 ### Setup
 SimpleAnalytics Reader works by sending database queries to a backend app, which forwards them to the database that's collecting your analytics data. Therefore you need to make a web app available, and add a text file with the URL for it in the SimpleAnalytics Reader project folder.
 

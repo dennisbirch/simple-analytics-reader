@@ -111,8 +111,7 @@ struct QuerySubmitter {
             let decoded = try decoder.decode([[String]].self, from: result)
             return decoded
         } catch {
-            printDebugDecodingError(error)
-            os_log("Raw data:\n%@", String(data: result, encoding: .utf8) ?? "Nil")
+            printDebugDecodingError(error, rawData: result)
         }
         
         return []
@@ -123,6 +122,8 @@ struct QuerySubmitter {
         do {
             var decoded = try decoder.decode([[String : String?]].self, from: result)
             // TODO: Remove this hack to sanitize incoming data
+            // Note: Included because early versions of SimpleAnalytics could have populated
+            // the database with nil values for some columns.
             #if DEBUG
             for idx in 0..<decoded.count {
                 var item = decoded[idx]
@@ -136,8 +137,7 @@ struct QuerySubmitter {
             #endif
             return decoded
         } catch {
-            printDebugDecodingError(error)
-            os_log("Raw data:\n%@", String(data: result, encoding: .utf8) ?? "Nil")
+            printDebugDecodingError(error, rawData: result)
         }
         
         return []
@@ -149,16 +149,18 @@ struct QuerySubmitter {
             let decoded = try decoder.decode([AnalyticsItem].self, from: result)
             return decoded
         } catch {
-            printDebugDecodingError(error)
-            os_log("Raw data:\n%@", String(data: result, encoding: .utf8) ?? "Nil")
+            printDebugDecodingError(error, rawData: result)
         }
         
         return []
     }
 
-    private func printDebugDecodingError(_ error: Error) {
+    private func printDebugDecodingError(_ error: Error, rawData: Data) {
         #if DEBUG
-        print("Error decoding result: \(error)")
+        // printing the error description
+//        print("Error decoding result: \(error)")
+        os_log("Error decoding result: %@", String(describing: error))
+        os_log("Raw data:\n%@", String(data: rawData, encoding: .utf8) ?? "Nil")
         #endif
     }
 

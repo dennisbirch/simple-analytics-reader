@@ -81,6 +81,74 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D836AD6D266536F2004A4C0D /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				D87A5C43260BCC2900D7B016 /* ListViewController.swift */,
+				D8FB8319264E171A00218700 /* DeviceCountDisplayViewController.swift */,
+				D87396E9262106C40050D602 /* SearchViewController.swift */,
+				D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */,
+				D8EE21A5264341D800C4F554 /* SavedQueriesViewController.swift */,
+				D8D4C557264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		D836AD6E2665370F004A4C0D /* Search-View-Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				D8D4C559264CAAEC0041F12F /* SQLSnippetPersistence.swift */,
+				D8EE21A32641F34E00C4F554 /* QueryPersistence.swift */,
+			);
+			path = "Search-View-Persistence";
+			sourceTree = "<group>";
+		};
+		D836AD6F2665372D004A4C0D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D829263A262360D600B16434 /* QueryItem.swift */,
+				D87DCA71262A6325000668A3 /* AnalyticsItem.swift */,
+				D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D836AD702665378B004A4C0D /* List-View-Support */ = {
+			isa = PBXGroup;
+			children = (
+				D829263C262386E600B16434 /* QueriesTable.swift */,
+				D87396ED26210D050050D602 /* QueryItemCell.swift */,
+			);
+			path = "List-View-Support";
+			sourceTree = "<group>";
+		};
+		D836AD71266538CA004A4C0D /* Search-Support */ = {
+			isa = PBXGroup;
+			children = (
+				D8F0B4AB260CFD83008D6054 /* DBAccess.swift */,
+				D8399F44264B2ED600AA2A81 /* SearchLimit.swift */,
+			);
+			path = "Search-Support";
+			sourceTree = "<group>";
+		};
+		D836AD7226653900004A4C0D /* Custom-Views */ = {
+			isa = PBXGroup;
+			children = (
+				D8EE21CA2644BD6300C4F554 /* TextEntryDialog */,
+				D8FAE0382646E91C00BA500B /* DetailView */,
+			);
+			path = "Custom-Views";
+			sourceTree = "<group>";
+		};
+		D836AD7326653929004A4C0D /* Network-Layer */ = {
+			isa = PBXGroup;
+			children = (
+				D87A5C41260AD37000D7B016 /* Network.swift */,
+				D89AB8BC2653210800A69833 /* Endpoint.swift */,
+			);
+			path = "Network-Layer";
+			sourceTree = "<group>";
+		};
 		D87A5C25260AD35500D7B016 = {
 			isa = PBXGroup;
 			children = (
@@ -103,27 +171,15 @@
 			children = (
 				D87A5C37260AD35700D7B016 /* Main.storyboard */,
 				D87A5C31260AD35500D7B016 /* AppDelegate.swift */,
-				D87A5C43260BCC2900D7B016 /* ListViewController.swift */,
-				D8FB8319264E171A00218700 /* DeviceCountDisplayViewController.swift */,
-				D87396E9262106C40050D602 /* SearchViewController.swift */,
-				D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */,
-				D8EE21A5264341D800C4F554 /* SavedQueriesViewController.swift */,
-				D8D4C557264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift */,
-				D8D4C559264CAAEC0041F12F /* SQLSnippetPersistence.swift */,
-				D8EE21A32641F34E00C4F554 /* QueryPersistence.swift */,
-				D829263A262360D600B16434 /* QueryItem.swift */,
-				D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */,
-				D829263C262386E600B16434 /* QueriesTable.swift */,
-				D87396ED26210D050050D602 /* QueryItemCell.swift */,
-				D8EE21CA2644BD6300C4F554 /* TextEntryDialog */,
-				D8FAE0382646E91C00BA500B /* DetailView */,
-				D87A5C41260AD37000D7B016 /* Network.swift */,
-				D89AB8BC2653210800A69833 /* Endpoint.swift */,
+				D836AD6D266536F2004A4C0D /* ViewControllers */,
+				D836AD702665378B004A4C0D /* List-View-Support */,
+				D836AD6E2665370F004A4C0D /* Search-View-Persistence */,
+				D836AD7226653900004A4C0D /* Custom-Views */,
+				D836AD6F2665372D004A4C0D /* Model */,
+				D836AD71266538CA004A4C0D /* Search-Support */,
+				D836AD7326653929004A4C0D /* Network-Layer */,
 				D8CA9CA02655D28E008708E0 /* Endpoint.txt */,
-				D8F0B4AB260CFD83008D6054 /* DBAccess.swift */,
-				D8399F44264B2ED600AA2A81 /* SearchLimit.swift */,
 				D88B0D77263F87410055C196 /* Extensions.swift */,
-				D87DCA71262A6325000668A3 /* AnalyticsItem.swift */,
 				D8ED4AD5262F713600A01593 /* Localizable.strings */,
 				D87A5C35260AD35700D7B016 /* Assets.xcassets */,
 				D87A5C3A260AD35700D7B016 /* Info.plist */,

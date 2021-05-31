@@ -56,6 +56,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         searchQueriesViewController = queriesVC
         
         NotificationCenter.default.addObserver(self, selector: #selector(tableViewScrolled(_:)), name: NSScrollView.didLiveScrollNotification, object: nil)
+        view.window?.delegate = self
     }
     
     override func viewWillDisappear() {
@@ -337,5 +338,11 @@ extension SearchViewController {
         
         let newLocation = CGPoint(x: originX, y: originY)
         self.detailView?.frame.origin = newLocation
+    }
+}
+
+extension SearchViewController: NSWindowDelegate {
+    func windowDidResize(_ notification: Notification) {
+        view.updateConstraints()
     }
 }

@@ -34,7 +34,7 @@ struct SearchLimit {
         self.pageLimit = pageLimit
     }
         
-    mutating func updateIndices(itemsID: Int, countersID: Int, itemsCount: Int, countersCount: Int) {
+    mutating func updateForNextLimitedSeek(itemsID: Int, countersID: Int, itemsCount: Int, countersCount: Int) {
         lastItemsID = itemsID
         lastCountersID = countersID
         itemsFetched += itemsCount
@@ -52,7 +52,6 @@ struct SearchLimit {
                 return pageLimit
             }
             
-            // fetch all items, then all counters
             if table == .items {
                 if itemsAvailable >= pageLimit {
                     return pageLimit

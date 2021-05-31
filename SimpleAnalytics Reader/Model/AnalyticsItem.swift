@@ -91,19 +91,3 @@ struct AnalyticsItem: Hashable, Decodable {
         return newItem
     }
 }
-
-extension DateFormatter {
-    static var shortFormatter: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .medium
-        dateFormatter.timeZone = TimeZone.current
-        return dateFormatter
-    }
-}
-
-extension Date {
-    func shortDateString() -> String {
-        return DateFormatter.shortFormatter.string(from: self)
-    }
-}
