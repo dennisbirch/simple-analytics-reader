@@ -337,6 +337,19 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="List" id="y3y-pE-AlI">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="List" id="Ff3-zK-AZH">
+                                    <items>
+                                        <menuItem title="OS Version Summary…" id="KCs-xy-9sw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showOSVersionSummary:" target="Ady-hI-5gd" id="FBO-wc-M85"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Search" id="D1S-Pc-cwC" userLabel="Search">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Search" id="1Uk-nS-n5r">
@@ -773,11 +786,11 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <containerView fixedFrame="YES" id="82s-nD-iVe">
-                                                <rect key="frame" x="0.0" y="0.0" width="169" height="194"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="169" height="180"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </containerView>
                                             <containerView fixedFrame="YES" id="9m2-os-On6">
-                                                <rect key="frame" x="0.0" y="204" width="169" height="194"/>
+                                                <rect key="frame" x="0.0" y="190" width="169" height="208"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </containerView>
                                         </subviews>
@@ -1834,8 +1847,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="643079226.81258595">
-                                                                                    <!--2021-05-19 01:07:06 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="645414584.30674803">
+                                                                                    <!--2021-06-15 01:49:44 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>

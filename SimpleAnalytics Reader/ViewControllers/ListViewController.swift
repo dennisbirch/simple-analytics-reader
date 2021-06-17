@@ -21,11 +21,16 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var actionsViewController: DeviceCountDisplayViewController?
     private var countersViewController: DeviceCountDisplayViewController?
 
-    private var applications = [String]()
+    private var applications = [String]() {
+        didSet {
+            ListViewController.sharedApps = applications
+        }
+    }
     private var platforms = [String]()
     private var details = [[String : String]]()
     private var lastDetailsRequestSource: DetailsRequestSource = .items
     private var refreshUpdater: ListViewRefreshRestoration?
+    static var sharedApps = [String]()
     
     //dummy data stores for bookkeeping purposes
     private var actions = [String]()
@@ -144,6 +149,14 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         if let tabViewController = parent as? NSTabViewController {
             tabViewController.selectedTabViewItemIndex = 1
         }
+    }
+    
+    @IBAction func showOSVersionSummary(_ sender: Any) {
+        guard let summaryVC = OSSummaryViewController.createViewController() else {
+            return
+        }
+        
+        presentAsSheet(summaryVC)
     }
     
     // MARK: - Private Methods
