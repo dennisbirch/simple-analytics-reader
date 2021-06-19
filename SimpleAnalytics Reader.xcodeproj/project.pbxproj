@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,6 +21,7 @@
 		D87A5C44260BCC2900D7B016 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87A5C43260BCC2900D7B016 /* ListViewController.swift */; };
 		D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA6D262A11E8000668A3 /* QueryTypeQueryComparison.swift */; };
 		D87DCA72262A6325000668A3 /* AnalyticsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87DCA71262A6325000668A3 /* AnalyticsItem.swift */; };
+		D88531E9267C027B00550491 /* SwiftyMarkdown in Frameworks */ = {isa = PBXBuildFile; productRef = D88531E8267C027B00550491 /* SwiftyMarkdown */; };
 		D88B0D78263F87410055C196 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B0D77263F87410055C196 /* Extensions.swift */; };
 		D89AB8BD2653210800A69833 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89AB8BC2653210800A69833 /* Endpoint.swift */; };
 		D8CA9CA12655D28E008708E0 /* Endpoint.txt in Resources */ = {isa = PBXBuildFile; fileRef = D8CA9CA02655D28E008708E0 /* Endpoint.txt */; };
@@ -79,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D88531E9267C027B00550491 /* SwiftyMarkdown in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +230,9 @@
 			dependencies = (
 			);
 			name = "SimpleAnalytics Reader";
+			packageProductDependencies = (
+				D88531E8267C027B00550491 /* SwiftyMarkdown */,
+			);
 			productName = "Analytics Query";
 			productReference = D87A5C2E260AD35500D7B016 /* SimpleAnalytics Reader.app */;
 			productType = "com.apple.product-type.application";
@@ -255,6 +260,9 @@
 				Base,
 			);
 			mainGroup = D87A5C25260AD35500D7B016;
+			packageReferences = (
+				D88531E7267C027B00550491 /* XCRemoteSwiftPackageReference "SwiftyMarkdown" */,
+			);
 			productRefGroup = D87A5C2F260AD35500D7B016 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -520,6 +528,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D88531E7267C027B00550491 /* XCRemoteSwiftPackageReference "SwiftyMarkdown" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simonfairbairn/SwiftyMarkdown";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D88531E8267C027B00550491 /* SwiftyMarkdown */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D88531E7267C027B00550491 /* XCRemoteSwiftPackageReference "SwiftyMarkdown" */;
+			productName = SwiftyMarkdown;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D87A5C26260AD35500D7B016 /* Project object */;
 }

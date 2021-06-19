@@ -152,11 +152,11 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
     
     @IBAction func showOSVersionSummary(_ sender: Any) {
-        guard let summaryVC = OSSummaryViewController.createViewController() else {
+        guard let summaryWC = OSSummaryViewController.createWindowController() else {
             return
         }
         
-        presentAsSheet(summaryVC)
+        summaryWC.showWindow(self)
     }
     
     // MARK: - Private Methods
