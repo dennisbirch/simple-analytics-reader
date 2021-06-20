@@ -57,7 +57,6 @@ class OSSummaryViewController: NSViewController {
         ageControl.selectItem(at: 1)
         
         ageControl.delegate = self
-        resultsTextView.isRichText = true
         
         heightConstraint.constant = hideResultsHeightConstant
     }
