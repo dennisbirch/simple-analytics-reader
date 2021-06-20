@@ -107,7 +107,7 @@ function runQuery($conn, $query, $mode) {
 	 	$encoded = json_encode($full_results);        
         echo($encoded);
 	 }
-
+}
 
 
 function generateErrorResponse($message, $code) {
