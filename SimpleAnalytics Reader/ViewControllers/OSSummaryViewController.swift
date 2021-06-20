@@ -137,7 +137,12 @@ class OSSummaryViewController: NSViewController {
         }
         
         // creates a query that gets the count of devices using each system version in the database for the app and platform specified, within the date range entered
-        let sql = "SELECT COUNT(\(Common.deviceID)) AS 'count', \(Common.systemVersion) AS 'version' FROM \(tableName) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName) WHERE \(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)) GROUP BY \(Common.systemVersion)"
+        let whereClause = "\(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)"
+        let sql =
+"""
+SELECT COUNT(\(Common.deviceID)) AS 'count', \(Common.systemVersion) AS 'version' FROM \(tableName) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
+SELECT DISTINCT(\(Common.deviceID)) FROM \(tableName) WHERE \(whereClause)
+"""
                 
         let submitter = QuerySubmitter(query: sql, mode: .dictionary) { [weak self] result in
             guard let result = result as? [[String : String]] else {
@@ -167,6 +172,7 @@ class OSSummaryViewController: NSViewController {
             // parse the results into an array of VersionInfoDef's
             var versionInfo = [VersionInfoDef]()
             var total = 0
+            var deviceCount = 0
             for item in results {
                 if let version = item["version"],
                    version.isEmpty == false,
@@ -176,6 +182,8 @@ class OSSummaryViewController: NSViewController {
                     let newVersionDef = ("__Version \(version)__", count)
                     versionInfo.append(newVersionDef)
                     total += number
+                } else if let _ = item[Common.deviceID] {
+                    deviceCount += 1
                 }
             }
             // calculate percentages and generate version strings for display
@@ -193,6 +201,9 @@ class OSSummaryViewController: NSViewController {
                 ### System Versions
                 \(versionsString.joined(separator: "\n"))
                 """
+            if deviceCount > 0 {
+                mdString.append("\nTotal devices: \(deviceCount)")
+            }
         }
 
         // Use the SwiftyMarkdown module to convert the raw markdown string to an NSAttributedString
