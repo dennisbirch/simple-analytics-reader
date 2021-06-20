@@ -136,7 +136,7 @@ class OSSummaryViewController: NSViewController {
             timestampClause = " AND timestamp >= \(searchDateString.sqlify()) "
         }
         
-        // creates a query that gets the count of devices using each system version in the database for the app and platform specified, within the date range entered
+        // Creates a query that gets the count of devices using each system version in the database table specified, for the app and platform specified, within the date range entered. Also gets the unique device IDs for the same specs.
         let whereClause = "\(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)"
         let sql =
 """
@@ -170,22 +170,20 @@ SELECT DISTINCT(\(Common.deviceID)) FROM \(tableName) WHERE \(whereClause)
             mdString = "## Nothing found\n### Your search query returned no results\nTry changing your search criteria and performing a new fetch."
         } else {
             // parse the results into an array of VersionInfoDef's
-            var versionInfo = [VersionInfoDef]()
             var total = 0
-            var deviceCount = 0
-            for item in results {
-                if let version = item["version"],
-                   version.isEmpty == false,
-                   let count = item["count"],
+            let deviceIDs = results.filter{ $0[Common.deviceID] != nil }
+            let versionInfo: [VersionInfoDef] = results.map{
+                if let version = $0["version"],
+                   let count = $0["count"],
                    let number = Int(count),
                    number > 0 {
-                    let newVersionDef = ("__Version \(version)__", count)
-                    versionInfo.append(newVersionDef)
-                    total += number
-                } else if let _ = item[Common.deviceID] {
-                    deviceCount += 1
+                    total += 1
+                    return VersionInfoDef("__Version__: \(version)", count)
                 }
+                // if-let conditions not met
+                return VersionInfoDef("", "")
             }
+
             // calculate percentages and generate version strings for display
             var versionsString = [String]()
             for version in versionInfo {
@@ -201,8 +199,10 @@ SELECT DISTINCT(\(Common.deviceID)) FROM \(tableName) WHERE \(whereClause)
                 ### System Versions
                 \(versionsString.joined(separator: "\n"))
                 """
+            
+            let deviceCount = deviceIDs.count
             if deviceCount > 0 {
-                mdString.append("\nTotal devices: \(deviceCount)")
+                mdString.append("\n\nTotal devices: \(deviceCount)")
             }
         }
 
