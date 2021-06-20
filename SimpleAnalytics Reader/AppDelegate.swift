@@ -21,6 +21,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to tear down your application
     }
 
+    @IBAction func showOSVersionSummary(_ sender: Any) {
+        guard let summaryWC = OSSummaryViewController.createWindowController() else {
+            return
+        }
+        
+        summaryWC.showWindow(self)
+    }
+    
 
 }
 

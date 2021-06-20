@@ -151,15 +151,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         }
     }
     
-    @IBAction func showOSVersionSummary(_ sender: Any) {
-        guard let summaryWC = OSSummaryViewController.createWindowController() else {
-            return
-        }
-        
-        summaryWC.showWindow(self)
-    }
-    
-    // MARK: - Private Methods
+     // MARK: - Private Methods
     
     private func showActivityIndicator(_ shouldShow: Bool) {
         DispatchQueue.main.async { [weak self] in

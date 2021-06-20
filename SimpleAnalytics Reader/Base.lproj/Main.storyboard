@@ -337,19 +337,6 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="List" id="y3y-pE-AlI">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="List" id="Ff3-zK-AZH">
-                                    <items>
-                                        <menuItem title="OS Version Summary…" id="KCs-xy-9sw">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="showOSVersionSummary:" target="Ady-hI-5gd" id="FBO-wc-M85"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
                             <menuItem title="Search" id="D1S-Pc-cwC" userLabel="Search">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Search" id="1Uk-nS-n5r">
@@ -677,6 +664,13 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
+                                        <menuItem title="OS Version Summary…" id="QLk-VR-olG">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showOSVersionSummary:" target="Ady-hI-5gd" id="baC-fI-MYn"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="2x0-dS-JIt"/>
                                         <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
@@ -1847,8 +1841,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="645813086.55833101">
-                                                                                    <!--2021-06-19 16:31:26 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="645904785.04227996">
+                                                                                    <!--2021-06-20 17:59:45 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
