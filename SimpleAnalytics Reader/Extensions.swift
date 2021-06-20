@@ -110,6 +110,12 @@ extension String {
         let composite = major + remainder
         return Double(composite) ?? 0
     }
+    
+    func formattedForExtendedTooltip() -> String {
+        let text = self.replacingOccurrences(of: "{", with: "").replacingOccurrences(of: "}", with: "")
+        let tooltip = text.replacingOccurrences(of: ", ", with: "\n")
+        return tooltip
+    }
 }
 
 extension ISO8601DateFormatter {

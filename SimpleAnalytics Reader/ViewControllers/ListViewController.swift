@@ -386,7 +386,13 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 if detail.isEmpty {
                     detail = noDetails
                 }
-                return NSTextField(labelWithString: detail)
+                let tip = detail.formattedForExtendedTooltip()
+                let label = NSTextField(labelWithString: detail)
+                if tip.isEmpty == false {
+                    label.toolTip = tip
+                    label.allowsExpansionToolTips = true
+                }
+                return label
             } else if tableColumn.identifier.rawValue == DetailTableIdentifier.timestamp.rawValue,
                       let timestamp = item["timestamp"] {
                 if let date = timestamp.dateFromISOString() {
