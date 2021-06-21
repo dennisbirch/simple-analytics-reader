@@ -15,7 +15,7 @@ class OSSummaryViewController: NSViewController {
     @IBOutlet private weak var applicationsPopup: NSPopUpButton!
     @IBOutlet private weak var tablePopup: NSPopUpButton!
     @IBOutlet private weak var platformPopup: NSPopUpButton!
-    @IBOutlet private weak var ageControl: NSComboBox!
+    @IBOutlet private weak var ageCombobox: NSComboBox!
     @IBOutlet private weak var resultsTextView: NSTextView!
     @IBOutlet private weak var daysAgoField: NSTextField!
     @IBOutlet private weak var heightConstraint: NSLayoutConstraint!
@@ -57,11 +57,11 @@ class OSSummaryViewController: NSViewController {
         platformPopup.removeAllItems()
         platformPopup.addItems(withTitles: platforms)
         
-        ageControl.removeAllItems()
-        ageControl.addItems(withObjectValues: dateSuggestions)
-        ageControl.selectItem(at: 1)
+        ageCombobox.removeAllItems()
+        ageCombobox.addItems(withObjectValues: dateSuggestions)
+        ageCombobox.selectItem(at: 1)
         
-        ageControl.delegate = self
+        ageCombobox.delegate = self
         
         heightConstraint.constant = hideResultsHeightConstant
     }
@@ -135,9 +135,9 @@ class OSSummaryViewController: NSViewController {
         fetchSpinnner.isHidden = false
         
         var timestampClause = ""
-        if ageControl.stringValue != allDates {
+        if ageCombobox.stringValue != allDates {
             let now = Date()
-            let daysAgo = ageControl.intValue
+            let daysAgo = ageCombobox.intValue
             let searchDate = now.addingTimeInterval(Double(-daysAgo) * (60.0 * 60.0 * 24.0))
             let searchDateString = searchDate.databaseFormatString()
             timestampClause = " AND timestamp >= \(searchDateString.sqlify()) "

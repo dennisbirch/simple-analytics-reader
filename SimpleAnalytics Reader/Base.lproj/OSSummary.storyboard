@@ -300,7 +300,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="ageControl" destination="JQ7-oJ-tuJ" id="CUo-8I-sVG"/>
+                        <outlet property="ageCombobox" destination="JQ7-oJ-tuJ" id="CUo-8I-sVG"/>
                         <outlet property="applicationsPopup" destination="JCj-LF-HTc" id="Rzr-zS-iKU"/>
                         <outlet property="daysAgoField" destination="pu6-Ve-stq" id="haJ-gw-2Uh"/>
                         <outlet property="fetchButton" destination="TzS-JK-BKh" id="jMe-uB-7yZ"/>
