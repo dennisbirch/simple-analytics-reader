@@ -19,6 +19,8 @@ class OSSummaryViewController: NSViewController {
     @IBOutlet private weak var resultsTextView: NSTextView!
     @IBOutlet private weak var daysAgoField: NSTextField!
     @IBOutlet private weak var heightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var fetchSpinnner: NSProgressIndicator!
+    @IBOutlet private weak var fetchButton: NSButton!
     
     private var percentFormatter: NumberFormatter {
         let numFormatter = NumberFormatter()
@@ -66,6 +68,9 @@ class OSSummaryViewController: NSViewController {
     
     override func viewWillAppear() {
         super.viewWillAppear()
+        
+        fetchSpinnner.isHidden = true
+        fetchSpinnner.stopAnimation(self)
         
         guard let window = view.window else {
             return
@@ -125,6 +130,9 @@ class OSSummaryViewController: NSViewController {
         }
         
         resultsTextView.string = ""
+        fetchButton.isEnabled = false
+        fetchSpinnner.startAnimation(true)
+        fetchSpinnner.isHidden = false
         
         var timestampClause = ""
         if ageControl.stringValue != allDates {
@@ -149,6 +157,9 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
                 return
             }
             
+            self?.fetchSpinnner.stopAnimation(self)
+            self?.fetchSpinnner.isHidden = true
+            self?.fetchButton.isEnabled = true
             self?.displayResults(result)
         }
         

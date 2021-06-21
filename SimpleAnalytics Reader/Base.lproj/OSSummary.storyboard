@@ -265,6 +265,9 @@
                                     <action selector="summarize:" target="bU7-R8-ocO" id="DI6-5C-vmE"/>
                                 </connections>
                             </button>
+                            <progressIndicator hidden="YES" maxValue="100" displayedWhenStopped="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="1QD-tQ-OjQ">
+                                <rect key="frame" x="332" y="22" width="16" height="16"/>
+                            </progressIndicator>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xLc-1T-Rlc">
                                 <rect key="frame" x="201" y="13" width="94" height="32"/>
                                 <constraints>
@@ -286,9 +289,11 @@
                             <constraint firstItem="Owa-F3-mOi" firstAttribute="top" secondItem="tOy-S4-hL0" secondAttribute="top" constant="20" symbolic="YES" id="Ayo-Ws-ww0"/>
                             <constraint firstAttribute="bottom" secondItem="TzS-JK-BKh" secondAttribute="bottom" constant="20" symbolic="YES" id="RPV-b0-UwW"/>
                             <constraint firstAttribute="trailing" secondItem="TzS-JK-BKh" secondAttribute="trailing" constant="20" symbolic="YES" id="Z2n-0a-iSH"/>
+                            <constraint firstItem="1QD-tQ-OjQ" firstAttribute="centerY" secondItem="TzS-JK-BKh" secondAttribute="centerY" id="aQZ-Ta-skJ"/>
                             <constraint firstItem="Owa-F3-mOi" firstAttribute="leading" secondItem="tOy-S4-hL0" secondAttribute="leading" constant="20" symbolic="YES" id="c63-f5-DuB"/>
                             <constraint firstItem="TzS-JK-BKh" firstAttribute="top" secondItem="SZK-2o-jvR" secondAttribute="bottom" constant="21" id="eDf-eX-1Dy"/>
                             <constraint firstAttribute="trailing" secondItem="Owa-F3-mOi" secondAttribute="trailing" constant="20" symbolic="YES" id="gg9-qd-PfG"/>
+                            <constraint firstItem="1QD-tQ-OjQ" firstAttribute="leading" secondItem="TzS-JK-BKh" secondAttribute="trailing" constant="-48" id="igC-aA-KCr"/>
                             <constraint firstAttribute="trailing" secondItem="TzS-JK-BKh" secondAttribute="trailing" constant="20" symbolic="YES" id="lH2-DL-aCc"/>
                             <constraint firstItem="TzS-JK-BKh" firstAttribute="leading" secondItem="xLc-1T-Rlc" secondAttribute="trailing" constant="12" symbolic="YES" id="pME-aS-Xex"/>
                             <constraint firstAttribute="trailing" secondItem="LNs-6c-Aff" secondAttribute="trailing" constant="20" symbolic="YES" id="va9-0e-Rdo"/>
@@ -298,6 +303,8 @@
                         <outlet property="ageControl" destination="JQ7-oJ-tuJ" id="CUo-8I-sVG"/>
                         <outlet property="applicationsPopup" destination="JCj-LF-HTc" id="Rzr-zS-iKU"/>
                         <outlet property="daysAgoField" destination="pu6-Ve-stq" id="haJ-gw-2Uh"/>
+                        <outlet property="fetchButton" destination="TzS-JK-BKh" id="jMe-uB-7yZ"/>
+                        <outlet property="fetchSpinnner" destination="1QD-tQ-OjQ" id="W7v-vb-5Y6"/>
                         <outlet property="heightConstraint" destination="pHL-I0-ONh" id="fxM-LH-cdi"/>
                         <outlet property="platformPopup" destination="Umg-Bt-VFy" id="rd4-8f-9dt"/>
                         <outlet property="resultsTextView" destination="SZK-2o-jvR" id="MY4-S7-qlm"/>
