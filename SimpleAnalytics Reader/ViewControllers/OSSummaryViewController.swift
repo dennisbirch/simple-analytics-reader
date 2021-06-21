@@ -34,6 +34,7 @@ class OSSummaryViewController: NSViewController {
     private let allDates = "All"
     private let dateSuggestions = ["All", "7", "30", "90"]
     private let frameIdentifier = "osSummaryWindowFrame"
+    private let uniqueDeviceCount = "device_count"
     
     private let showResultsHeightConstant: CGFloat = 120
     private let hideResultsHeightConstant: CGFloat = 0
@@ -137,7 +138,7 @@ class OSSummaryViewController: NSViewController {
         let sql =
 """
 SELECT COUNT(\(Common.deviceID)) AS 'count', \(Common.systemVersion) AS 'version' FROM \(tableName) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
-SELECT DISTINCT(\(Common.deviceID)) FROM \(tableName) WHERE \(whereClause)
+SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCount) FROM \(tableName) WHERE \(whereClause)
 """
                 
         let submitter = QuerySubmitter(query: sql, mode: .dictionary) { [weak self] result in
@@ -167,7 +168,8 @@ SELECT DISTINCT(\(Common.deviceID)) FROM \(tableName) WHERE \(whereClause)
         } else {
             // parse the results into an array of VersionInfoDef's
             var total = 0
-            let deviceIDs = results.filter{ $0[Common.deviceID] != nil }
+            let deviceCount = results.filter{ $0[uniqueDeviceCount] != nil }.first?.values.first
+            
             let versionInfo: [VersionInfoDef] = results.map{
                 if let version = $0["version"],
                    let count = $0["count"],
@@ -196,8 +198,8 @@ SELECT DISTINCT(\(Common.deviceID)) FROM \(tableName) WHERE \(whereClause)
                 \(versionsString.joined(separator: "\n"))
                 """
             
-            let deviceCount = deviceIDs.count
-            if deviceCount > 0 {
+            if let deviceCount = deviceCount,
+               deviceCount.isEmpty == false {
                 mdString.append("\n\nTotal devices: \(deviceCount)")
             }
         }
