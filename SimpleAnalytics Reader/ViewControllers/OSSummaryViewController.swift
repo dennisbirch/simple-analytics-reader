@@ -34,7 +34,9 @@ class OSSummaryViewController: NSViewController {
     private let allDates = "All"
     private let dateSuggestions = ["All", "7", "30", "90"]
     private let frameIdentifier = "osSummaryWindowFrame"
-    private let uniqueDeviceCount = "device_count"
+    private let uniqueDeviceCountKey = "device_count"
+    private let versionKey = "version"
+    private let countKey = "count"
     
     private let showResultsHeightConstant: CGFloat = 120
     private let hideResultsHeightConstant: CGFloat = 0
@@ -137,8 +139,8 @@ class OSSummaryViewController: NSViewController {
         let whereClause = "\(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)"
         let sql =
 """
-SELECT COUNT(\(Common.deviceID)) AS 'count', \(Common.systemVersion) AS 'version' FROM \(tableName) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
-SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCount) FROM \(tableName) WHERE \(whereClause)
+SELECT COUNT(\(Common.deviceID)) AS '\(countKey)', \(Common.systemVersion) AS '\(versionKey)' FROM \(tableName) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
+SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tableName) WHERE \(whereClause)
 """
                 
         let submitter = QuerySubmitter(query: sql, mode: .dictionary) { [weak self] result in
@@ -168,14 +170,14 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCount) FROM \(tableN
         } else {
             // parse the results into an array of VersionInfoDef's
             var total = 0
-            let deviceCount = results.filter{ $0[uniqueDeviceCount] != nil }.first?.values.first
+            let deviceCount = results.filter{ $0[uniqueDeviceCountKey] != nil }.first?.values.first
             
             let versionInfo: [VersionInfoDef] = results.map{
-                if let version = $0["version"],
-                   let count = $0["count"],
+                if let version = $0[versionKey],
+                   let count = $0[countKey],
                    let number = Int(count),
                    number > 0 {
-                    total += 1
+                    total += number
                     return VersionInfoDef("__Version__: \(version)", count)
                 }
                 // if-let conditions not met
@@ -185,7 +187,8 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCount) FROM \(tableN
             // calculate percentages and generate version strings for display
             var versionsString = [String]()
             for version in versionInfo {
-                if let number = Int(version.count) {
+                if let number = Int(version.count),
+                   total > 0 {
                     let percent = Double(number)/Double(total)
                     if let pctString = percentFormatter.string(from: NSNumber(value: percent)) {
                         versionsString.append("\(version.version):  \t\(version.count)  \t(\(pctString))")
