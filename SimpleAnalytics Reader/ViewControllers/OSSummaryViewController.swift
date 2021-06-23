@@ -45,6 +45,8 @@ class OSSummaryViewController: NSViewController {
     
     typealias VersionInfoDef = (version: String, count: String)
     
+    // MARK: - ViewController Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -99,6 +101,20 @@ class OSSummaryViewController: NSViewController {
         return summaryWC
     }
     
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
+        
+        if heightConstraint.constant == hideResultsHeightConstant,
+           let window = view.window,
+           window.frame.size.height == window.maxSize.height {
+            var newFrame = window.frame
+            newFrame.size.height = window.minSize.height
+            view.window?.setFrame(newFrame, display: false)
+        }
+    }
+    
+    // MARK: - Actions
+
     @IBAction func dismissWindow(_ sender: NSButton) {
         if heightConstraint.constant == showResultsHeightConstant,
            let window = view.window {
@@ -166,6 +182,8 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
         submitter.submit()
     }
     
+    // MARK: - Private Methods
+    
     private func displayResults(_ results: [[String : String]]) {
         heightConstraint.constant = showResultsHeightConstant
         
@@ -232,19 +250,9 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
         let attrStr = md.attributedString()
         resultsTextView.textStorage?.append(attrStr)
     }
-    
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
-        
-        if heightConstraint.constant == hideResultsHeightConstant,
-           let window = view.window,
-           window.frame.size.height == window.maxSize.height {
-            var newFrame = window.frame
-            newFrame.size.height = window.minSize.height
-            view.window?.setFrame(newFrame, display: false)
-        }
-    }
 }
+
+// MARK: - NSComboBoxDelegate
 
 extension OSSummaryViewController: NSComboBoxDelegate {
     func comboBoxSelectionDidChange(_ notification: Notification) {
@@ -258,6 +266,8 @@ extension OSSummaryViewController: NSComboBoxDelegate {
     }
 }
 
+// MARK: - NSWindowDelegate
+
 extension OSSummaryViewController: NSWindowDelegate {
     func windowWillResize(_ sender: NSWindow, to frameSize: NSSize) -> NSSize {
         var newSize = frameSize
@@ -265,6 +275,8 @@ extension OSSummaryViewController: NSWindowDelegate {
         return newSize
     }
 }
+
+// MARK: -
 
 extension SwiftyMarkdown {
     func applyDefaultStyles() {
