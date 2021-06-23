@@ -232,7 +232,7 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
             
             if let deviceCount = deviceCount,
                deviceCount.isEmpty == false {
-                mdString.append("\n\nTotal devices: \(deviceCount)")
+                mdString.append("\n\n__Total devices__: \(deviceCount)")
             }
         }
 
