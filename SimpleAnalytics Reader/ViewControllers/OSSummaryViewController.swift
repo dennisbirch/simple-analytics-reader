@@ -6,8 +6,9 @@
 //
 
 import Cocoa
-import SwiftyMarkdown
 import os.log
+
+fileprivate let bodyFontSize: CGFloat = 13
 
 class OSSummaryViewController: NSViewController {
     static let viewControllerIdentifier = "OSSummaryViewController"
@@ -31,10 +32,9 @@ class OSSummaryViewController: NSViewController {
         return numFormatter
     }
 
-    private let defaultFontSize: CGFloat = 13
     private var tabStyle: NSParagraphStyle {
         let pStyle = NSMutableParagraphStyle()
-        let font = NSFont.systemFont(ofSize: defaultFontSize)
+        let font = NSFont.systemFont(ofSize: bodyFontSize)
         let charWidth = font.screenFont(with: .defaultRenderingMode).advancement(forGlyph: 32).width
         pStyle.defaultTabInterval = charWidth * 4
         pStyle.lineSpacing = 2
@@ -207,13 +207,16 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
             self?.view.layoutSubtreeIfNeeded()
         }
         
-        var mdString = ""
+        var attributedStr = NSMutableAttributedString()
 
         if results.isEmpty {
-            mdString = "## Nothing found\n### Your search query returned no results\nTry changing your search criteria and performing a new fetch."
+            attributedStr = "Nothing found".applyH2()
+            attributedStr.append(NSAttributedString(string: "\n"))
+            attributedStr.append("Your search query returned no results\nTry changing your search criteria and performing a new fetch.".applyH3())
         } else {
             // parse the results into an array of VersionInfoDef's
             var total = 0
+
             let deviceCount = results.filter{ $0[uniqueDeviceCountKey] != nil }.first?.values.first
             
             let versionInfo: [VersionInfoDef] = results.map{
@@ -222,60 +225,62 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
                    let number = Int(count),
                    number > 0 {
                     total += number
-                    return VersionInfoDef("__Version__: \(version)", count)
+                    return VersionInfoDef(version, count)
                 }
                 // if-let conditions not met
                 return VersionInfoDef("", "")
             }
 
-            // calculate percentages and generate version strings for display
-            var versionsString = [String]()
-            for version in versionInfo {
-                if let number = Int(version.count),
-                   total > 0 {
-                    let percent = Double(number)/Double(total)
-                    if let pctString = percentFormatter.string(from: NSNumber(value: percent)) {
-                        versionsString.append("\(version.version):  \t\(version.count)  \t(\(pctString))")
-                    }
-                }
-            }
-            let listString = versionsString.joined(separator: "\n")
-            mdString =
-                """
-                ### System Versions
-                \(listString)
-                """
+            let attrVersionsString = attributedVersionsList(versionInfo, total: total)
+            attributedStr = "System Versions\n".applyH2()
+            attributedStr.append(attrVersionsString)
             
             if let deviceCount = deviceCount,
                deviceCount.isEmpty == false {
-                mdString.append("\n\n__Total devices__: \(deviceCount)")
+                let deviceCntStr = String(deviceCount)
+                attributedStr.append(NSAttributedString(string: "\n\n"))
+                attributedStr.append("Total devices: ".applyBoldBody())
+                attributedStr.append(deviceCntStr.applyBody())
             }
         }
 
-        // Use the SwiftyMarkdown module to convert the raw markdown string to an NSAttributedString
-        let md = SwiftyMarkdown(string: mdString)
-        md.applyDefaultStyles()
-        let mdAttrStr = md.attributedString()
+        let range = NSMakeRange(0, attributedStr.string.count)
+        attributedStr.addAttribute(.paragraphStyle, value: tabStyle, range: range)
         
-        let range = NSMakeRange(0, mdAttrStr.string.count)
-        let attrStr = NSMutableAttributedString(attributedString: mdAttrStr)
-        attrStr.addAttribute(.paragraphStyle, value: tabStyle, range: range)
+        resultsTextView.textStorage?.insert(attributedStr, at: 0)
+    }
+    
+    private func attributedVersionsList(_ list: [VersionInfoDef], total: Int) -> NSAttributedString {
+        // convert an array of VersionInfoDefs into a Tab and Return delimited NSAttributedString with percentages applied
+        let attrList = NSMutableAttributedString()
+        for version in list {
+            let mutableAttrItem = NSMutableAttributedString()
+            if let number = Int(version.count),
+               total > 0 {
+                let percent = Double(number)/Double(total)
+                if let pctString = percentFormatter.string(from: NSNumber(value: percent)) {
+                    mutableAttrItem.append("Version ".applyBoldBody())
+                    let values = "\(version.version):\t\(version.count)\t(\(pctString))"
+                    mutableAttrItem.append(values.applyBody())
+                }
+                mutableAttrItem.append(NSAttributedString(string: "\n"))
+                
+                attrList.append(mutableAttrItem)
+            }
+        }
         
-        resultsTextView.textStorage?.insert(attrStr, at: 0)
+        return NSAttributedString(attributedString: attrList)
     }
     
     private func displayErrorMessage(_ message: String) {
-        let mdString = "### \(message)"
-        let md = SwiftyMarkdown(string: mdString)
-        md.applyDefaultStyles()
-        let attrStr = md.attributedString()
-        resultsTextView.textStorage?.append(attrStr)
+        let attrStr = message.applyH3()
+        resultsTextView.textStorage?.insert(attrStr, at: 0)
     }
     
     private func setupTextViewTabbing() {
         var textViewAttributes = resultsTextView.typingAttributes
         textViewAttributes[NSAttributedString.Key.paragraphStyle] = tabStyle
-        textViewAttributes[NSAttributedString.Key.font] = NSFont.systemFont(ofSize: defaultFontSize)
+        textViewAttributes[NSAttributedString.Key.font] = NSFont.systemFont(ofSize: bodyFontSize)
         resultsTextView.typingAttributes = textViewAttributes
         
         if let defaultGraphStyle = resultsTextView.defaultParagraphStyle {
@@ -320,14 +325,39 @@ extension OSSummaryViewController: NSWindowDelegate {
 
 // MARK: -
 
-extension SwiftyMarkdown {
-    func applyDefaultStyles() {
-        h1.fontSize = 24
-        h1.fontStyle = .bold
-        h2.fontSize = 20
-        h2.fontStyle = .bold
-        h3.fontSize = 16
-        h4.fontSize = 14
-        body.fontSize = 13
+extension String {
+    fileprivate func applyH1() -> NSMutableAttributedString {
+        return self.applyFontSized(24, bold: true)
+    }
+    
+    fileprivate func applyH2() -> NSMutableAttributedString {
+        return applyFontSized(20, bold: true)
+    }
+    
+    fileprivate func applyH3() -> NSMutableAttributedString {
+        return applyFontSized(16)
+    }
+    
+    fileprivate func applyH4() -> NSMutableAttributedString {
+        return applyFontSized(14)
+    }
+    
+    fileprivate func applyBody() -> NSMutableAttributedString {
+        return applyFontSized(bodyFontSize)
+    }
+    
+    fileprivate func applyBoldBody() -> NSMutableAttributedString {
+        return applyFontSized(bodyFontSize, bold: true)
+    }
+    
+    fileprivate func applyFontSized(_ size: CGFloat, bold: Bool = false) -> NSMutableAttributedString {
+        let font: NSFont
+        if bold == true {
+            font = NSFont.boldSystemFont(ofSize: size)
+        } else {
+            font = NSFont.systemFont(ofSize: size)
+        }
+        
+        return NSMutableAttributedString(attributedString: NSAttributedString(string: self, attributes: [.font : font]))
     }
 }
