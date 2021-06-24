@@ -30,7 +30,20 @@ class OSSummaryViewController: NSViewController {
         numFormatter.maximumFractionDigits = 1
         return numFormatter
     }
-    
+
+    private let defaultFontSize: CGFloat = 13
+    private var tabStyle: NSParagraphStyle {
+        let pStyle = NSMutableParagraphStyle()
+        let font = NSFont.systemFont(ofSize: defaultFontSize)
+        let charWidth = font.screenFont(with: .defaultRenderingMode).advancement(forGlyph: 32).width
+        pStyle.defaultTabInterval = charWidth * 4
+        pStyle.lineSpacing = 2
+        let tabStops = [NSTextTab(textAlignment: .right, location: 30, options: [:]),
+                        NSTextTab(textAlignment: .right, location: 40, options: [.columnTerminators : "."])]
+        pStyle.tabStops = tabStops
+        return pStyle
+    }
+
     private let sourceTables = ["Items", "Counters"]
     private let platforms = ["iOS", "macOS"]
     private let allDates = "All"
@@ -83,6 +96,8 @@ class OSSummaryViewController: NSViewController {
         window.setFrameUsingName(frameIdentifier)
         
         window.stripTitleChrome()
+        
+        setupTextViewTabbing()
     }
     
     override func viewWillDisappear() {
@@ -224,10 +239,11 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
                     }
                 }
             }
+            let listString = versionsString.joined(separator: "\n")
             mdString =
                 """
                 ### System Versions
-                \(versionsString.joined(separator: "\n"))
+                \(listString)
                 """
             
             if let deviceCount = deviceCount,
@@ -239,8 +255,13 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
         // Use the SwiftyMarkdown module to convert the raw markdown string to an NSAttributedString
         let md = SwiftyMarkdown(string: mdString)
         md.applyDefaultStyles()
-        let attrStr = md.attributedString()
-        resultsTextView.textStorage?.append(attrStr)
+        let mdAttrStr = md.attributedString()
+        
+        let range = NSMakeRange(0, mdAttrStr.string.count)
+        let attrStr = NSMutableAttributedString(attributedString: mdAttrStr)
+        attrStr.addAttribute(.paragraphStyle, value: tabStyle, range: range)
+        
+        resultsTextView.textStorage?.insert(attrStr, at: 0)
     }
     
     private func displayErrorMessage(_ message: String) {
@@ -250,6 +271,27 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
         let attrStr = md.attributedString()
         resultsTextView.textStorage?.append(attrStr)
     }
+    
+    private func setupTextViewTabbing() {
+        var textViewAttributes = resultsTextView.typingAttributes
+        textViewAttributes[NSAttributedString.Key.paragraphStyle] = tabStyle
+        textViewAttributes[NSAttributedString.Key.font] = NSFont.systemFont(ofSize: defaultFontSize)
+        resultsTextView.typingAttributes = textViewAttributes
+        
+        if let defaultGraphStyle = resultsTextView.defaultParagraphStyle {
+            let mutableDefaultStyle = defaultGraphStyle.mutableCopy() as! NSMutableParagraphStyle
+            mutableDefaultStyle.tabStops = tabStyle.tabStops
+            resultsTextView.defaultParagraphStyle = mutableDefaultStyle
+        } else {
+            let mutableDefaultStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+            mutableDefaultStyle.tabStops = tabStyle.tabStops
+            resultsTextView.defaultParagraphStyle = mutableDefaultStyle
+        }
+        
+        resultsTextView.defaultParagraphStyle = tabStyle
+    }
+    
+
 }
 
 // MARK: - NSComboBoxDelegate
@@ -286,5 +328,6 @@ extension SwiftyMarkdown {
         h2.fontStyle = .bold
         h3.fontSize = 16
         h4.fontSize = 14
+        body.fontSize = 13
     }
 }
