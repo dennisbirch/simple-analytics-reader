@@ -165,8 +165,10 @@ class OSSummaryViewController: NSViewController {
         
         // if text other than "All" is entered, the age value will be 0, so assure a value of at least 1
         // and populate the combobox with that
-        let days = max(1, ageCombobox.intValue)
-        ageCombobox.intValue = days
+        if ageCombobox.stringValue != allDates {
+            let days = max(1, ageCombobox.intValue)
+            ageCombobox.intValue = days
+        }
         
         resultsTextView.string = ""
         fetchButton.isEnabled = false
