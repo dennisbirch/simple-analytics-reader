@@ -47,7 +47,8 @@ class OSSummaryViewController: NSViewController {
     private let sourceTables = ["Items", "Counters"]
     private let platforms = ["iOS", "macOS"]
     private let allDates = "All"
-    private let dateSuggestions = ["All", "7", "30", "90"]
+    private let bothSources = "Both"
+    private let dateSuggestions = ["1", "7", "30", "90"]
     private let frameIdentifier = "osSummaryWindowFrame"
     private let uniqueDeviceCountKey = "device_count"
     private let versionKey = "version"
@@ -68,13 +69,15 @@ class OSSummaryViewController: NSViewController {
         
         tablePopup.removeAllItems()
         tablePopup.addItems(withTitles: sourceTables)
+        tablePopup.addItem(withTitle: bothSources)
         
         platformPopup.removeAllItems()
         platformPopup.addItems(withTitles: platforms)
         
         ageCombobox.removeAllItems()
         ageCombobox.addItems(withObjectValues: dateSuggestions)
-        ageCombobox.selectItem(at: 1)
+        ageCombobox.addItem(withObjectValue: allDates)
+        ageCombobox.selectItem(at: 0)
         
         ageCombobox.delegate = self
         
@@ -160,6 +163,11 @@ class OSSummaryViewController: NSViewController {
             return
         }
         
+        // if text other than "All" is entered, the age value will be 0, so assure a value of at least 1
+        // and populate the combobox with that
+        let days = max(1, ageCombobox.intValue)
+        ageCombobox.intValue = days
+        
         resultsTextView.string = ""
         fetchButton.isEnabled = false
         fetchSpinnner.startAnimation(true)
@@ -174,14 +182,7 @@ class OSSummaryViewController: NSViewController {
             timestampClause = " AND timestamp >= \(searchDateString.sqlify()) "
         }
         
-        // Creates a query that gets the count of devices using each system version in the database table specified, for the app and platform specified, within the date range entered. Also gets the unique device IDs for the same specs.
-        let whereClause = "\(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)"
-        let sql =
-"""
-SELECT COUNT(\(Common.deviceID)) AS '\(countKey)', \(Common.systemVersion) AS '\(versionKey)' FROM \(tableName) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
-SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tableName) WHERE \(whereClause)
-"""
-                
+        let sql = summarySQLString(table: tableName, appName: appName, platform: platform, timestampClause: timestampClause)
         let submitter = QuerySubmitter(query: sql, mode: .dictionary) { [weak self] result in
             guard let result = result as? [[String : String]] else {
                 self?.displayErrorMessage("There was an error fetching system version information from the database.")
@@ -191,6 +192,7 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
             self?.fetchSpinnner.stopAnimation(self)
             self?.fetchSpinnner.isHidden = true
             self?.fetchButton.isEnabled = true
+            
             self?.displayResults(result)
         }
         
@@ -198,6 +200,29 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
     }
     
     // MARK: - Private Methods
+    
+    private func summarySQLString(table: String, appName: String, platform: String, timestampClause: String) -> String {
+        // Creates a query that gets the count of devices using each system version in the database table(s) specified, for the app and platform specified, within the date range entered. Also gets the unique device ID count for the same specs.
+        let tables: [String]
+        if table == bothSources.lowercased() {
+            tables = sourceTables
+        } else {
+            tables = [table]
+        }
+        
+        var sql = [String]()
+        for tableName in tables {
+            let whereClause = "\(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)"
+            let statement =
+    """
+    SELECT COUNT(\(Common.deviceID)) AS '\(countKey)', \(Common.systemVersion) AS '\(versionKey)' FROM \(tableName.lowercased()) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName.lowercased()) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
+    SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tableName.lowercased()) WHERE \(whereClause)
+    """
+            sql.append(statement)
+        }
+        
+        return sql.joined(separator: ";\n")
+    }
     
     private func displayResults(_ results: [[String : String]]) {
         heightConstraint.constant = showResultsHeightConstant
@@ -214,12 +239,15 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
             attributedStr.append(NSAttributedString(string: "\n"))
             attributedStr.append("Your search query returned no results\nTry changing your search criteria and performing a new fetch.".applyH3())
         } else {
+            // merge results of "both" query if necessary
+            let merged = mergeAndSortFetchResults(results)
+            
             // parse the results into an array of VersionInfoDef's
             var total = 0
 
-            let deviceCount = results.filter{ $0[uniqueDeviceCountKey] != nil }.first?.values.first
+            let deviceCount = merged.filter{ $0[uniqueDeviceCountKey] != nil }.first?.values.first
             
-            let versionInfo: [VersionInfoDef] = results.map{
+            let versionInfo: [VersionInfoDef] = merged.map{
                 if let version = $0[versionKey],
                    let count = $0[countKey],
                    let number = Int(count),
@@ -248,6 +276,48 @@ SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tab
         attributedStr.addAttribute(.paragraphStyle, value: tabStyle, range: range)
         
         resultsTextView.textStorage?.insert(attributedStr, at: 0)
+    }
+    
+    private func mergeAndSortFetchResults(_ array: [[String : String]]) -> [[String : String]] {
+        var totalDeviceCount = 0
+        var merged = [[String : String]]()
+        for item in array {
+            // first look for version matches already in the 'merged' array and add the count value to the existing count value for that item
+            if let version = merged.first(where: { $0[versionKey] == item[versionKey] }),
+               let versionStr = version[versionKey],
+               versionStr.isEmpty == false,
+               let count = version[countKey],
+               let startCount = Int(count),
+               let itemCount = item[countKey], let addCount = Int(itemCount) {
+                let newCount = startCount + addCount
+                    let newVersion: [String : String] = [versionKey : versionStr,
+                                                         countKey : "\(newCount)"]
+                    if let idx = merged.firstIndex(where: { $0[versionKey] == versionStr }) {
+                        merged[idx] = newVersion
+                }
+            } else if let versionStr = item[versionKey],
+                      versionStr.isEmpty == false {
+                // no version match, so just add it to the array
+                merged.append(item)
+            } else if let deviceCountStr = item[uniqueDeviceCountKey],
+                      let deviceCount = Int(deviceCountStr) {
+                // this item is a device count result, so add its value to the deviceCount var
+                totalDeviceCount += deviceCount
+            }
+        }
+        
+        merged.append([uniqueDeviceCountKey : "\(totalDeviceCount)"])
+
+        // sort in ascending version # order
+        let sorted = merged.sorted { item1, item2 in
+            guard let v1 = item1[versionKey], let v2 = item2[versionKey] else {
+                return true
+            }
+
+            return v1 < v2
+        }
+        
+        return sorted
     }
     
     private func attributedVersionsList(_ list: [VersionInfoDef], total: Int) -> NSAttributedString {

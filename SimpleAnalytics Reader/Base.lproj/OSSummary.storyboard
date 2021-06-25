@@ -154,7 +154,7 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="fill" orientation="horizontal" alignment="bottom" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qs0-da-Sgo">
-                                        <rect key="frame" x="0.0" y="0.0" width="232" height="23"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="242" height="23"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xqp-5i-fYr">
                                                 <rect key="frame" x="-2" y="0.0" width="69" height="16"/>
@@ -178,8 +178,8 @@
                                                 </comboBoxCell>
                                             </comboBox>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pu6-Ve-stq">
-                                                <rect key="frame" x="175" y="0.0" width="59" height="16"/>
-                                                <textFieldCell key="cell" lineBreakMode="clipping" title="days ago" id="2ZJ-PV-sGN">
+                                                <rect key="frame" x="175" y="0.0" width="69" height="16"/>
+                                                <textFieldCell key="cell" lineBreakMode="clipping" title="day(s) ago" id="2ZJ-PV-sGN">
                                                     <font key="font" usesAppearanceFont="YES"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
