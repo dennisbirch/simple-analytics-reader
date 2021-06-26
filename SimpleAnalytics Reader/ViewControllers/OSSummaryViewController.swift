@@ -165,7 +165,7 @@ class OSSummaryViewController: NSViewController {
         
         // if text other than "All" is entered, the age value will be 0, so assure a value of at least 1
         // and populate the combobox with that
-        if ageCombobox.stringValue != allDates {
+        if ageCombobox.stringValue.lowercased() != allDates.lowercased() {
             let days = max(1, ageCombobox.intValue)
             ageCombobox.intValue = days
         }
@@ -176,7 +176,7 @@ class OSSummaryViewController: NSViewController {
         fetchSpinnner.isHidden = false
         
         var timestampClause = ""
-        if ageCombobox.stringValue != allDates {
+        if ageCombobox.stringValue.lowercased() != allDates.lowercased() {
             let now = Date()
             let daysAgo = ageCombobox.intValue
             let searchDate = now.addingTimeInterval(Double(-daysAgo) * (60.0 * 60.0 * 24.0))
