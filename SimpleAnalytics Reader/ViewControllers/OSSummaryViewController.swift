@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import Combine
 import os.log
 
 fileprivate let bodyFontSize: CGFloat = 13
@@ -43,6 +44,7 @@ class OSSummaryViewController: NSViewController {
         pStyle.tabStops = tabStops
         return pStyle
     }
+    private var searchTextObserver: AnyCancellable?
 
     private let sourceTables = ["Items", "Counters"]
     private let platforms = ["iOS", "macOS"]
@@ -101,6 +103,7 @@ class OSSummaryViewController: NSViewController {
         window.stripTitleChrome()
         
         setupTextViewTabbing()
+        setupSearchTextObserver()
     }
     
     override func viewWillDisappear() {
@@ -368,6 +371,17 @@ class OSSummaryViewController: NSViewController {
         resultsTextView.defaultParagraphStyle = tabStyle
     }
     
+    private func setupSearchTextObserver() {
+        let sub = NotificationCenter.default
+            .publisher(for: NSControl.textDidChangeNotification, object: ageCombobox)
+            .map( { ($0.object as! NSTextField).stringValue } )
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink(receiveValue: { [weak self] in
+                self?.daysAgoField.isHidden = (!$0.isNumeric())
+            })
+        
+        searchTextObserver = sub
+    }
 
 }
 
@@ -431,5 +445,9 @@ extension String {
         }
         
         return NSMutableAttributedString(attributedString: NSAttributedString(string: self, attributes: [.font : font]))
+    }
+    
+    fileprivate func isNumeric() -> Bool {
+        return self.allSatisfy{ $0.isNumber }
     }
 }
