@@ -230,7 +230,9 @@ class OSSummaryViewController: NSViewController {
     }
     
     private func displayResults(_ results: [[String : String]]) {
-        heightConstraint.constant = showResultsHeightConstant
+        if heightConstraint.constant != showResultsHeightConstant {
+            heightConstraint.constant = showResultsHeightConstant
+        }
         
         NSAnimationContext.runAnimationGroup { [weak self] (context) in
             context.duration = 0.25
