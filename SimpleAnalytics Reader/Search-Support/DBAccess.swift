@@ -24,6 +24,8 @@ struct Common {
     static let deviceID = "device_id"
     static let platform = "platform"
     static let timestamp = "timestamp"
+    static let appVersion = "app_version"
+    static let systemVersion = "system_version"
 }
 
 struct DBAccess {

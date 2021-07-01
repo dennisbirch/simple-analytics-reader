@@ -55,12 +55,23 @@ extension DateFormatter {
         formatter.timeStyle = .short
         formatter.timeZone = TimeZone.current
         return formatter
-    }    
+    }
+    
+    static var databaseTimestampFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone.current
+        return formatter
+    }
 }
 
 extension Date {
     func shortDateString() -> String {
         return DateFormatter.shortDateTimeFormatter.string(from: self)
+    }
+    
+    func databaseFormatString() -> String {
+        return DateFormatter.databaseTimestampFormatter.string(from: self)
     }
 }
 
@@ -75,8 +86,7 @@ extension Array where Element : Hashable {
 
 extension String {
     func dateFromISOString() -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let formatter = DateFormatter.databaseTimestampFormatter
         return formatter.date(from: self)
     }
 
@@ -99,6 +109,12 @@ extension String {
         let remainder = numberString.replacingCharacters(in: replaceRange, with: "").replacingOccurrences(of: ".", with: "")
         let composite = major + remainder
         return Double(composite) ?? 0
+    }
+    
+    func formattedForExtendedTooltip() -> String {
+        let text = self.replacingOccurrences(of: "{", with: "").replacingOccurrences(of: "}", with: "")
+        let tooltip = text.replacingOccurrences(of: ", ", with: "\n")
+        return tooltip
     }
 }
 

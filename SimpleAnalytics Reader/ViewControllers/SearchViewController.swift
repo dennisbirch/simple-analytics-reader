@@ -12,11 +12,9 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     @IBOutlet private weak var resultsTableView: NSTableView!
     @IBOutlet private weak var queriesContainerView: NSView!
     @IBOutlet private weak var networkActivityIndicator: NSProgressIndicator!
-    private var detailView: DetailView?
     
     private var items = [AnalyticsItem]()
     var searchQueriesViewController: SearchQueriesViewController?
-    private var cellTrackingArea: NSTrackingArea?
     private var lastColumn = -1
     private var lastRow = -1
 
@@ -52,29 +50,9 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                                      queriesView.topAnchor.constraint(equalTo: queriesContainerView.topAnchor),
                                      queriesView.bottomAnchor.constraint(equalTo: queriesContainerView.bottomAnchor)])
         
-        updateTrackingAreas()
         searchQueriesViewController = queriesVC
         
-        NotificationCenter.default.addObserver(self, selector: #selector(tableViewScrolled(_:)), name: NSScrollView.didLiveScrollNotification, object: nil)
         view.window?.delegate = self
-    }
-    
-    override func viewWillDisappear() {
-        super.viewWillDisappear()
-        dismissDetailView()
-    }
-    
-    func updateTrackingAreas() {
-        if cellTrackingArea == nil {
-            cellTrackingArea = NSTrackingArea(rect: NSRect.zero,
-                                              options: [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow, .inVisibleRect],
-                                              owner: self, userInfo: nil)
-        }
-        
-        if let area = cellTrackingArea,
-           resultsTableView.trackingAreas.contains(area) == false {
-            resultsTableView.addTrackingArea(area)
-        }
     }
     
     func updateSearchQueriesViewController() {
@@ -91,15 +69,9 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     @IBAction func showListUI(_ sender: Any) {
-        dismissDetailView()
         if let tabViewController = parent as? NSTabViewController {
             tabViewController.selectedTabViewItemIndex = 0
         }
-    }
-    
-    func dismissDetailView() {
-        detailView?.removeFromSuperview()
-        detailView = nil
     }
     
     private func resetTableView() {
@@ -137,7 +109,13 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         } else if tableColumn?.title == ColumnHeadings.description {
             return NSTextField(labelWithString: item.description)
         } else if tableColumn?.title == ColumnHeadings.details {
-            return NSTextField(labelWithString: item.details)
+            let label = NSTextField(labelWithString: item.details)
+            let detail = item.details.formattedForExtendedTooltip()
+            if detail.isEmpty == false {
+                label.toolTip = detail
+                label.allowsExpansionToolTips = true
+            }
+            return label
         } else if tableColumn?.title == ColumnHeadings.count {
             let countLabel = NSTextField(labelWithString: item.count)
             countLabel.alignment = .right
@@ -222,40 +200,6 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         
         return itemsSorted
     }
-
-    override func mouseMoved(with event: NSEvent) {
-        let winLocation = event.locationInWindow
-        let tableLoc = view.convert(winLocation, to: resultsTableView)
-        let column = resultsTableView.column(at: tableLoc)
-        let row = resultsTableView.row(at: tableLoc)
-        if column < 0 { return }
-        if row < 0 {
-            lastRow = row
-            return
-        }
-        
-        if column != lastColumn || row != lastRow {
-            lastColumn = column
-            lastRow = row
-            
-            let tableColumn = resultsTableView.tableColumns[column]
-            if tableColumn.title == ColumnHeadings.details {
-                showDetailsContent(row: row, column: column)
-            } else {
-                dismissDetailView()
-            }
-        }
-    }
-    
-    override func mouseExited(with event: NSEvent) {
-        super .mouseExited(with: event)
-        dismissDetailView()
-    }
-    
-    @objc func tableViewScrolled(_ notification: Notification) {
-        if notification.object as? NSScrollView != resultsTableView.enclosingScrollView { return }
-        dismissDetailView()
-    }
     
     // MARK: - QuerySearchDelegate
     
@@ -281,63 +225,6 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 alert.runModal()
             }
         }
-    }
-}
-
-extension SearchViewController {
-    private func showDetailsContent(row: Int, column: Int) {
-        dismissDetailView()
-        
-        if let view = resultsTableView.view(atColumn: column, row: row, makeIfNecessary: false) {
-            if let label = view as? NSTextField {
-                let text = label.stringValue.replacingOccurrences(of: "{", with: "").replacingOccurrences(of: "}", with: "")
-                if text.isEmpty == true {
-                    return
-                }
-                let detail = text.replacingOccurrences(of: ", ", with: "\n")
-                showDetailString(detail, column: column, row: row, cellView: view)
-            }
-        }
-    }
-        
-    private func showDetailString(_ text: String, column: Int, row: Int, cellView: NSView) {
-        let columnWidth: CGFloat = 240
-        guard let detailView = DetailView.create(with: text, width: columnWidth) else {
-            os_log("Couldn't create a detail view")
-            return
-        }
-        
-        self.detailView = detailView
-        setDetailViewLocation(for: column, row: row, cellView: cellView)
-        resultsTableView.addSubview(detailView)
-    }
-    
-    private func setDetailViewLocation(for column: Int, row: Int, cellView: NSView) {
-        guard let detailView = self.detailView else {
-            return
-        }
-        
-        let detailFrame = detailView.frame
-        var cellFrame = cellView.frame
-        var originX = cellFrame.origin.x + cellFrame.width
-        let convertedTableFrame = resultsTableView.convert(resultsTableView.frame, to: view)
-        let availableWidth = view.frame.width - convertedTableFrame.origin.x
-        if originX + detailFrame.width > availableWidth {
-            originX = cellFrame.origin.x - detailFrame.width
-        }
-        
-        cellFrame = cellView.convert(cellView.frame, to: view)
-        let cellYDelta = cellFrame.origin.y + (cellFrame.height * 2) + 20
-        let scrollY = resultsTableView.visibleRect.origin.y
-        let viewHeight = view.frame.height
-        var originY = viewHeight - cellYDelta + scrollY
-        let availableSpace = viewHeight - detailFrame.height - originY + scrollY
-        if availableSpace < detailFrame.height {
-            originY = viewHeight - cellFrame.origin.y - (detailFrame.height * 2)
-        }
-        
-        let newLocation = CGPoint(x: originX, y: originY)
-        self.detailView?.frame.origin = newLocation
     }
 }
 

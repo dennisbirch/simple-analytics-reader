@@ -10,6 +10,8 @@
 		D829263B262360D600B16434 /* QueryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263A262360D600B16434 /* QueryItem.swift */; };
 		D829263D262386E600B16434 /* QueriesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263C262386E600B16434 /* QueriesTable.swift */; };
 		D8399F45264B2ED600AA2A81 /* SearchLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8399F44264B2ED600AA2A81 /* SearchLimit.swift */; };
+		D85E9E762678371800A9CD0A /* OSSummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D85E9E742678371800A9CD0A /* OSSummary.storyboard */; };
+		D85E9E782678374100A9CD0A /* OSSummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85E9E772678374000A9CD0A /* OSSummaryViewController.swift */; };
 		D87396EB262106C40050D602 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87396E9262106C40050D602 /* SearchViewController.swift */; };
 		D87396EE26210D050050D602 /* QueryItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87396ED26210D050050D602 /* QueryItemCell.swift */; };
 		D87A5C32260AD35500D7B016 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87A5C31260AD35500D7B016 /* AppDelegate.swift */; };
@@ -40,6 +42,8 @@
 		D829263A262360D600B16434 /* QueryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItem.swift; sourceTree = "<group>"; };
 		D829263C262386E600B16434 /* QueriesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueriesTable.swift; sourceTree = "<group>"; };
 		D8399F44264B2ED600AA2A81 /* SearchLimit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchLimit.swift; sourceTree = "<group>"; };
+		D85E9E752678371800A9CD0A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OSSummary.storyboard; sourceTree = "<group>"; };
+		D85E9E772678374000A9CD0A /* OSSummaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSSummaryViewController.swift; sourceTree = "<group>"; };
 		D87396E9262106C40050D602 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		D87396ED26210D050050D602 /* QueryItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItemCell.swift; sourceTree = "<group>"; };
 		D87A5C2E260AD35500D7B016 /* SimpleAnalytics Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SimpleAnalytics Reader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +94,7 @@
 				D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */,
 				D8EE21A5264341D800C4F554 /* SavedQueriesViewController.swift */,
 				D8D4C557264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift */,
+				D85E9E772678374000A9CD0A /* OSSummaryViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				D87A5C37260AD35700D7B016 /* Main.storyboard */,
+				D85E9E742678371800A9CD0A /* OSSummary.storyboard */,
 				D87A5C31260AD35500D7B016 /* AppDelegate.swift */,
 				D836AD6D266536F2004A4C0D /* ViewControllers */,
 				D836AD702665378B004A4C0D /* List-View-Support */,
@@ -222,6 +228,8 @@
 			dependencies = (
 			);
 			name = "SimpleAnalytics Reader";
+			packageProductDependencies = (
+			);
 			productName = "Analytics Query";
 			productReference = D87A5C2E260AD35500D7B016 /* SimpleAnalytics Reader.app */;
 			productType = "com.apple.product-type.application";
@@ -249,6 +257,8 @@
 				Base,
 			);
 			mainGroup = D87A5C25260AD35500D7B016;
+			packageReferences = (
+			);
 			productRefGroup = D87A5C2F260AD35500D7B016 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -267,6 +277,7 @@
 				D8ED4AD6262F713600A01593 /* Localizable.strings in Resources */,
 				D87A5C39260AD35700D7B016 /* Main.storyboard in Resources */,
 				D8CA9CA12655D28E008708E0 /* Endpoint.txt in Resources */,
+				D85E9E762678371800A9CD0A /* OSSummary.storyboard in Resources */,
 				D8EE21CE2644BD6300C4F554 /* TextEntryDialog.xib in Resources */,
 				D8FAE0372646E91300BA500B /* DetailView.xib in Resources */,
 			);
@@ -288,6 +299,7 @@
 				D829263D262386E600B16434 /* QueriesTable.swift in Sources */,
 				D89AB8BD2653210800A69833 /* Endpoint.swift in Sources */,
 				D8EE21A6264341D800C4F554 /* SavedQueriesViewController.swift in Sources */,
+				D85E9E782678374100A9CD0A /* OSSummaryViewController.swift in Sources */,
 				D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */,
 				D8D4C55A264CAAEC0041F12F /* SQLSnippetPersistence.swift in Sources */,
 				D87DCA6E262A11E8000668A3 /* QueryTypeQueryComparison.swift in Sources */,
@@ -306,6 +318,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		D85E9E742678371800A9CD0A /* OSSummary.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D85E9E752678371800A9CD0A /* Base */,
+			);
+			name = OSSummary.storyboard;
+			sourceTree = "<group>";
+		};
 		D87A5C37260AD35700D7B016 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -441,7 +461,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1002;
+				CURRENT_PROJECT_VERSION = 1005;
 				DEVELOPMENT_TEAM = B75Q6TLYBM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "SimpleAnalytics Reader/Info.plist";
@@ -449,7 +469,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dennisbirch.SimpleAnalytics-Reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -466,7 +486,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1002;
+				CURRENT_PROJECT_VERSION = 1005;
 				DEVELOPMENT_TEAM = B75Q6TLYBM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "SimpleAnalytics Reader/Info.plist";
@@ -474,7 +494,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dennisbirch.SimpleAnalytics-Reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -26,19 +26,19 @@ enum QueryType: String, CaseIterable {
     var dbColumnName: String {
         switch self {
         case .title:
-            return "description"
+            return Items.description
         case .datetime:
-            return "timestamp"
+            return Common.timestamp
         case .deviceID:
-            return "device_id"
+            return Common.deviceID
         case .platform:
-            return "platform"
+            return Common.platform
         case .appName:
-            return "app_name"
+            return Common.appName
         case .appVersion:
-            return "app_version"
+            return Common.appVersion
         case .systemVersion:
-            return "system_version"
+            return Common.systemVersion
         }
     }
 }

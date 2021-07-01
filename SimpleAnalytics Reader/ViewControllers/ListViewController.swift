@@ -21,11 +21,16 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var actionsViewController: DeviceCountDisplayViewController?
     private var countersViewController: DeviceCountDisplayViewController?
 
-    private var applications = [String]()
+    private var applications = [String]() {
+        didSet {
+            ListViewController.sharedApps = applications
+        }
+    }
     private var platforms = [String]()
     private var details = [[String : String]]()
     private var lastDetailsRequestSource: DetailsRequestSource = .items
     private var refreshUpdater: ListViewRefreshRestoration?
+    static var sharedApps = [String]()
     
     //dummy data stores for bookkeeping purposes
     private var actions = [String]()
@@ -146,7 +151,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         }
     }
     
-    // MARK: - Private Methods
+     // MARK: - Private Methods
     
     private func showActivityIndicator(_ shouldShow: Bool) {
         DispatchQueue.main.async { [weak self] in
@@ -381,7 +386,13 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 if detail.isEmpty {
                     detail = noDetails
                 }
-                return NSTextField(labelWithString: detail)
+                let tip = detail.formattedForExtendedTooltip()
+                let label = NSTextField(labelWithString: detail)
+                if tip.isEmpty == false {
+                    label.toolTip = tip
+                    label.allowsExpansionToolTips = true
+                }
+                return label
             } else if tableColumn.identifier.rawValue == DetailTableIdentifier.timestamp.rawValue,
                       let timestamp = item["timestamp"] {
                 if let date = timestamp.dateFromISOString() {
