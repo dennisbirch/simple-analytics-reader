@@ -216,8 +216,8 @@ class OSSummaryViewController: NSViewController {
         }
         
         var sql = [String]()
+        let whereClause = "\(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)"
         for tableName in tables {
-            let whereClause = "\(Common.appName) = \(appName.sqlify()) AND \(Common.platform) LIKE \("\(platform)%".sqlify()) \(timestampClause)"
             let statement =
     """
     SELECT COUNT(\(Common.deviceID)) AS '\(countKey)', \(Common.systemVersion) AS '\(versionKey)' FROM \(tableName.lowercased()) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName.lowercased()) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
