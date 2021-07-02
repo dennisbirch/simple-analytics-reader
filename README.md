@@ -87,7 +87,7 @@ With those two steps complete, you are ready to begin running SimpleAnalytics Re
 If things are not working as expected, it's probably because the app isn't getting data back in the format expected. You may find the information logged in the Xcode Console can help you make the necessary adjustments.
 
 ### Functionality
-SimpleAnalytics Reader has two main views you can toggle between to review collected analytics data in different modes: _List_ and _Search_. 
+SimpleAnalytics Reader has two main views you can toggle between to review collected analytics data in different modes: _List_ and _Search_. And version 1.0.5 introduces a new System Version summary view.
 
 #### List view
 The List view lets you navigate through the data collected by selecting from lists of Applications, Platforms, "Items" and "Counters". (Items and Counters are specific types of data that the SimpleAnalytics packages supports collecting.) By clicking through all the way down to an individual Item or Counter listing, you can see details on which device IDs produced the collected data on which dates.
@@ -110,3 +110,8 @@ You can save queries you build by choosing _Save Search..._ from the __Search__ 
 
 ##### Running Snippets
 For the most flexibility, you may want to run queries based on your own SQL statements. The __Search__ menu offers options for doing that. _Save SQL Snippet..._ allows you to test and save a query for later execution. You can execute those saved snippets by choosing _Execute Saved Query..._, and see a list of those saved snippets by choosing _Show Saved Snippets_ (which also allows you to delete unwanted saved snippets. To execute a one-off snippet, choose _Execute New Snippet_.
+
+#### System Version Summary 
+The __View__ menu now offers an _OS Version Summary..._" command that displays a window where you can get an overview of system version statistics for any apps you're tracking. 
+
+There are popup menus to select the application and platform. You can also select whether to pull statistics from the _Items_ or _Counters_ table, or both. You're likely to see different results based on this choice depending on how you've set up analytics collection in your apps. Finally, you can set how many days to look back by choosing an option from the _Beginning:_ combobox, or typing a value. The window displays the number and percentage of entries for each system version, plus a total number of unique devices included, for the criteria selected.
