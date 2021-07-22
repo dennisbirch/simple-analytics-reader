@@ -149,12 +149,12 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
 
         tableView.reloadData()
     }
-    
-    func configureWithArray(_ array: [[String]], tableType: DeviceCountTableType, whereClause: String) {
+        
+    func configureWithArray(_ array: [String], tableType: DeviceCountTableType, whereClause: String) {
         self.tableType = tableType
         displayDeviceCountContent(false, deviceCount: "")
         baseWhereClause = whereClause
-        sortedKeys = array.compactMap{ $0.first}.sorted()
+        sortedKeys = array.sorted()
         tableView.reloadData()
     }
     

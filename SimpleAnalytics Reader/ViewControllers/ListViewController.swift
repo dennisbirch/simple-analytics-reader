@@ -183,12 +183,12 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                     return
                 }
                 let countApps = result.compactMap{ $0.first }
-                apps = apps.uniqueValues(countApps)
+                apps = apps.uniqueValues(countApps).sorted()
                 
-                self?.applications = apps.sorted()
+                self?.applications = apps
                 self?.showActivityIndicator(false)
-                
-                self?.applicationsViewController?.configureWithArray(result, tableType: .applications, whereClause: "\(Common.appName) = ")
+                                
+                self?.applicationsViewController?.configureWithArray(apps, tableType: .applications, whereClause: "\(Common.appName) = ")
 
                 if let restoration = self?.refreshUpdater {
                     self?.applicationsViewController?.restoreSelection(row: restoration.appsTableSelection)
@@ -226,11 +226,10 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                 let whereClause = "\(baseWhereClause) AND \(Common.platform) = "
                 
                 self?.showActivityIndicator(false)
-                self?.platformsViewController?.configureWithArray(result, tableType: .platforms, whereClause: whereClause)
+                self?.platformsViewController?.configureWithArray(platforms, tableType: .platforms, whereClause: whereClause)
 
                 if let restoration = self?.refreshUpdater, platforms.count > restoration.platformsTableSelection {
-                    let platformsParam = platforms.map{ [$0] }
-                    self?.platformsViewController?.configureWithArray(platformsParam, tableType: .platforms, whereClause: whereClause)
+                    self?.platformsViewController?.configureWithArray(platforms, tableType: .platforms, whereClause: whereClause)
                     self?.platformsViewController?.restoreSelection(row: restoration.platformsTableSelection)
                 } else {
                     if let count = self?.platforms.count, count > 0 {
