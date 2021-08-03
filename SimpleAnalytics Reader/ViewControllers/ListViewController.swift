@@ -414,6 +414,42 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             return 0
         }
     }
+    
+    func tableView(_ tableView: NSTableView, didClick tableColumn: NSTableColumn) {
+          if let sorter = tableColumn.sortDescriptorPrototype,
+           let reversed = sorter.reversedSortDescriptor as? NSSortDescriptor {
+            if sortItems(with: reversed) == true {
+                tableView.reloadData()
+                tableColumn.sortDescriptorPrototype = reversed
+            }
+        }
+    }
+    
+    private func sortItems(with sorter: NSSortDescriptor) -> Bool {
+        var itemsSorted = true
+        switch sorter.key {
+        case "timestamp":
+            details.sort { (item1, item2) in
+                if let timeStamp1 = item1["timestamp"], let timeStamp2 = item2["timestamp"] {
+                    return (timeStamp1 > timeStamp2) == (sorter.ascending == true)
+                } else {
+                    return true
+                }
+            }
+        case "device":
+            details.sort{(item1, item2) in
+                if let device1 = item1["device"], let device2 = item2["device"] {
+                    return (device1 > device2) == (sorter.ascending == true)
+                } else {
+                    return true
+                }
+            }
+        default:
+            itemsSorted = false
+        }
+        
+        return itemsSorted
+    }
 }
 
 extension ListViewController: DeviceCountTableViewDelegate {
