@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="cIz-IW-g5F">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="cIz-IW-g5F">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -154,7 +155,7 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="fill" orientation="horizontal" alignment="bottom" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qs0-da-Sgo">
-                                        <rect key="frame" x="0.0" y="0.0" width="242" height="23"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="241" height="23"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xqp-5i-fYr">
                                                 <rect key="frame" x="-2" y="0.0" width="69" height="16"/>
@@ -164,9 +165,9 @@
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JQ7-oJ-tuJ">
-                                                <rect key="frame" x="73" y="-4" width="99" height="25"/>
-                                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" toolTip="Select or enter number of days' entries to include in summary" drawsBackground="YES" usesSingleLineMode="YES" completes="NO" numberOfVisibleItems="5" id="h9E-58-Sjc">
+                                            <comboBox toolTip="Select or enter number of days' entries to include in summary" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JQ7-oJ-tuJ">
+                                                <rect key="frame" x="72" y="-2" width="99" height="23"/>
+                                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" completes="NO" numberOfVisibleItems="5" id="h9E-58-Sjc">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -177,8 +178,8 @@
                                                     </objectValues>
                                                 </comboBoxCell>
                                             </comboBox>
-                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pu6-Ve-stq">
-                                                <rect key="frame" x="175" y="0.0" width="69" height="16"/>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pu6-Ve-stq" userLabel="Days Ago Label">
+                                                <rect key="frame" x="174" y="0.0" width="69" height="16"/>
                                                 <textFieldCell key="cell" lineBreakMode="clipping" title="day(s) ago" id="2ZJ-PV-sGN">
                                                     <font key="font" usesAppearanceFont="YES"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -255,7 +256,7 @@
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TzS-JK-BKh">
                                 <rect key="frame" x="293" y="13" width="94" height="32"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="80" id="24B-rZ-WkT"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="24B-rZ-WkT"/>
                                 </constraints>
                                 <buttonCell key="cell" type="push" title="Fetch" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pE2-WF-MWe">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -274,7 +275,7 @@ DQ
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xLc-1T-Rlc">
                                 <rect key="frame" x="201" y="13" width="94" height="32"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="80" id="ZAE-Dn-1F4"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="ZAE-Dn-1F4"/>
                                 </constraints>
                                 <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="br1-ii-Aha">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -302,6 +303,7 @@ Gw
                             <constraint firstItem="1QD-tQ-OjQ" firstAttribute="leading" secondItem="TzS-JK-BKh" secondAttribute="trailing" constant="-48" id="igC-aA-KCr"/>
                             <constraint firstAttribute="trailing" secondItem="TzS-JK-BKh" secondAttribute="trailing" constant="20" symbolic="YES" id="lH2-DL-aCc"/>
                             <constraint firstItem="TzS-JK-BKh" firstAttribute="leading" secondItem="xLc-1T-Rlc" secondAttribute="trailing" constant="12" symbolic="YES" id="pME-aS-Xex"/>
+                            <constraint firstItem="xLc-1T-Rlc" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="tOy-S4-hL0" secondAttribute="leading" constant="20" symbolic="YES" id="pyI-vS-Oxt"/>
                             <constraint firstAttribute="trailing" secondItem="LNs-6c-Aff" secondAttribute="trailing" constant="20" symbolic="YES" id="va9-0e-Rdo"/>
                         </constraints>
                     </view>
