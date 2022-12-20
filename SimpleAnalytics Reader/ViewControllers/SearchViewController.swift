@@ -105,7 +105,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             label.alignment = .right
             return label
         } else if tableColumn?.title == ColumnHeadings.timeStamp {
-            return NSTextField(labelWithString: item.timestamp ?? "N/A")
+            return NSTextField(labelWithString: item.timestamp?.shortDateString() ?? "N/A")
         } else if tableColumn?.title == ColumnHeadings.description {
             return NSTextField(labelWithString: item.description)
         } else if tableColumn?.title == ColumnHeadings.details {

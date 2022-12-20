@@ -17,7 +17,7 @@ struct AnalyticsItem: Hashable, Decodable {
         hasher.combine(description.hashValue & timestamp.hashValue)
     }
     
-    let timestamp: String?
+    let timestamp: Date?
     let description: String
     let details: String
     let count: String
@@ -49,9 +49,9 @@ struct AnalyticsItem: Hashable, Decodable {
         count = try values.decodeIfPresent(String.self, forKey: .count) ?? "N/A"
         let dateString = try values.decodeIfPresent(String.self, forKey: .timestamp)
         if let time = dateString {
-            timestamp = time.dateFromISOString()?.shortDateString() ?? "N/A"
+            timestamp = time.dateFromISOString()
         } else {
-            timestamp = "N/A"
+            timestamp = nil
         }
         details = try values.decodeIfPresent(String.self, forKey: .details) ?? ""
         deviceID = try values.decodeIfPresent(String.self, forKey: .deviceID) ?? "N/A"
@@ -69,7 +69,7 @@ struct AnalyticsItem: Hashable, Decodable {
         }
     }
     
-    public init(description: String, count: String, timestamp: String, details: String, deviceID: String, appName: String, appVersion: String, systemVersion: String, platform: String, id: Int, table: TableType) {
+    public init(description: String, count: String, timestamp: Date?, details: String, deviceID: String, appName: String, appVersion: String, systemVersion: String, platform: String, id: Int, table: TableType) {
         self.description = description
         self.count = count
         self.timestamp = timestamp
@@ -85,7 +85,6 @@ struct AnalyticsItem: Hashable, Decodable {
     }
     
     func newItemWithRowNumber(_ number: Int) -> AnalyticsItem {
-        let timestamp = self.timestamp ?? "N/A"
         var newItem = AnalyticsItem(description: self.description, count: self.count, timestamp: timestamp, details: self.details, deviceID: self.deviceID, appName: self.appName, appVersion: self.appVersion, systemVersion: self.systemVersion, platform: self.platform, id: self.id, table: self.table)
         newItem.rowNumber = number
         return newItem
