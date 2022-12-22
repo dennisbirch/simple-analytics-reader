@@ -45,7 +45,8 @@ struct QuerySubmitter {
   
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        let bodyString = ("\(queryKey)=\(query)&\(queryModeKey)=\(mode.modeString)")
+        let safeQuery = query.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) ?? query
+        let bodyString = ("\(queryKey)=\(safeQuery)&\(queryModeKey)=\(mode.modeString)")
         os_log("Query string: %@", bodyString)
         
         let body = bodyString.data(using: .utf8)
