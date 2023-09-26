@@ -47,7 +47,11 @@ struct QuerySubmitter {
         urlRequest.httpMethod = "POST"
         let safeQuery = query.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) ?? query
         let bodyString = ("\(queryKey)=\(safeQuery)&\(queryModeKey)=\(mode.modeString)")
-        os_log("Query string: %@", bodyString)
+        #if DEBUG
+        if let logString = bodyString.removingPercentEncoding {
+            os_log("Query string: %{public}@", logString)
+        }
+        #endif
         
         let body = bodyString.data(using: .utf8)
         urlRequest.httpBody = body
@@ -159,9 +163,8 @@ struct QuerySubmitter {
     private func printDebugDecodingError(_ error: Error, rawData: Data) {
         #if DEBUG
         // printing the error description
-//        print("Error decoding result: \(error)")
-        os_log("Error decoding result: %@", String(describing: error))
-        os_log("Raw data:\n%@", String(data: rawData, encoding: .utf8) ?? "Nil")
+        os_log("Error decoding result: %{public}@", String(describing: error))
+        os_log("Raw data:\n%{public}@", String(data: rawData, encoding: .utf8) ?? "Nil")
         #endif
     }
 
