@@ -126,7 +126,9 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     func resetTableView() {
         dataDictionary.removeAll()
         sortedKeys.removeAll()
-        tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
         displayDeviceCountContent(false, deviceCount: "")
     }
     
@@ -147,7 +149,9 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         self.sortedKeys = sortedArray.sorted()
         self.dataDictionary = dataDict
 
-        tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
         
     func configureWithArray(_ array: [String], tableType: DeviceCountTableType, whereClause: String) {
@@ -155,7 +159,9 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         displayDeviceCountContent(false, deviceCount: "")
         baseWhereClause = whereClause
         sortedKeys = array.sorted()
-        tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
     
     func updateWhereClause(_ whereClause: String) {
@@ -163,8 +169,11 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     }
     
     func restoreSelection(row: Int) {
-        if row < sortedKeys.count {
-            tableView.selectRowIndexes(IndexSet([row]), byExtendingSelection: false)
+        if row < sortedKeys.count,
+           let tableView = self.tableView {
+            DispatchQueue.main.async {
+                tableView.selectRowIndexes(IndexSet([row]), byExtendingSelection: false)
+            }
         }
 
         fetchCountForRow(row)
@@ -235,14 +244,20 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
             let deviceCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
             
             let submitter = QuerySubmitter(query: deviceCountQuery, mode: .array) { [weak self] result in
-                guard let result = result as? [[String]] else {
-                    self?.delegate?.deviceCountDataFetchEnded()
-                    return
-                }
-                
-                self?.delegate?.deviceCountDataFetchEnded()
-                if let countDef = result.first, let countStr = countDef.first {
-                    self?.displayDeviceCountContent(true, deviceCount: countStr)
+                switch result {
+                    case .failure(let error):
+                        NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+
+                    case .success(let response):
+                        guard let response = response as? [[String]] else {
+                            self?.delegate?.deviceCountDataFetchEnded()
+                            return
+                        }
+                        
+                        self?.delegate?.deviceCountDataFetchEnded()
+                        if let countDef = response.first, let countStr = countDef.first {
+                            self?.displayDeviceCountContent(true, deviceCount: countStr)
+                        }
                 }
             }
             
@@ -262,42 +277,60 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         let countersQuery = "SELECT DISTINCT (\(Common.deviceID)) FROM \(Counters.table) WHERE \(whereClause)"
         
         let itemsSubmitter = QuerySubmitter(query: itemsQuery, mode: .array) { [weak self] itemsCount in
-            guard let itemsCount = itemsCount as? [[String]] else {
-                self?.delegate?.deviceCountDataFetchEnded()
-                return
+            switch itemsCount {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+
+                case .success(let items):
+                    guard let items = items as? [[String]] else {
+                        self?.delegate?.deviceCountDataFetchEnded()
+                        return
+                    }
+                    
+                    let countersSubmitter = QuerySubmitter(query: countersQuery, mode: .array) { [weak self] countersCount in
+                        switch countersCount {
+                            case .failure(let error):
+                                NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+
+                                
+                            case .success(let counters):
+                                guard let counters = counters as? [[String]] else {
+                                    self?.delegate?.deviceCountDataFetchEnded()
+                                    return
+                                }
+                                
+                                self?.delegate?.deviceCountDataFetchEnded()
+                                let itemsFirstsArray = items.compactMap{ $0.first }
+                                let countersFirstArray = counters.compactMap{ $0.first }
+                                let uniqueIDs = itemsFirstsArray.uniqueValues(countersFirstArray)
+                                self?.displayDeviceCountContent(true, deviceCount: String(uniqueIDs.count))
+                        }
+                    }
+
+                    countersSubmitter.submit()
             }
-            
-            let countersSubmitter = QuerySubmitter(query: countersQuery, mode: .array) { [weak self] countersCount in
-                guard let countersCount = countersCount as? [[String]] else {
-                    self?.delegate?.deviceCountDataFetchEnded()
-                    return
-                }
-                
-                self?.delegate?.deviceCountDataFetchEnded()
-                let itemsFirstsArray = itemsCount.compactMap{ $0.first }
-                let countersFirstArray = countersCount.compactMap{ $0.first }
-                let uniqueIDs = itemsFirstsArray.uniqueValues(countersFirstArray)
-                self?.displayDeviceCountContent(true, deviceCount: String(uniqueIDs.count))
-            }
-            
-            countersSubmitter.submit()
         }
         
         itemsSubmitter.submit()
     }
             
     private func displayDeviceCountContent(_ isVisible: Bool, deviceCount: String) {
-        if isVisible == true {
-            let formatStr = NSLocalizedString("unique-devices-label %@", comment: "String for 'Unique devices count' label")
-            deviceCountLabel.stringValue = String(format: formatStr, deviceCount)
-            deviceCountContainerHeightConstraint?.constant = expandedDeviceCountHeight
-        } else {
-            deviceCountContainerHeightConstraint?.constant = collapsedDeviceCountHeight
+        let expanded = self.expandedDeviceCountHeight
+        let collapsed = self.collapsedDeviceCountHeight
+        DispatchQueue.main.async { [weak self] in
+            if isVisible == true {
+                let formatStr = NSLocalizedString("unique-devices-label %@", comment: "String for 'Unique devices count' label")
+                self?.deviceCountLabel.stringValue = String(format: formatStr, deviceCount)
+                self?.deviceCountContainerHeightConstraint?.constant = expanded
+            } else {
+                self?.deviceCountContainerHeightConstraint?.constant = collapsed
+            }
         }
-
-        NSAnimationContext.runAnimationGroup { [weak self] (context) in
-            context.duration = 0.25
-            self?.deviceCountContainer.layoutSubtreeIfNeeded()
+        DispatchQueue.main.async { [weak self] in
+            NSAnimationContext.runAnimationGroup { [weak self] (context) in
+                context.duration = 0.25
+                self?.deviceCountContainer.layoutSubtreeIfNeeded()
+            }
         }
     }
 }

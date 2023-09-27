@@ -113,8 +113,7 @@ extension SearchViewController: SQLSnippetPersistenceDelegate {
             let title = NSLocalizedString("duplicate-snippet-name-alert-title", comment: "Title for duplicate snippet name alert")
             let format = NSLocalizedString("duplicate-snippet-name-alert-message %@", comment: "Message for duplicate snippet name alert")
             let message = String(format: format, fileName)
-            let alert = NSAlert.okAlertWithTitle(title, message: message)
-            alert.runModal()
+            NSAlert.presentAlert(title: title, message: message)
             promptForSnippetSQLAndName(snippet)
             return
         }

@@ -23,10 +23,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func showOSVersionSummary(_ sender: Any) {
         if ListViewController.sharedApps.isEmpty {
-            let alert = NSAlert()
-            alert.messageText = "No Applications"
-            alert.informativeText = "The application has no application data to include in a summary. Please make sure the app has successfully loaded application names from your analytics database before continuing."
-            let _ = alert.runModal()
+            let msg = "The application has no application data to include in a summary. Please make sure the app has successfully loaded application names from your analytics database before continuing."
+            NSAlert.presentAlert(title: "No Applications", message: msg)
             return
         }
         

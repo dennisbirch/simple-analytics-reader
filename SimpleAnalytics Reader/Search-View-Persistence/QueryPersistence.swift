@@ -29,8 +29,7 @@ extension SearchViewController {
         if queryItems.isEmpty {
             let title = NSLocalizedString("no-queries-to-save-alert-title", comment: "Title for alert when there are no valid queries to save")
             let message = NSLocalizedString("no-queries-to-save-alert-message", comment: "Message for alert when there are no valid queries to save")
-            let alert = NSAlert.okAlertWithTitle(title, message: message)
-            alert.runModal()
+            NSAlert.presentAlert(title: title, message: message)
             return
         }
         
@@ -67,8 +66,7 @@ extension SearchViewController {
             let title = NSLocalizedString("duplicate-query-name-alert-title", comment: "Title for duplicate query name alert")
             let format = NSLocalizedString("duplicate-query-name-alert-message %@", comment: "Message for duplicate query name alert")
             let message = String(format: format, fileName)
-            let alert = NSAlert.okAlertWithTitle(title, message: message)
-            alert.runModal()
+            NSAlert.presentAlert(title: title, message: message)
             // and rerun name alert
             promptForQuerySaveName(for: data)
             return
@@ -143,8 +141,7 @@ extension SearchViewController {
     
     private func handleSaveOpenFileError(error: Error, problem: String) {
         os_log("Error %@: %@", problem, error.localizedDescription)
-        let alert = NSAlert.okAlertWithTitle("Error", message: "There was a problem .")
-        alert.runModal()
+        NSAlert.presentAlert(title: "Error", message: "There was a problem .")
     }
     
 

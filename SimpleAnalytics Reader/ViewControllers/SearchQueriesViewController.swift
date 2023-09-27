@@ -180,31 +180,37 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         }
         
         let submitter = QuerySubmitter(query: queries.joined(separator: ";"), mode: .array) { [weak self] (results) in
-            if let results = results as? [[String]] {
-                var total = 0
-                if self?.whatItems == .items || self?.whatItems == .both {
-                    if var items = results.first, let itemsTotal = items.first, let itemCount = Int(itemsTotal) {
-                        self?.searchLimits.itemsTotal = itemCount
-                        total += itemCount
-                        items.remove(at: 0)
-                    }
-                }
-                if self?.whatItems == .counters || self?.whatItems == .both {
-                    if let counters = results.last, let counterTotal = counters.first, let countersCount = Int(counterTotal) {
-                        self?.searchLimits.countersTotal = countersCount
-                        total += countersCount
-                    }
-                }
-                
-                if total > 0 {
-                    self?.showLimitedSearchTotal(total)
-                }
-                
-                self?.limitSearchTotal = total
-                
-                if let searchLimits = self?.searchLimits {
-                    self?.performSearchButton.isEnabled = searchLimits.currentFetchCount < searchLimits.totalCount
-                }
+            switch results {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+
+                case .success(let response):
+                    if let response = response as? [[String]] {
+                        var total = 0
+                        if self?.whatItems == .items || self?.whatItems == .both {
+                            if var items = response.first, let itemsTotal = items.first, let itemCount = Int(itemsTotal) {
+                                self?.searchLimits.itemsTotal = itemCount
+                                total += itemCount
+                                items.remove(at: 0)
+                            }
+                        }
+                        if self?.whatItems == .counters || self?.whatItems == .both {
+                            if let counters = response.last, let counterTotal = counters.first, let countersCount = Int(counterTotal) {
+                                self?.searchLimits.countersTotal = countersCount
+                                total += countersCount
+                            }
+                        }
+                        
+                        if total > 0 {
+                            self?.showLimitedSearchTotal(total)
+                        }
+                        
+                        self?.limitSearchTotal = total
+                        
+                        if let searchLimits = self?.searchLimits {
+                            self?.performSearchButton.isEnabled = searchLimits.currentFetchCount < searchLimits.totalCount
+                        }
+            }
             }
         }
         
@@ -309,30 +315,37 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     func executeSQL(_ sql: String, isLimitedSearch: Bool) {
         let nextRow = searchLimits.currentFetchCount
         let submitter = QuerySubmitter(query: sql, mode: .items) { [weak self] result in
-            if let result = result as? [AnalyticsItem] {
-                if isLimitedSearch == true {
-                    let items = result.filter{ $0.table == .items }.sorted { (item1, item2) -> Bool in
-                        return item1.id < item2.id
+            switch result {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                    
+                case .success(let response):
+                    if let result = response as? [AnalyticsItem] {
+                        if isLimitedSearch == true {
+                            let items = result.filter{ $0.table == .items }.sorted { (item1, item2) -> Bool in
+                                return item1.id < item2.id
+                            }
+                            let counters = result.filter{ $0.table == .counters }.sorted { (item1, item2) -> Bool in
+                                return item1.id < item2.id
+                            }
+                            
+                            var lastItemID = 0
+                            var lastCounterID = 0
+                            if let lastItem = items.last {
+                                lastItemID = lastItem.id
+                            }
+                            if let lastCounter = counters.last {
+                                lastCounterID = lastCounter.id
+                            }
+                            self?.searchLimits.updateForNextLimitedSeek(itemsID: lastItemID, countersID: lastCounterID, itemsCount: items.count, countersCount: counters.count)
+                            self?.updateSearchLimitInfo(results: result)
+                        }
+                        self?.searchDelegate?.searchCompleted(results: result, lastRowNumber: nextRow)
+                    } else {
+                        os_log("Search query failed")
+                        return
+                        
                     }
-                    let counters = result.filter{ $0.table == .counters }.sorted { (item1, item2) -> Bool in
-                        return item1.id < item2.id
-                    }
-
-                    var lastItemID = 0
-                    var lastCounterID = 0
-                    if let lastItem = items.last {
-                        lastItemID = lastItem.id
-                    }
-                    if let lastCounter = counters.last {
-                        lastCounterID = lastCounter.id
-                    }
-                    self?.searchLimits.updateForNextLimitedSeek(itemsID: lastItemID, countersID: lastCounterID, itemsCount: items.count, countersCount: counters.count)
-                    self?.updateSearchLimitInfo(results: result)
-                }
-                self?.searchDelegate?.searchCompleted(results: result, lastRowNumber: nextRow)
-            } else {
-                os_log("Search query failed")
-                return
             }
         }
         

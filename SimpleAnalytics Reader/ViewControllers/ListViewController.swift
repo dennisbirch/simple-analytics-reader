@@ -20,7 +20,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var platformsViewController: DeviceCountDisplayViewController?
     private var actionsViewController: DeviceCountDisplayViewController?
     private var countersViewController: DeviceCountDisplayViewController?
-
+    
     private var applications = [String]() {
         didSet {
             ListViewController.sharedApps = applications
@@ -38,7 +38,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private let noDetails = "----"
     
     private let windowFrameKey = "main.window.frame"
-
+    
     enum TableStorageResetStrategy: Int {
         case apps
         case platforms
@@ -82,7 +82,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         view.window?.saveFrame(usingName: windowFrameKey)
     }
-        
+    
     private func addDeviceCounterViews() {
         guard let actionsVC = DeviceCountDisplayViewController.viewController(for: .actions) else {
             return
@@ -151,7 +151,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         }
     }
     
-     // MARK: - Private Methods
+    // MARK: - Private Methods
     
     private func showActivityIndicator(_ shouldShow: Bool) {
         DispatchQueue.main.async { [weak self] in
@@ -172,30 +172,43 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         showActivityIndicator(true)
         resetDataStorage(strategy: .apps)
-
-        let itemSubmitter = QuerySubmitter(query: itemsQuery, mode: .array) { (result) in
-            guard let result = result as? [[String]] else {
-                return
-            }
-            var apps = result.compactMap{ $0.first }
-            let countsSubmitter = QuerySubmitter(query: countersQuery, mode: .array) { [weak self] result in
-                guard let result = result as? [[String]] else {
-                    return
-                }
-                let countApps = result.compactMap{ $0.first }
-                apps = apps.uniqueValues(countApps).sorted()
-                
-                self?.applications = apps
-                self?.showActivityIndicator(false)
+        
+        let itemSubmitter = QuerySubmitter(query: itemsQuery, mode: .array) { (itemsResult) in
+            switch itemsResult {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                    
+                case .success(let response):
+                    guard let response = response as? [[String]] else {
+                        return
+                    }
+                    var apps = response.compactMap{ $0.first }
+                    let countsSubmitter = QuerySubmitter(query: countersQuery, mode: .array) { [weak self] countersResult in
+                        switch countersResult {
+                            case .failure(let error):
+                                NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
                                 
-                self?.applicationsViewController?.configureWithArray(apps, tableType: .applications, whereClause: "\(Common.appName) = ")
-
-                if let restoration = self?.refreshUpdater {
-                    self?.applicationsViewController?.restoreSelection(row: restoration.appsTableSelection)
-                }
+                            case .success(let response):
+                                guard let response = response as? [[String]] else {
+                                    return
+                                }
+                                let countApps = response.compactMap{ $0.first }
+                                apps = apps.uniqueValues(countApps).sorted()
+                                
+                                self?.applications = apps
+                                self?.showActivityIndicator(false)
+                                
+                                self?.applicationsViewController?.configureWithArray(apps, tableType: .applications, whereClause: "\(Common.appName) = ")
+                                
+                                if let restoration = self?.refreshUpdater {
+                                    self?.applicationsViewController?.restoreSelection(row: restoration.appsTableSelection)
+                                }
+                        }
+                        
+                    }
+                    
+                    countsSubmitter.submit()
             }
-            
-            countsSubmitter.submit()
         }
         
         itemSubmitter.submit()
@@ -210,35 +223,47 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         resetDataStorage(strategy: .platforms)
         
         let itemSubmitter = QuerySubmitter(query: itemQuery, mode: .array) { [weak self] result in
-            guard let result = result as? [[String]] else {
-                return
-            }
-            var platforms = result.compactMap{ $0.first }
-            
-            let countSubmitter = QuerySubmitter(query: countersQuery, mode: .array) { result in
-                guard let result = result as? [[String]] else {
-                    return
-                }
-                let countPlatforms = result.compactMap{ $0.first }
-                platforms = platforms.uniqueValues(countPlatforms)
-                
-                self?.platforms = platforms.sorted()
-                let whereClause = "\(baseWhereClause) AND \(Common.platform) = "
-                
-                self?.showActivityIndicator(false)
-                self?.platformsViewController?.configureWithArray(platforms, tableType: .platforms, whereClause: whereClause)
-
-                if let restoration = self?.refreshUpdater, platforms.count > restoration.platformsTableSelection {
-                    self?.platformsViewController?.configureWithArray(platforms, tableType: .platforms, whereClause: whereClause)
-                    self?.platformsViewController?.restoreSelection(row: restoration.platformsTableSelection)
-                } else {
-                    if let count = self?.platforms.count, count > 0 {
-                        self?.platformsViewController?.restoreSelection(row: 0)
+            switch result {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                    
+                case .success(let response):
+                    guard let response = response as? [[String]] else {
+                        return
                     }
-                }
+                    var platforms = response.compactMap{ $0.first }
+                    
+                    let countSubmitter = QuerySubmitter(query: countersQuery, mode: .array) { result in
+                        switch result {
+                            case .failure(let error):
+                                NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                                
+                            case .success(let response):
+                                guard let response = response as? [[String]] else {
+                                    return
+                                }
+                                let countPlatforms = response.compactMap{ $0.first }
+                                platforms = platforms.uniqueValues(countPlatforms)
+                                
+                                self?.platforms = platforms.sorted()
+                                let whereClause = "\(baseWhereClause) AND \(Common.platform) = "
+                                
+                                self?.showActivityIndicator(false)
+                                self?.platformsViewController?.configureWithArray(platforms, tableType: .platforms, whereClause: whereClause)
+                                
+                                if let restoration = self?.refreshUpdater, platforms.count > restoration.platformsTableSelection {
+                                    self?.platformsViewController?.configureWithArray(platforms, tableType: .platforms, whereClause: whereClause)
+                                    self?.platformsViewController?.restoreSelection(row: restoration.platformsTableSelection)
+                                } else {
+                                    if let count = self?.platforms.count, count > 0 {
+                                        self?.platformsViewController?.restoreSelection(row: 0)
+                                    }
+                                }
+                        }
+                    }
+                    
+                    countSubmitter.submit()
             }
-            
-            countSubmitter.submit()
         }
         
         itemSubmitter.submit()
@@ -253,46 +278,58 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         let whereClause = "(app_name = \(app.sqlify()) AND platform = \(platform.sqlify()))"
         let query = "SELECT description, COUNT(description) AS 'count' FROM items WHERE \(whereClause) GROUP BY description"
-
+        
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
-            guard let result = result as? [[String : String]] else {
-                return
-            }
-            
-            self?.actionsViewController?.configureWithDictionary(result, tableType: .actions, whereClause: whereClause)
-            self?.showActivityIndicator(false)
-            if let restoration = self?.refreshUpdater {
-                self?.actionsViewController?.restoreSelection(row: restoration.actionsTableSelection)
+            switch result {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                    
+                case .success(let response):
+                    guard let response = response as? [[String : String]] else {
+                        return
+                    }
+                    
+                    self?.actionsViewController?.configureWithDictionary(response, tableType: .actions, whereClause: whereClause)
+                    self?.showActivityIndicator(false)
+                    if let restoration = self?.refreshUpdater {
+                        self?.actionsViewController?.restoreSelection(row: restoration.actionsTableSelection)
+                    }
             }
         }
-
+        
         itemSubmitter.submit()
     }
-
+    
     private func requestCounters(app: String, platform: String) {
-        showActivityIndicator(true)        
+        showActivityIndicator(true)
         resetDataStorage(strategy: .counters)
         
         let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'"
         let query = "SELECT \(Counters.description), SUM(\(Counters.count)) AS count FROM \(Counters.table) WHERE (\(Common.appName) = \(app.sqlify()) AND \(Common.platform) = \(platform.sqlify())) GROUP BY \(Counters.description)"
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
-            guard let result = result as? [[String : String]] else {
-                self?.showActivityIndicator(false)
-                self?.refreshUpdater = nil
-                return
+            switch result {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                    
+                case .success(let response):
+                    guard let response = response as? [[String : String]] else {
+                        self?.showActivityIndicator(false)
+                        self?.refreshUpdater = nil
+                        return
+                    }
+                    
+                    self?.showActivityIndicator(false)
+                    self?.countersViewController?.configureWithDictionary(response, tableType: .counters, whereClause: whereClause)
+                    if let restoration = self?.refreshUpdater {
+                        self?.countersViewController?.restoreSelection(row: restoration.countersTableSelection)
+                        if let activeControl = restoration.activeControl {
+                            self?.view.window?.makeFirstResponder(activeControl)
+                        }
+                    }
+                    self?.refreshUpdater = nil
             }
-            
-            self?.showActivityIndicator(false)
-            self?.countersViewController?.configureWithDictionary(result, tableType: .counters, whereClause: whereClause)
-            if let restoration = self?.refreshUpdater {
-                self?.countersViewController?.restoreSelection(row: restoration.countersTableSelection)
-                if let activeControl = restoration.activeControl {
-                    self?.view.window?.makeFirstResponder(activeControl)
-                }
-            }
-            self?.refreshUpdater = nil
         }
-
+        
         itemSubmitter.submit()
     }
     
@@ -304,17 +341,25 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                                    whereClause: whereClause,
                                    sorting: "\(Common.deviceID), \(Common.timestamp)")
         let submitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
-            guard let result = result as? [[String : String]] else {
-                self?.showActivityIndicator(false)
-                return
+            switch result {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                    
+                case .success(let response):
+                    guard let response = response as? [[String : String]] else {
+                        self?.showActivityIndicator(false)
+                        return
+                    }
+                    
+                    self?.details = response
+                    
+                    DispatchQueue.main.async { [weak self] in
+                        self?.detailsTable.reloadData()
+                        self?.showActivityIndicator(false)
+                    }
             }
-            
-            self?.details = result
-                        
-            self?.detailsTable.reloadData()
-            self?.showActivityIndicator(false)
         }
-
+        
         lastDetailsRequestSource = .items
         submitter.submit()
     }
@@ -327,24 +372,30 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                                    whereClause: whereClause,
                                    sorting: "\(Common.deviceID), \(Common.timestamp)")
         let submitter = QuerySubmitter(query: query, mode: .dictionary) { [weak self] result in
-            guard let result = result as? [[String : String]] else {
-                self?.showActivityIndicator(false)
-                return
+            switch result {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                    
+                case .success(let response):
+                    guard let response = response as? [[String : String]] else {
+                        self?.showActivityIndicator(false)
+                        return
+                    }
+                    
+                    self?.details = response
+                    
+                    self?.detailsTable.reloadData()
+                    self?.showActivityIndicator(false)
             }
-            
-            self?.details = result
-                        
-            self?.detailsTable.reloadData()
-            self?.showActivityIndicator(false)
         }
-
+        
         lastDetailsRequestSource = .counters
         submitter.submit()
     }
     
     private func resetDataStorage(strategy: TableStorageResetStrategy) {
         let dataStores: [AnyHashable] = [applications, platforms, actions, counters, details]
-
+        
         let tableIndex = strategy.rawValue
         let resetIndices = dataStores[tableIndex..<dataStores.count]
         
@@ -368,7 +419,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             detailsTable.reloadData()
         }
     }
-
+    
     // MARK: - TableView DataSource & Delegate
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
@@ -416,7 +467,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
     
     func tableView(_ tableView: NSTableView, didClick tableColumn: NSTableColumn) {
-          if let sorter = tableColumn.sortDescriptorPrototype,
+        if let sorter = tableColumn.sortDescriptorPrototype,
            let reversed = sorter.reversedSortDescriptor as? NSSortDescriptor {
             if sortItems(with: reversed) == true {
                 tableView.reloadData()
@@ -428,24 +479,24 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private func sortItems(with sorter: NSSortDescriptor) -> Bool {
         var itemsSorted = true
         switch sorter.key {
-        case "timestamp":
-            details.sort { (item1, item2) in
-                if let timeStamp1 = item1["timestamp"], let timeStamp2 = item2["timestamp"] {
-                    return (timeStamp1 > timeStamp2) == (sorter.ascending == true)
-                } else {
-                    return true
+            case "timestamp":
+                details.sort { (item1, item2) in
+                    if let timeStamp1 = item1["timestamp"], let timeStamp2 = item2["timestamp"] {
+                        return (timeStamp1 > timeStamp2) == (sorter.ascending == true)
+                    } else {
+                        return true
+                    }
                 }
-            }
-        case "device":
-            details.sort{(item1, item2) in
-                if let device1 = item1["device"], let device2 = item2["device"] {
-                    return (device1 > device2) == (sorter.ascending == true)
-                } else {
-                    return true
+            case "device":
+                details.sort{(item1, item2) in
+                    if let device1 = item1["device"], let device2 = item2["device"] {
+                        return (device1 > device2) == (sorter.ascending == true)
+                    } else {
+                        return true
+                    }
                 }
-            }
-        default:
-            itemsSorted = false
+            default:
+                itemsSorted = false
         }
         
         return itemsSorted

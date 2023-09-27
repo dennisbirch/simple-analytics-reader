@@ -221,8 +221,7 @@ class SearchViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 let title = NSLocalizedString("no-search-results-alert-title", comment: "Title for alert when a query returns no results")
                 let message = NSLocalizedString("no-search-results-alert-message", comment: "Explanatory message for alert when a query returns no results")
-                let alert = NSAlert.okAlertWithTitle(title, message: message)
-                alert.runModal()
+                NSAlert.presentAlert(title: title, message: message)
             }
         }
     }

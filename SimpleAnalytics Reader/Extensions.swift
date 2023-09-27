@@ -15,6 +15,13 @@ extension NSAlert {
         return alert
 
     }
+    
+    static func presentAlert(title: String, message: String) {
+        DispatchQueue.main.async {
+            let alert = okAlertWithTitle(title, message: message)            
+            let _ = alert.runModal()
+        }
+    }
 }
 
 

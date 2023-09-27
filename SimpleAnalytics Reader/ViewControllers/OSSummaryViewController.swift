@@ -189,16 +189,25 @@ class OSSummaryViewController: NSViewController {
         
         let sql = summarySQLString(table: tableName, appName: appName, platform: platform, timestampClause: timestampClause)
         let submitter = QuerySubmitter(query: sql, mode: .dictionary) { [weak self] result in
-            guard let result = result as? [[String : String]] else {
-                self?.displayErrorMessage("There was an error fetching system version information from the database.")
-                return
+            switch result {
+                case .failure(let error):
+                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+
+                    
+                case .success(let response):
+                    guard let response = response as? [[String : String]] else {
+                        self?.displayErrorMessage("There was an error fetching system version information from the database.")
+                        return
+                    }
+                    
+                    DispatchQueue.main.async { [weak self] in
+                        self?.fetchSpinnner.stopAnimation(self)
+                        self?.fetchSpinnner.isHidden = true
+                        self?.fetchButton.isEnabled = true
+                        
+                        self?.displayResults(response)
+                    }
             }
-            
-            self?.fetchSpinnner.stopAnimation(self)
-            self?.fetchSpinnner.isHidden = true
-            self?.fetchButton.isEnabled = true
-            
-            self?.displayResults(result)
         }
         
         submitter.submit()

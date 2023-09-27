@@ -84,8 +84,7 @@ class SavedQueriesViewController: NSViewController, NSTableViewDelegate, NSTable
                 dismiss(self)
                 let title = NSLocalizedString("error-removing-query-file-title", comment: "Title for error alert")
                 let message = NSLocalizedString("error-removing-query-file-message", comment: "Message for error alert when query file can't be deleted")
-                let alert = NSAlert.okAlertWithTitle(title, message: message)
-                alert.runModal()
+                NSAlert.presentAlert(title: title, message: message)        
             }
         }
     }
