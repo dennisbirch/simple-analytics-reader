@@ -55,6 +55,7 @@ class OSSummaryViewController: NSViewController {
     private let uniqueDeviceCountKey = "device_count"
     private let versionKey = "version"
     private let countKey = "count"
+    private let totalCountKey = "totalCount"
     
     private let showResultsHeightConstant: CGFloat = 120
     private let hideResultsHeightConstant: CGFloat = 0
@@ -89,8 +90,7 @@ class OSSummaryViewController: NSViewController {
     override func viewWillAppear() {
         super.viewWillAppear()
         
-        fetchSpinnner.isHidden = true
-        fetchSpinnner.stopAnimation(self)
+        restoreDefaultState()
         
         guard let window = view.window else {
             return
@@ -194,6 +194,7 @@ class OSSummaryViewController: NSViewController {
             let result = await submitter.submit()
             switch result {
                 case .failure(let error):
+                    restoreDefaultState()
                     NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
                     
                 case .success(let response):
@@ -201,17 +202,20 @@ class OSSummaryViewController: NSViewController {
                         displayErrorMessage("There was an error fetching system version information from the database.")
                         return
                     }
-                    
-                    fetchSpinnner.stopAnimation(self)
-                    fetchSpinnner.isHidden = true
-                    fetchButton.isEnabled = true
-                    
+                                        
+                    restoreDefaultState()
                     displayResults(response)
             }
         }
     }
     
     // MARK: - Private Methods
+    
+    private func restoreDefaultState() {
+        fetchSpinnner.stopAnimation(self)
+        fetchSpinnner.isHidden = true
+        fetchButton.isEnabled = true
+    }
     
     private func summarySQLString(table: String, appName: String, platform: String, timestampClause: String) -> String {
         // Creates a query that gets the count of devices using each system version in the database table(s) specified, for the app and platform specified, within the date range entered. Also gets the unique device ID count for the same specs.
@@ -227,7 +231,7 @@ class OSSummaryViewController: NSViewController {
         for tableName in tables {
             let statement =
     """
-    SELECT COUNT(\(Common.deviceID)) AS '\(countKey)', \(Common.systemVersion) AS '\(versionKey)' FROM \(tableName.lowercased()) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName.lowercased()) WHERE \(whereClause)) GROUP BY \(Common.systemVersion);
+    SELECT COUNT(\(Common.deviceID)) AS '\(countKey)', \(Common.systemVersion) AS '\(versionKey)' FROM \(tableName.lowercased()) WHERE \(Common.systemVersion) IN (SELECT DISTINCT(\(Common.systemVersion)) FROM \(tableName.lowercased()) WHERE \(whereClause)) GROUP BY \(Common.systemVersion) ORDER BY \(Common.systemVersion);
     SELECT COUNT(DISTINCT(\(Common.deviceID))) AS \(uniqueDeviceCountKey) FROM \(tableName.lowercased()) WHERE \(whereClause)
     """
             sql.append(statement)
@@ -254,33 +258,42 @@ class OSSummaryViewController: NSViewController {
             attributedStr.append("Your search query returned no results\nTry changing your search criteria and performing a new fetch.".applyH3())
         } else {
             // merge results of "both" query if necessary
-            let merged = mergeAndSortFetchResults(results)
+            var versionInfo = mergeFetchResults(results)
             
-            // parse the results into an array of VersionInfoDef's
-            var total = 0
-
-            let deviceCount = merged.filter{ $0[uniqueDeviceCountKey] != nil }.first?.values.first
-            
-            let versionInfo: [VersionInfoDef] = merged.map{
-                if let version = $0[versionKey],
-                   let count = $0[countKey],
-                   let number = Int(count),
-                   number > 0 {
-                    total += number
-                    return VersionInfoDef(version, count)
-                }
-                // if-let conditions not met
-                return VersionInfoDef("", "")
+            guard let deviceCountIndex = versionInfo.firstIndex(where: { $0.version == uniqueDeviceCountKey }) else {
+                os_log("Failed to fetch the total device count from the server")
+                NSAlert.presentAlert(title: "Error", message: "The server did not return a total device count.")
+                return
             }
+            
+            let deviceCount = versionInfo[deviceCountIndex].count
+            versionInfo.remove(at: deviceCountIndex)
 
+            guard let totalIndex = versionInfo.firstIndex(where: { $0.version == totalCountKey }) else {
+                os_log("Failed to parse a total reading count from the merge function.")
+                NSAlert.presentAlert(title: "Error", message: "There was a problem parsing the data received from the server.")
+                return
+            }
+            
+            let totalString = versionInfo[totalIndex].count
+            versionInfo.remove(at: totalIndex)
+            guard let total = Int(totalString) else {
+                os_log("Error converting total string to Int")
+                NSAlert.presentAlert(title: "Error", message: "There was an internal error converting data.")
+                return
+            }
+            
             let attrVersionsString = attributedVersionsList(versionInfo, total: total)
             attributedStr = "System Versions\n".applyH2()
+            attributedStr.append("Version\tReadings\t%\n".applyBody())
             attributedStr.append(attrVersionsString)
             
-            if let deviceCount = deviceCount,
-               deviceCount.isEmpty == false {
-                let deviceCntStr = String(deviceCount)
-                attributedStr.append(NSAttributedString(string: "\n\n"))
+            if deviceCount.isEmpty == false {
+                let deviceCntStr = String(deviceCount.formatted())
+                attributedStr.append(NSAttributedString(string: "\n"))
+                attributedStr.append("Total readings: ".applyBoldBody())
+                attributedStr.append(totalString.formatted().applyBody())
+                attributedStr.append(NSAttributedString(string: "\n"))
                 attributedStr.append("Total devices: ".applyBoldBody())
                 attributedStr.append(deviceCntStr.applyBody())
             }
@@ -292,27 +305,33 @@ class OSSummaryViewController: NSViewController {
         resultsTextView.textStorage?.insert(attributedStr, at: 0)
     }
     
-    private func mergeAndSortFetchResults(_ array: [[String : String]]) -> [[String : String]] {
+    private func mergeFetchResults(_ array: [[String : String]]) -> [VersionInfoDef] {
         var totalDeviceCount = 0
-        var merged = [[String : String]]()
+        var merged = [VersionInfoDef]()
+        var total = 0
         for item in array {
+            let itemVersion = item[versionKey]
             // first look for version matches already in the 'merged' array and add the count value to the existing count value for that item
-            if let version = merged.first(where: { $0[versionKey] == item[versionKey] }),
-               let versionStr = version[versionKey],
-               versionStr.isEmpty == false,
-               let count = version[countKey],
-               let startCount = Int(count),
-               let itemCount = item[countKey], let addCount = Int(itemCount) {
-                let newCount = startCount + addCount
-                    let newVersion: [String : String] = [versionKey : versionStr,
-                                                         countKey : "\(newCount)"]
-                    if let idx = merged.firstIndex(where: { $0[versionKey] == versionStr }) {
+            if let match = merged.first(where: { $0.version == itemVersion }) {
+                let versionStr = match.version
+                let count = match.count
+                if versionStr.isEmpty == false,
+                   let startCount = Int(count),
+                   let itemCount = item[countKey], let addCount = Int(itemCount) {
+                    let newCount = startCount + addCount
+                    let newVersion = (versionStr, "\(newCount)")
+                    total += addCount
+                    if let idx = merged.firstIndex(where: { $0.version == versionStr }) {
                         merged[idx] = newVersion
+                    }
                 }
-            } else if let versionStr = item[versionKey],
-                      versionStr.isEmpty == false {
+            } else if let versionStr = itemVersion,
+                      versionStr.isEmpty == false,
+                      let countStr = item[countKey],
+                      let count = Int(countStr) {
                 // no version match, so just add it to the array
-                merged.append(item)
+                merged.append((versionStr, countStr))
+                total += count
             } else if let deviceCountStr = item[uniqueDeviceCountKey],
                       let deviceCount = Int(deviceCountStr) {
                 // this item is a device count result, so add its value to the deviceCount var
@@ -320,18 +339,10 @@ class OSSummaryViewController: NSViewController {
             }
         }
         
-        merged.append([uniqueDeviceCountKey : "\(totalDeviceCount)"])
-
-        // sort in ascending version # order
-        let sorted = merged.sorted { item1, item2 in
-            guard let v1 = item1[versionKey], let v2 = item2[versionKey] else {
-                return true
-            }
-
-            return v1 < v2
-        }
+        merged.insert((uniqueDeviceCountKey, String(totalDeviceCount)), at: 0)
+        merged.insert((totalCountKey, String(total)), at: 1)
         
-        return sorted
+        return merged
     }
     
     private func attributedVersionsList(_ list: [VersionInfoDef], total: Int) -> NSAttributedString {
@@ -344,7 +355,7 @@ class OSSummaryViewController: NSViewController {
                 let percent = Double(number)/Double(total)
                 if let pctString = percentFormatter.string(from: NSNumber(value: percent)) {
                     mutableAttrItem.append("Version ".applyBoldBody())
-                    let values = "\(version.version):\t\(version.count)\t(\(pctString))"
+                    let values = "\(version.version):\t\(version.count.formatted())\t(\(pctString))"
                     mutableAttrItem.append(values.applyBody())
                 }
                 mutableAttrItem.append(NSAttributedString(string: "\n"))
