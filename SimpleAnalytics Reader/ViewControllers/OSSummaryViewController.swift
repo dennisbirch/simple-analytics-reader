@@ -36,11 +36,12 @@ class OSSummaryViewController: NSViewController {
     private var tabStyle: NSParagraphStyle {
         let pStyle = NSMutableParagraphStyle()
         let font = NSFont.systemFont(ofSize: bodyFontSize)
-        let charWidth = font.screenFont(with: .defaultRenderingMode).advancement(forGlyph: 32).width
-        pStyle.defaultTabInterval = charWidth * 4
+        let advanceWidth = font.maximumAdvancement.width
+        let tabInterval = advanceWidth * 3
+        pStyle.defaultTabInterval = tabInterval
         pStyle.lineSpacing = 2
-        let tabStops = [NSTextTab(textAlignment: .right, location: 30, options: [:]),
-                        NSTextTab(textAlignment: .right, location: 40, options: [.columnTerminators : "."])]
+        let tabStops = [NSTextTab(textAlignment: .right, location: tabInterval * 2, options: [:]),
+                        NSTextTab(textAlignment: .right, location: tabInterval * 3, options: [:])]
         pStyle.tabStops = tabStops
         return pStyle
     }
@@ -52,12 +53,16 @@ class OSSummaryViewController: NSViewController {
     private let bothSources = "Both"
     private let dateSuggestions = ["1", "7", "30", "90"]
     private let frameIdentifier = "osSummaryWindowFrame"
+    private let lastSourceSelectionKey = "summaryLastSourceSelection"
+    private let lastPlatformSelectionKey = "summaryLastPlatformSelection"
+    private let lastAppSelectionKey = "summaryLastAppSelection"
+    private let lastDateSelectionKey = "summaryLastDateSelection"
     private let uniqueDeviceCountKey = "device_count"
     private let versionKey = "version"
     private let countKey = "count"
     private let totalCountKey = "totalCount"
     
-    private let showResultsHeightConstant: CGFloat = 120
+    private let showResultsHeightConstant: CGFloat = 180
     private let hideResultsHeightConstant: CGFloat = 0
     
     typealias VersionInfoDef = (version: String, count: String)
@@ -85,6 +90,8 @@ class OSSummaryViewController: NSViewController {
         ageCombobox.delegate = self
         
         heightConstraint.constant = hideResultsHeightConstant
+        
+        setInputSelections()
     }
     
     override func viewWillAppear() {
@@ -102,7 +109,6 @@ class OSSummaryViewController: NSViewController {
         
         window.stripTitleChrome()
         
-        setupTextViewTabbing()
         setupSearchTextObserver()
     }
     
@@ -110,6 +116,10 @@ class OSSummaryViewController: NSViewController {
         super.viewWillDisappear()
         
         view.window?.saveFrame(usingName: frameIdentifier)
+        UserDefaults.standard.set(applicationsPopup.titleOfSelectedItem ?? "", forKey: lastAppSelectionKey)
+        UserDefaults.standard.set(platformPopup.indexOfSelectedItem, forKey: lastPlatformSelectionKey)
+        UserDefaults.standard.set(tablePopup.indexOfSelectedItem, forKey: lastSourceSelectionKey)
+        UserDefaults.standard.set(ageCombobox.stringValue, forKey: lastDateSelectionKey)
     }
     
     static func createWindowController() -> NSWindowController? {
@@ -277,15 +287,15 @@ class OSSummaryViewController: NSViewController {
             
             let totalString = versionInfo[totalIndex].count
             versionInfo.remove(at: totalIndex)
-            guard let total = Int(totalString) else {
+            guard let totalReadings = Int(totalString) else {
                 os_log("Error converting total string to Int")
                 NSAlert.presentAlert(title: "Error", message: "There was an internal error converting data.")
                 return
             }
             
-            let attrVersionsString = attributedVersionsList(versionInfo, total: total)
+            let attrVersionsString = attributedVersionsList(versionInfo, total: totalReadings)
             attributedStr = "System Versions\n".applyH2()
-            attributedStr.append("Version\tReadings\t%\n".applyBody())
+            attributedStr.append("Version\t# Readings\t%\n".applyH4().applyUnderline())
             attributedStr.append(attrVersionsString)
             
             if deviceCount.isEmpty == false {
@@ -354,8 +364,8 @@ class OSSummaryViewController: NSViewController {
                total > 0 {
                 let percent = Double(number)/Double(total)
                 if let pctString = percentFormatter.string(from: NSNumber(value: percent)) {
-                    mutableAttrItem.append("Version ".applyBoldBody())
-                    let values = "\(version.version):\t\(version.count.formatted())\t(\(pctString))"
+                    mutableAttrItem.append("\(version.version):".applyBoldBody())
+                    let values = "\t\(version.count.formatted())\t\(pctString)"
                     mutableAttrItem.append(values.applyBody())
                 }
                 mutableAttrItem.append(NSAttributedString(string: "\n"))
@@ -372,25 +382,21 @@ class OSSummaryViewController: NSViewController {
         resultsTextView.textStorage?.insert(attrStr, at: 0)
     }
     
-    private func setupTextViewTabbing() {
-        var textViewAttributes = resultsTextView.typingAttributes
-        textViewAttributes[NSAttributedString.Key.paragraphStyle] = tabStyle
-        textViewAttributes[NSAttributedString.Key.font] = NSFont.systemFont(ofSize: bodyFontSize)
-        resultsTextView.typingAttributes = textViewAttributes
-        
-        if let defaultGraphStyle = resultsTextView.defaultParagraphStyle {
-            let mutableDefaultStyle = defaultGraphStyle.mutableCopy() as! NSMutableParagraphStyle
-            mutableDefaultStyle.tabStops = tabStyle.tabStops
-            resultsTextView.defaultParagraphStyle = mutableDefaultStyle
-        } else {
-            let mutableDefaultStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
-            mutableDefaultStyle.tabStops = tabStyle.tabStops
-            resultsTextView.defaultParagraphStyle = mutableDefaultStyle
+    private func setInputSelections() {
+        if let lastSelectedApp = UserDefaults.standard.string(forKey: lastAppSelectionKey) {
+            if let index = applicationsPopup.itemTitles.firstIndex(of: lastSelectedApp) {
+                applicationsPopup.selectItem(at: index)
+            }
         }
-        
-        resultsTextView.defaultParagraphStyle = tabStyle
+        if let lastSelectedDateRangeValue = UserDefaults.standard.string(forKey: lastDateSelectionKey) {
+            ageCombobox.stringValue = lastSelectedDateRangeValue
+        }
+        let lastSourceSelection = UserDefaults.standard.integer(forKey: lastSourceSelectionKey)
+        tablePopup.selectItem(at: lastSourceSelection)
+        let lastPlatformSelection = UserDefaults.standard.integer(forKey: lastPlatformSelectionKey)
+        platformPopup.selectItem(at: lastPlatformSelection)
     }
-    
+
     private func setupSearchTextObserver() {
         let sub = NotificationCenter.default
             .publisher(for: NSControl.textDidChangeNotification, object: ageCombobox)
@@ -469,5 +475,13 @@ extension String {
     
     fileprivate func isNumeric() -> Bool {
         return self.allSatisfy{ $0.isNumber }
+    }
+}
+
+// MARK: -
+extension NSMutableAttributedString {
+    fileprivate func applyUnderline() -> NSMutableAttributedString {
+        addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue | NSUnderlineStyle.byWord.rawValue, range: NSMakeRange(0, string.count))
+        return self
     }
 }
