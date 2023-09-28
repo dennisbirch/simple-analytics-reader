@@ -139,7 +139,7 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         for item in result {
             if let name = item["description"],
                let count = item["count"] {
-                dataDict[name] = count
+                dataDict[name] = count.formatted()
                 sortedArray.append(name)
             }
         }

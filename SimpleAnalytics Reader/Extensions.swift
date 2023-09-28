@@ -133,3 +133,23 @@ extension ISO8601DateFormatter {
         return formatter
     }
 }
+
+extension NumberFormatter {
+    static var thousandsFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.hasThousandSeparators = true
+        return formatter
+    }
+}
+
+extension String {
+    func formatted() -> String {
+        if let integer = Int(self) {
+            let num = NSNumber(value: integer)
+            return NumberFormatter.thousandsFormatter.string(from: num) ?? String(self)
+        } else {
+            return self
+        }
+    }
+}
