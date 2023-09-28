@@ -126,6 +126,8 @@ extension SearchViewController: SQLSnippetPersistenceDelegate {
     }
     
     func runSQLSnippet(_ snippet: String) {
-        searchQueriesViewController?.executeSQL(snippet, isLimitedSearch: false)
+        Task {
+            await searchQueriesViewController?.executeSQL(snippet, isLimitedSearch: false)
+        }
     }
 }

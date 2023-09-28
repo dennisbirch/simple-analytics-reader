@@ -104,11 +104,13 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             isLimitedSearch = true
             limitSearchCheckbox.state = .on
         }
-        displaySearchLimitControls(isLimitedSearch)
-
-        queriesTableView.dataSource = queriesTableView
-        queriesTableView.delegate = queriesTableView
-        queriesTableView.queriesTableDelegate = self
+        Task {
+            await displaySearchLimitControls(isLimitedSearch)
+            
+            queriesTableView.dataSource = queriesTableView
+            queriesTableView.delegate = queriesTableView
+            queriesTableView.queriesTableDelegate = self
+        }
     }
     
     override func viewWillAppear() {
@@ -124,13 +126,13 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     
     // MARK: - Private Helpers
     
-    private func displaySearchLimitControls(_ shouldDisplay: Bool) {
+    private func displaySearchLimitControls(_ shouldDisplay: Bool) async {
         let newLimitHeight: CGFloat
         let queryContainerHeight: CGFloat
         if shouldDisplay == true {
             newLimitHeight = expandedLimitViewHeight
             queryContainerHeight = queryControlsHeight
-            setSearchLimitTotals()
+            await setSearchLimitTotals()
         } else {
             newLimitHeight = collapsedLimitViewHeight
             queryContainerHeight = queryControlsHeight - expandedLimitViewHeight
@@ -154,7 +156,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         }
     }
     
-    private func setSearchLimitTotals() {
+    private func setSearchLimitTotals() async {
         if isLimitedSearch == false { return }
         
         var queries = [String]()
@@ -179,42 +181,39 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             return
         }
         
-        let submitter = QuerySubmitter(query: queries.joined(separator: ";"), mode: .array) { [weak self] (results) in
-            switch results {
-                case .failure(let error):
-                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
-
-                case .success(let response):
-                    if let response = response as? [[String]] {
-                        var total = 0
-                        if self?.whatItems == .items || self?.whatItems == .both {
-                            if var items = response.first, let itemsTotal = items.first, let itemCount = Int(itemsTotal) {
-                                self?.searchLimits.itemsTotal = itemCount
-                                total += itemCount
-                                items.remove(at: 0)
-                            }
-                        }
-                        if self?.whatItems == .counters || self?.whatItems == .both {
-                            if let counters = response.last, let counterTotal = counters.first, let countersCount = Int(counterTotal) {
-                                self?.searchLimits.countersTotal = countersCount
-                                total += countersCount
-                            }
-                        }
-                        
-                        if total > 0 {
-                            self?.showLimitedSearchTotal(total)
-                        }
-                        
-                        self?.limitSearchTotal = total
-                        
-                        if let searchLimits = self?.searchLimits {
-                            self?.performSearchButton.isEnabled = searchLimits.currentFetchCount < searchLimits.totalCount
-                        }
-            }
-            }
-        }
+        let submitter = QuerySubmitter(query: queries.joined(separator: ";"), mode: .array)
+        let response = await submitter.submit()
         
-        submitter.submit()
+        switch response {
+            case .failure(let error):
+                NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                
+            case .success(let response):
+                if let response = response as? [[String]] {
+                    var total = 0
+                    if whatItems == .items || whatItems == .both {
+                        if var items = response.first, let itemsTotal = items.first, let itemCount = Int(itemsTotal) {
+                            searchLimits.itemsTotal = itemCount
+                            total += itemCount
+                            items.remove(at: 0)
+                        }
+                    }
+                    if whatItems == .counters || whatItems == .both {
+                        if let counters = response.last, let counterTotal = counters.first, let countersCount = Int(counterTotal) {
+                            searchLimits.countersTotal = countersCount
+                            total += countersCount
+                        }
+                    }
+                    
+                    if total > 0 {
+                        showLimitedSearchTotal(total)
+                    }
+                    
+                    limitSearchTotal = total
+                    
+                    performSearchButton.isEnabled = searchLimits.currentFetchCount < searchLimits.totalCount
+                }
+        }
     }
     
     private func showLimitedSearchTotal(_ total: Int) {
@@ -287,7 +286,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         return statements.joined(separator: ";")
     }
     
-    private func searchDB() {
+    private func searchDB() async {
         let sql: String
         if isLimitedSearch == true {
             sql = limitedSearchSQL()
@@ -309,49 +308,47 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         
         searchDelegate?.searchBegan()
         let isLimitedSearch = isLimitedSearch
-        executeSQL(sql, isLimitedSearch: isLimitedSearch)
+        await executeSQL(sql, isLimitedSearch: isLimitedSearch)
     }
     
-    func executeSQL(_ sql: String, isLimitedSearch: Bool) {
+    func executeSQL(_ sql: String, isLimitedSearch: Bool) async {
         let nextRow = searchLimits.currentFetchCount
-        let submitter = QuerySubmitter(query: sql, mode: .items) { [weak self] result in
-            switch result {
-                case .failure(let error):
-                    NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
-                    
-                case .success(let response):
-                    if let result = response as? [AnalyticsItem] {
-                        if isLimitedSearch == true {
-                            let items = result.filter{ $0.table == .items }.sorted { (item1, item2) -> Bool in
-                                return item1.id < item2.id
-                            }
-                            let counters = result.filter{ $0.table == .counters }.sorted { (item1, item2) -> Bool in
-                                return item1.id < item2.id
-                            }
-                            
-                            var lastItemID = 0
-                            var lastCounterID = 0
-                            if let lastItem = items.last {
-                                lastItemID = lastItem.id
-                            }
-                            if let lastCounter = counters.last {
-                                lastCounterID = lastCounter.id
-                            }
-                            self?.searchLimits.updateForNextLimitedSeek(itemsID: lastItemID, countersID: lastCounterID, itemsCount: items.count, countersCount: counters.count)
-                            self?.updateSearchLimitInfo(results: result)
+        let submitter = QuerySubmitter(query: sql, mode: .items)
+        let response = await submitter.submit()
+        
+        switch response {
+            case .failure(let error):
+                NSAlert.presentAlert(title: "Error", message: "The query failed with the error: \(String(describing: error))")
+                
+            case .success(let response):
+                if let result = response as? [AnalyticsItem] {
+                    if isLimitedSearch == true {
+                        let items = result.filter{ $0.table == .items }.sorted { (item1, item2) -> Bool in
+                            return item1.id < item2.id
                         }
-                        self?.searchDelegate?.searchCompleted(results: result, lastRowNumber: nextRow)
-                    } else {
-                        os_log("Search query failed")
-                        return
+                        let counters = result.filter{ $0.table == .counters }.sorted { (item1, item2) -> Bool in
+                            return item1.id < item2.id
+                        }
                         
+                        var lastItemID = 0
+                        var lastCounterID = 0
+                        if let lastItem = items.last {
+                            lastItemID = lastItem.id
+                        }
+                        if let lastCounter = counters.last {
+                            lastCounterID = lastCounter.id
+                        }
+                        searchLimits.updateForNextLimitedSeek(itemsID: lastItemID, countersID: lastCounterID, itemsCount: items.count, countersCount: counters.count)
+                        updateSearchLimitInfo(results: result)
                     }
-            }
+                    searchDelegate?.searchCompleted(results: result, lastRowNumber: nextRow)
+                } else {
+                    os_log("Search query failed")
+                    return
+                }
         }
-        
-        submitter.submit()
     }
-        
+                
     private func updateSearchLimitInfo(results: [AnalyticsItem]) {
         searchLimits.currentFetchCount += results.count
         if searchLimits.currentFetchCount > searchLimits.totalCount {
@@ -389,8 +386,10 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     @IBAction func toggledShowSearchLimit(_ sender: NSButton) {
         searchLimits = SearchLimit(pageLimit: Int(limitComboBox.intValue))
         isLimitedSearch = sender.state == .on
-        displaySearchLimitControls(isLimitedSearch)
-        UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
+        Task {
+            await displaySearchLimitControls(isLimitedSearch)
+            UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
+        }
     }
     
     @IBAction func addQueryItem(_ sender: Any) {
@@ -430,7 +429,9 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     }
         
     @IBAction func performSearch(_ sender: Any) {
-        searchDB()
+        Task {
+            await searchDB()
+        }
     }
     
     func loadSavedQueries(_ model: QueryModel) {
@@ -448,18 +449,22 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             self.searchLimits.pageLimit = model.pageLimit
             limitComboBox.intValue = Int32(model.pageLimit)
         }
-        displaySearchLimitControls(isLimitedSearch)
-        UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
-        self.limitSearchCheckbox.state = (isLimitedSearch) ? .on : .off
-        enableRemoveQueryButtons()
+        Task {
+            await displaySearchLimitControls(isLimitedSearch)
+            UserDefaults.standard.set(isLimitedSearch, forKey: limitSearchKey)
+            self.limitSearchCheckbox.state = (isLimitedSearch) ? .on : .off
+            enableRemoveQueryButtons()
+        }
     }
         
     // MARK: - QueriesTableDelegate
     
     func searchQueriesChanged() {
-        searchLimits = SearchLimit(pageLimit: Int(limitComboBox.intValue))
-        performSearchButton.isEnabled = true
-        setSearchLimitTotals()
+        Task {
+            searchLimits = SearchLimit(pageLimit: Int(limitComboBox.intValue))
+            performSearchButton.isEnabled = true
+            await setSearchLimitTotals()
+        }
     }
     
     func queriesTableSelectionChanged(selectedRow: Int) {

@@ -43,24 +43,22 @@ enum NetworkError: Error {
     }
 }
 
+@MainActor
 struct QuerySubmitter {
     let query: String
     let mode: QueryMode
-    let completion: (Result<Any, NetworkError>) -> Void
+    let completion: ((Result<Any, NetworkError>) -> Void)? = nil
     private let queryModeKey = "queryMode"
     private let queryKey = "query"
     
-    func submit() {
+    func submit() async -> Result<Any, NetworkError> {
         let endpointString = Endpoint.shared.urlString
         guard endpointString.isEmpty == false else {
             fatalError("The endpoint string is empty. Please make sure your \"Endpoint.txt\" file contains a URL string for your web app.")
         }
         guard let url = URL(string: endpointString) else {
             os_log("URL is nil")
-            DispatchQueue.main.async {
-                self.completion(.failure(.badURL))
-            }
-            return
+            return .failure(.badURL)
         }
         
         var urlRequest = URLRequest(url: url)
@@ -80,75 +78,57 @@ struct QuerySubmitter {
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 120
         
-        let task = URLSession(configuration: config).dataTask(with: urlRequest) { (data, response, error) in
-            if let taskError = error {
-                os_log("Error posting analytics request: %@", taskError.localizedDescription)
-            } else {
-                if let httpResponse = response as? HTTPURLResponse {
-                    let code = httpResponse.statusCode
-                    if (200...299).contains(code) == false {
-                        // response code not in accepted range
-                        os_log("Bad response code: %d", code)
-                        if let data = data {
-                            os_log("%@", String(describing: String(data: data, encoding: .utf8)))
-                        }
-                        DispatchQueue.main.async {
-                            self.completion(.failure(.badResponseCode(code: code)))
-                            return
-                        }
-                    }
+        do {
+            let task = try await URLSession(configuration: config).data(for: urlRequest)
+            let data = task.0
+            let response = task.1
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                let code = httpResponse.statusCode
+                if (200...299).contains(code) == false {
+                    // response code not in accepted range
+                    os_log("Bad response code: %d", code)
+                    return .failure(.badResponseCode(code: code))
                 }
-                
-                if let data = data {
-                    var message: Any = []
-                    if data.count == 0 {
-                        DispatchQueue.main.async {
-                            self.completion(.success([]))
-                            return
-                        }
-                    } else {
-                        if mode == .array {
-                            let response = handleArrayResult(data)
-                            switch response {
-                                case .success(let values):
-                                    return completion(.success(values))
-                                case .failure(let error):
-                                    return completion(.failure(error))
-                            }
-                        } else if mode == .dictionary {
-                            let response = handleDictionaryResult(data)
-                            switch response {
-                                case .success(let values):
-                                    return completion(.success(values))
-                                case .failure(let error):
-                                    return completion(.failure(error))
-                            }
-                        } else if mode == .items {
-                            let response = handleItemsResult(data)
-                            switch response {
-                                case .success(let values):
-                                    return completion(.success(values))
-                                case .failure(let error):
-                                    return completion(.failure(error))
-                            }
-                        }
+            }
+            
+            if data.count == 0 {
+                return .success([])
+            } else {
+                if mode == .array {
+                    let response = handleArrayResult(data)
+                    switch response {
+                        case .success(let values):
+                            return .success(values)
+                        case .failure(let error):
+                            return .failure(error)
                     }
-                    
-                    DispatchQueue.main.async {
-                        self.completion(.success(message))
+                } else if mode == .dictionary {
+                    let response = handleDictionaryResult(data)
+                    switch response {
+                        case .success(let values):
+                            return .success(values)
+                        case .failure(let error):
+                            return .failure(error)
                     }
-                } else {
-                    os_log("Error: data is nil")
-                    DispatchQueue.main.async {
-                        self.completion(.failure(.nilResponse))
+                } else if mode == .items {
+                    let response = handleItemsResult(data)
+                    switch response {
+                        case .success(let values):
+                            return .success(values)
+                        case .failure(let error):
+                            return .failure(error)
                     }
                 }
             }
+            
+        } catch {
+            return .failure(.nilResponse)
         }
         
-        task.resume()
+        return .failure(.badURL)
     }
-    
+        
     private func handleArrayResult(_ result: Data) -> Result<[[String]], NetworkError> {
         let decoder = JSONDecoder()
         do {
