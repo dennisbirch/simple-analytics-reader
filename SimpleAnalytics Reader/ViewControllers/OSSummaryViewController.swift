@@ -34,17 +34,19 @@ class OSSummaryViewController: NSViewController {
     }
 
     private var tabStyle: NSParagraphStyle {
-        let pStyle = NSMutableParagraphStyle()
-        let font = NSFont.systemFont(ofSize: bodyFontSize)
-        let advanceWidth = font.maximumAdvancement.width
-        let tabInterval = advanceWidth * 3
-        pStyle.defaultTabInterval = tabInterval
-        pStyle.lineSpacing = 2
-        let tabStops = [NSTextTab(textAlignment: .right, location: tabInterval * 2, options: [:]),
-                        NSTextTab(textAlignment: .right, location: tabInterval * 3, options: [:])]
-        pStyle.tabStops = tabStops
-        return pStyle
+        get {
+            if let tabStyle = _tabStyle {
+                return tabStyle
+            } else {
+                return NSParagraphStyle()
+            }
+        }
+        set {
+            _tabStyle = newValue
+        }
     }
+    private var _tabStyle: NSParagraphStyle?
+
     private var searchTextObserver: AnyCancellable?
 
     private let sourceTables = ["Items", "Counters"]
@@ -92,6 +94,8 @@ class OSSummaryViewController: NSViewController {
         heightConstraint.constant = hideResultsHeightConstant
         
         setInputSelections()
+        
+        adjustTabStyle()
     }
     
     override func viewWillAppear() {
@@ -409,6 +413,21 @@ class OSSummaryViewController: NSViewController {
         searchTextObserver = sub
     }
 
+    private func adjustTabStyle() {
+        let pStyle = NSMutableParagraphStyle()
+        let font = NSFont.systemFont(ofSize: bodyFontSize)
+        let advanceWidth = font.maximumAdvancement.width
+        let tabInterval = advanceWidth * 3
+        pStyle.defaultTabInterval = tabInterval
+        pStyle.lineSpacing = 2
+        let scroll = resultsTextView.superview?.superview as? NSScrollView
+        let width = scroll?.contentSize.width ?? resultsTextView.bounds.width
+        let scrollBuffer: CGFloat = 16
+        let tabStops = [NSTextTab(textAlignment: .right, location: tabInterval * 2.75, options: [:]),
+                        NSTextTab(textAlignment: .right, location: width - scrollBuffer, options: [:])]
+        pStyle.tabStops = tabStops
+        self.tabStyle = pStyle
+    }
 }
 
 // MARK: - NSComboBoxDelegate
