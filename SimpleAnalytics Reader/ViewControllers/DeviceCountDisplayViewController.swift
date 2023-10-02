@@ -71,6 +71,8 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     private let countersNameColumnKey = "countersTableNameColumn"
     private let countersCountColumnKey = "countersTableCountColumn"
     
+    // MARK: - Setup
+    
     required init?(coder: NSCoder) {
         self.tableType = .actions
         super.init(coder: coder)
@@ -123,13 +125,6 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         }
     }
     
-    func resetTableView() {
-        dataDictionary.removeAll()
-        sortedKeys.removeAll()
-        tableView.reloadData()
-        displayDeviceCountContent(false, deviceCount: "")
-    }
-    
     func configureWithDictionary(_ result: [[String : String]], tableType: DeviceCountTableType, whereClause: String) {
         self.tableType = tableType
         displayDeviceCountContent(false, deviceCount: "")
@@ -157,6 +152,8 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         tableView.reloadData()
     }
     
+    // MARK: - Reset/Restore
+    
     func updateWhereClause(_ whereClause: String) {
         baseWhereClause = whereClause
     }
@@ -170,12 +167,20 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         await fetchCountForRow(row)
     }
 
+    func resetTableView() {
+        dataDictionary.removeAll()
+        sortedKeys.removeAll()
+        tableView.reloadData()
+        displayDeviceCountContent(false, deviceCount: "")
+    }
+    
+    // MARK: - TableView Delegate and DataSource
+    
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let item = sortedKeys[row]
         
         switch tableType {
         case .applications, .platforms:
-            let item = sortedKeys[row]
             return NSTextField(labelWithString: item)
         case .actions:
             let action = sortedKeys[row]
@@ -222,6 +227,8 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         }
     }
 
+    // MARK: - Device Count Support
+    
     private func fetchCountForRow(_ row: Int) async {
         if tableType == .applications || tableType == .platforms {
             await getAppsAndPlatformsCounts(row: row)
