@@ -20,6 +20,7 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var platformsViewController: DeviceCountDisplayViewController?
     private var actionsViewController: DeviceCountDisplayViewController?
     private var countersViewController: DeviceCountDisplayViewController?
+    private var dateRangeViewController: DateSelectorViewController?
     
     private var applications = [String]() {
         didSet {
@@ -110,7 +111,14 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         self.platformsViewController = platformsVC
         platformsVC.delegate = self
         addChild(platformsVC)
-        addCountViewController(platformsVC.view, to: platformsTableContainer)
+        
+        let dateSelectorVC = DateSelectorViewController.create()
+        if let vc = dateSelectorVC {
+            dateRangeViewController = vc
+            addChild(vc)
+        }
+        let dateSelectorView = dateSelectorVC?.view
+        addCountViewController(platformsVC.view, to: platformsTableContainer, withViewBelow: dateSelectorView)
         
         guard let countersVC = DeviceCountDisplayViewController.viewController(for: .counters) else {
             return
@@ -121,13 +129,25 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         addCountViewController(countersVC.view, to: countersTableContainer)
     }
     
-    private func addCountViewController(_ countTableView: NSView, to container: NSView) {
+    private func addCountViewController(_ countTableView: NSView, to container: NSView, withViewBelow belowView: NSView? = nil) {
         container.addSubview(countTableView)
         countTableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([countTableView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-                                     countTableView.topAnchor.constraint(equalTo: container.topAnchor),
-                                     countTableView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-                                     countTableView.bottomAnchor.constraint(equalTo: container.bottomAnchor)])
+        if let belowView = belowView {
+            belowView.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(belowView)
+            NSLayoutConstraint.activate([countTableView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                                         countTableView.topAnchor.constraint(equalTo: container.topAnchor),
+                                         countTableView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+                                         belowView.leadingAnchor.constraint(equalTo: countTableView.leadingAnchor),
+                                         belowView.topAnchor.constraint(equalTo: countTableView.bottomAnchor),
+                                         countTableView.trailingAnchor.constraint(equalTo: belowView.trailingAnchor),
+                                         container.bottomAnchor.constraint(equalToSystemSpacingBelow: belowView.bottomAnchor, multiplier: 1)])
+        } else {
+            NSLayoutConstraint.activate([countTableView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                                         countTableView.topAnchor.constraint(equalTo: container.topAnchor),
+                                         countTableView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+                                         countTableView.bottomAnchor.constraint(equalTo: container.bottomAnchor)])
+        }
     }
     
     // MARK: - Actions
@@ -168,7 +188,16 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         refreshButton.isHidden = shouldShow
     }
     
+    private func dateRestrictionWhereClause() -> String {
+        guard let whereClause = dateRangeViewController?.whereClause else {
+            return ""
+        }
+        
+        return whereClause
+    }
+    
     private func requestApplicationNames() async {
+        
         let itemsQuery = DBAccess.query(what: Common.appName, from: Items.table, isDistinct: true)
         let countersQuery = DBAccess.query(what: Common.appName, from: Counters.table, isDistinct: true)
         
@@ -217,7 +246,9 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
                         
     private func requestPlatforms(appName: String) async {
-        let baseWhereClause = "\(Common.appName) = '\(appName)'"
+        let restrictedDates = dateRestrictionWhereClause()
+        let dateClause = (restrictedDates.isEmpty) ? "" : " AND \(dateRestrictionWhereClause()))"
+        let baseWhereClause = "(\(Common.appName) = '\(appName)') \(dateClause)"
         let itemQuery = DBAccess.query(what: Common.platform, from: Items.table, whereClause: baseWhereClause, isDistinct: true)
         let countersQuery = DBAccess.query(what: Common.platform, from: Counters.table, whereClause: "\(Common.appName) = '\(appName)'", isDistinct: true)
         
@@ -271,7 +302,9 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         
         await requestCounters(app: app, platform: platform)
         
-        let whereClause = "(app_name = \(app.sqlify()) AND platform = \(platform.sqlify()))"
+        let restrictedDates = dateRestrictionWhereClause()
+        let dateClause = (restrictedDates.isEmpty) ? "" : " AND \(dateRestrictionWhereClause()))"
+        let whereClause = "(app_name = \(app.sqlify()) AND platform = \(platform.sqlify())) \(dateClause)"
         let query = "SELECT description, COUNT(description) AS 'count' FROM items WHERE \(whereClause) GROUP BY description"
         
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary)
@@ -297,8 +330,11 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         showActivityIndicator(true)
         resetDataStorage(strategy: .counters)
         
-        let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'"
-        let query = "SELECT \(Counters.description), SUM(\(Counters.count)) AS count FROM \(Counters.table) WHERE (\(Common.appName) = \(app.sqlify()) AND \(Common.platform) = \(platform.sqlify())) GROUP BY \(Counters.description)"
+        let restrictedDates = dateRestrictionWhereClause()
+        let dateClause = (restrictedDates.isEmpty) ? "" : " AND \(dateRestrictionWhereClause()))"
+        let whereClause = "(\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)'\(dateClause)"
+//        let query = "SELECT \(Counters.description), SUM(\(Counters.count)) AS count FROM \(Counters.table) WHERE (\(Common.appName) = \(app.sqlify()) AND \(Common.platform) = \(platform.sqlify())) GROUP BY \(Counters.description)"
+        let query = "SELECT \(Counters.description), SUM(\(Counters.count)) AS count FROM \(Counters.table) WHERE \(whereClause) GROUP BY \(Counters.description)"
         let itemSubmitter = QuerySubmitter(query: query, mode: .dictionary)
         let result = await itemSubmitter.submit()
         switch result {
@@ -326,7 +362,9 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private func requestItemDetails(app: String, platform: String, action: String) async {
         showActivityIndicator(true)
-        let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)'"
+        let restrictedDates = dateRestrictionWhereClause()
+        let dateClause = (restrictedDates.isEmpty) ? "" : " AND \(dateRestrictionWhereClause()))"
+        let whereClause = "(\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Items.description) = '\(action)'\(dateClause)"
         let query = DBAccess.query(what: "\(Items.details), \(Common.timestamp), \(Common.deviceID)",
                                    from: Items.table,
                                    whereClause: whereClause,
@@ -355,7 +393,9 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     private func requestCounterDetails(app: String, platform: String, action: String) async {
         showActivityIndicator(true)
-        let whereClause = "\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Counters.description) = '\(action)'"
+        let restrictedDates = dateRestrictionWhereClause()
+        let dateClause = (restrictedDates.isEmpty) ? "" : " AND \(dateRestrictionWhereClause()))"
+        let whereClause = "(\(Common.appName) = '\(app)' AND \(Common.platform) = '\(platform)' AND \(Counters.description) = '\(action)' \(dateClause))"
         let query = DBAccess.query(what: "\(Counters.count), \(Common.timestamp), \(Common.deviceID)",
                                    from: Counters.table,
                                    whereClause: whereClause,
@@ -547,3 +587,4 @@ struct ListViewRefreshRestoration {
     var countersTableSelection: Int
     var activeControl: NSResponder? = nil
 }
+

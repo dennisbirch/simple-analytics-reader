@@ -877,6 +877,94 @@ Gw
             </objects>
             <point key="canvasLocation" x="985" y="906"/>
         </scene>
+        <!--Date Selector View Controller-->
+        <scene sceneID="PES-rp-fQ5">
+            <objects>
+                <viewController storyboardIdentifier="DateSelectorViewController" id="mWr-dv-Rt7" customClass="DateSelectorViewController" customModule="SimpleAnalytics_Reader" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Qvd-kG-CRJ">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="116"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gD1-L9-lAX">
+                                <rect key="frame" x="20" y="20" width="410" height="76"/>
+                                <subviews>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SFf-aQ-Bkj">
+                                        <rect key="frame" x="-2" y="59" width="113" height="18"/>
+                                        <buttonCell key="cell" type="check" title="Limit dates to:" bezelStyle="regularSquare" imagePosition="left" inset="2" id="nne-Vu-A8h">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="restrictDatesToggled:" target="mWr-dv-Rt7" id="9ap-aA-a1g"/>
+                                        </connections>
+                                    </button>
+                                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BWE-E4-zWC">
+                                        <rect key="frame" x="-3" y="28" width="417" height="25"/>
+                                        <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" enabled="NO" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="K2r-tX-YZl" id="yMT-su-JTJ">
+                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="menu"/>
+                                            <menu key="menu" id="Six-gO-bph">
+                                                <items>
+                                                    <menuItem title="Item 1" state="on" id="K2r-tX-YZl"/>
+                                                    <menuItem title="Item 2" id="MeG-vz-Lsf"/>
+                                                    <menuItem title="Item 3" id="pNb-N0-WJE"/>
+                                                </items>
+                                            </menu>
+                                        </popUpButtonCell>
+                                        <connections>
+                                            <action selector="selectedDateRange:" target="mWr-dv-Rt7" id="uPE-b7-lhN"/>
+                                        </connections>
+                                    </popUpButton>
+                                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Wz-FO-HTr">
+                                        <rect key="frame" x="0.0" y="0.0" width="413" height="28"/>
+                                        <datePickerCell key="cell" enabled="NO" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="fwb-yK-hXq">
+                                            <font key="font" metaFont="system"/>
+                                            <date key="date" timeIntervalSinceReferenceDate="717975163.036376">
+                                                <!--2023-10-02 21:32:43 +0000-->
+                                            </date>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        </datePickerCell>
+                                        <connections>
+                                            <action selector="changedDate:" target="mWr-dv-Rt7" id="wAt-bz-Jj4"/>
+                                        </connections>
+                                    </datePicker>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="2Wz-FO-HTr" secondAttribute="trailing" id="136-Hq-QKl"/>
+                                    <constraint firstAttribute="trailing" secondItem="BWE-E4-zWC" secondAttribute="trailing" id="9Ds-ga-g47"/>
+                                    <constraint firstItem="2Wz-FO-HTr" firstAttribute="leading" secondItem="gD1-L9-lAX" secondAttribute="leading" id="sfp-jl-aqV"/>
+                                    <constraint firstItem="BWE-E4-zWC" firstAttribute="leading" secondItem="gD1-L9-lAX" secondAttribute="leading" id="w9D-Yd-hiD"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="gD1-L9-lAX" firstAttribute="leading" secondItem="Qvd-kG-CRJ" secondAttribute="leading" constant="20" symbolic="YES" id="8fK-aW-AUy"/>
+                            <constraint firstItem="gD1-L9-lAX" firstAttribute="top" secondItem="Qvd-kG-CRJ" secondAttribute="top" constant="20" symbolic="YES" id="R2o-aa-SJ7"/>
+                            <constraint firstAttribute="trailing" secondItem="gD1-L9-lAX" secondAttribute="trailing" constant="20" symbolic="YES" id="ZGL-pV-u3L"/>
+                            <constraint firstAttribute="bottom" secondItem="gD1-L9-lAX" secondAttribute="bottom" constant="20" symbolic="YES" id="wzy-f0-P93"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="containerView" destination="gD1-L9-lAX" id="CYn-zd-Rxk"/>
+                        <outlet property="dateRangePopup" destination="BWE-E4-zWC" id="fP5-ca-S84"/>
+                        <outlet property="dateSelector" destination="2Wz-FO-HTr" id="5zk-Ss-2LQ"/>
+                    </connections>
+                </viewController>
+                <customObject id="VhK-4m-2RG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1697" y="924"/>
+        </scene>
         <!--Execute And SaveSQL View Controller-->
         <scene sceneID="qEZ-jn-cyj">
             <objects>
@@ -1114,13 +1202,13 @@ Gw
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hjS-gK-cb6">
-                                <rect key="frame" x="228" y="20" width="803" height="231"/>
+                                <rect key="frame" x="228" y="20" width="803" height="173"/>
                                 <clipView key="contentView" id="gXm-la-nDS">
-                                    <rect key="frame" x="1" y="1" width="801" height="229"/>
+                                    <rect key="frame" x="1" y="1" width="801" height="171"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveName="searchResultsTableView" rowSizeStyle="automatic" headerView="2sQ-Wr-gjl" viewBased="YES" id="sFW-D9-Qsh">
-                                            <rect key="frame" x="0.0" y="0.0" width="801" height="201"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="801" height="143"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="17" height="0.0"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1504,7 +1592,7 @@ Gw
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="SoZ-sU-mxc">
-                                    <rect key="frame" x="1" y="273" width="801" height="15"/>
+                                    <rect key="frame" x="1" y="215" width="801" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="IBU-QY-xgq">
@@ -1517,13 +1605,13 @@ Gw
                                 </tableHeaderView>
                             </scrollView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="N5g-K3-7oA">
-                                <rect key="frame" x="20" y="20" width="200" height="231"/>
+                                <rect key="frame" x="20" y="20" width="200" height="173"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="FRP-qv-Kcg"/>
                                 </constraints>
                             </customView>
                             <progressIndicator maxValue="100" displayedWhenStopped="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="KnB-29-gBN">
-                                <rect key="frame" x="1015" y="255" width="16" height="16"/>
+                                <rect key="frame" x="1015" y="197" width="16" height="16"/>
                             </progressIndicator>
                         </subviews>
                         <constraints>
@@ -1546,7 +1634,7 @@ Gw
                 </viewController>
                 <customObject id="5XQ-x9-Iuv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="330.5" y="1656.5"/>
+            <point key="canvasLocation" x="199" y="1745"/>
         </scene>
         <!--Search Queries View Controller-->
         <scene sceneID="6fn-pd-iam">
@@ -1637,8 +1725,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <datePickerCell key="cell" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="qIe-mP-tC8">
                                                                                 <font key="font" size="12" name="HelveticaNeue"/>
-                                                                                <date key="date" timeIntervalSinceReferenceDate="717695257.38722599">
-                                                                                    <!--2023-09-29 15:47:37 +0000-->
+                                                                                <date key="date" timeIntervalSinceReferenceDate="717959609.83723199">
+                                                                                    <!--2023-10-02 17:13:29 +0000-->
                                                                                 </date>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2060,13 +2148,13 @@ DQ
                                 </constraints>
                             </customView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Nj-I7-T49">
-                                <rect key="frame" x="0.0" y="48" width="450" height="112"/>
+                                <rect key="frame" x="0.0" y="48" width="450" height="56"/>
                                 <clipView key="contentView" id="uwB-sQ-auE">
-                                    <rect key="frame" x="1" y="1" width="448" height="110"/>
+                                    <rect key="frame" x="1" y="1" width="448" height="54"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" headerView="PN1-cp-vqg" viewBased="YES" id="9bq-oN-gPx">
-                                            <rect key="frame" x="0.0" y="0.0" width="448" height="82"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="448" height="26"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="17" height="0.0"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

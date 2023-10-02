@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D829263B262360D600B16434 /* QueryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263A262360D600B16434 /* QueryItem.swift */; };
 		D829263D262386E600B16434 /* QueriesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263C262386E600B16434 /* QueriesTable.swift */; };
+		D832AC3D2ACB708C00723D1C /* DateSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D832AC3C2ACB708C00723D1C /* DateSelectorViewController.swift */; };
 		D8399F45264B2ED600AA2A81 /* SearchLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8399F44264B2ED600AA2A81 /* SearchLimit.swift */; };
 		D85E9E762678371800A9CD0A /* OSSummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D85E9E742678371800A9CD0A /* OSSummary.storyboard */; };
 		D85E9E782678374100A9CD0A /* OSSummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85E9E772678374000A9CD0A /* OSSummaryViewController.swift */; };
@@ -41,6 +42,7 @@
 /* Begin PBXFileReference section */
 		D829263A262360D600B16434 /* QueryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItem.swift; sourceTree = "<group>"; };
 		D829263C262386E600B16434 /* QueriesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueriesTable.swift; sourceTree = "<group>"; };
+		D832AC3C2ACB708C00723D1C /* DateSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectorViewController.swift; sourceTree = "<group>"; };
 		D8399F44264B2ED600AA2A81 /* SearchLimit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchLimit.swift; sourceTree = "<group>"; };
 		D85E9E752678371800A9CD0A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OSSummary.storyboard; sourceTree = "<group>"; };
 		D85E9E772678374000A9CD0A /* OSSummaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSSummaryViewController.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 				D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */,
 				D8EE21A5264341D800C4F554 /* SavedQueriesViewController.swift */,
 				D8D4C557264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift */,
+				D832AC3C2ACB708C00723D1C /* DateSelectorViewController.swift */,
 				D85E9E772678374000A9CD0A /* OSSummaryViewController.swift */,
 			);
 			path = ViewControllers;
@@ -298,6 +301,7 @@
 				D8EE21A42641F34E00C4F554 /* QueryPersistence.swift in Sources */,
 				D829263D262386E600B16434 /* QueriesTable.swift in Sources */,
 				D89AB8BD2653210800A69833 /* Endpoint.swift in Sources */,
+				D832AC3D2ACB708C00723D1C /* DateSelectorViewController.swift in Sources */,
 				D8EE21A6264341D800C4F554 /* SavedQueriesViewController.swift in Sources */,
 				D85E9E782678374100A9CD0A /* OSSummaryViewController.swift in Sources */,
 				D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */,
