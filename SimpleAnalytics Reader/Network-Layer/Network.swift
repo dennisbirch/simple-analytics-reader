@@ -96,16 +96,16 @@ struct QuerySubmitter {
                 return .success([])
             } else {
                 if mode == .array {
-                    let response = handleArrayResult(data)
-                    switch response {
+                    let array = handleArrayResult(data)
+                    switch array {
                         case .success(let values):
                             return .success(values)
                         case .failure(let error):
                             return .failure(error)
                     }
                 } else if mode == .dictionary {
-                    let response = handleDictionaryResult(data)
-                    switch response {
+                    let array = handleDictionaryResult(data)
+                    switch array {
                         case .success(let values):
                             return .success(values)
                         case .failure(let error):

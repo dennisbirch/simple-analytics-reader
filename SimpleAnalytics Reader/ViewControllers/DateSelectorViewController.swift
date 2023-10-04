@@ -43,6 +43,8 @@ class DateSelectorViewController: NSViewController {
     }
     
     var whereClause: String? {
+        if restrictDates == false { return nil }
+        
         guard let date = date else {
             os_log("Date is nil. Unable to provide a where clause")
             return nil
@@ -54,11 +56,13 @@ class DateSelectorViewController: NSViewController {
     }
     
     @IBAction private func selectedDateRange(_ sender: NSButton) {
-        dateRange = sender.selectedCell()?.title ?? ""
+        dateRange = sender.selectedCell()?.title ?? ""        
+        NotificationCenter.default.post(name: queryDateChangeNotification, object: nil)
     }
     
     @IBAction private func changedDate(_ sender: NSDatePicker) {
         date = sender.dateValue
+        NotificationCenter.default.post(name: queryDateChangeNotification, object: nil)
     }
     
     @IBAction private func restrictDatesToggled(_ sender: NSButton) {
@@ -69,6 +73,10 @@ class DateSelectorViewController: NSViewController {
             dateRange = dateRangePopup.itemTitle(at: dateRangePopup.indexOfSelectedItem)
             date = dateSelector.dateValue
         }
+        
+        NotificationCenter.default.post(name: queryDateChangeNotification, object: nil)
     }
 }
 
+let notificationNameString = "DateSelectorChangeNotification"
+let queryDateChangeNotification = Notification.Name(rawValue: notificationNameString)

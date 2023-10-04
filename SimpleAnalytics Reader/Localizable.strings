@@ -20,11 +20,11 @@
 "string-compare-begins" = "Begins With";
 "string-compare-ends" = "Ends With";
 
-"date-compare-before-equal" = "Before or same";
+"date-compare-before-equal" = "On or before";
 "date-compare-before" = "Before";
 "date-compare-same" = "Same";
 "date-compare-after" = "After";
-"date-compare-after-equals" = "After or same";
+"date-compare-after-equals" = "On or after";
 
 "numeric-compare-less-equals" = "Less than or equals";
 "numeric-compare-less" = "Less than";

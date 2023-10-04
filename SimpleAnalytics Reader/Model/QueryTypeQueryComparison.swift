@@ -44,11 +44,11 @@ enum QueryType: String, CaseIterable {
 }
 
 enum DateComparison: String, Comparison, CaseIterable {
-    case beforeOrEquals
+    case onOrBefore
     case before
     case same
     case after
-    case afterOrEquals
+    case onOrAfter
     
     func toString() -> String {
         self.rawValue

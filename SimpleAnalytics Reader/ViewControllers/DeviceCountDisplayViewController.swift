@@ -48,6 +48,7 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     static let viewControllerIdentifier = "DetailsViewController"
     
     var delegate: DeviceCountTableViewDelegate?
+    var dateQueryWhereClause = ""
     var selectedRow: Int {
         return tableView.selectedRow
     }
@@ -61,9 +62,8 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
     private var dataDictionary = [String : String]()
     private var sortedKeys = [String]()
     private var baseWhereClause = ""
-    
     private let collapsedDeviceCountHeight: CGFloat = 0
-    private let expandedDeviceCountHeight: CGFloat = 60
+    private let expandedDeviceCountHeight: CGFloat = 32
 
     // Column width Defaults keys
     private let actionsNameColumnKey = "actionsTableNameColumn"
@@ -241,7 +241,7 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
             let itemName = sortedKeys[row]
             
             let fromTable = tableType.tableName
-            let deviceCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
+            let deviceCountQuery = "SELECT COUNT(DISTINCT device_id) FROM \(fromTable) WHERE (\(baseWhereClause) \(dateQueryWhereClause) AND \(Items.description) = \(itemName.sqlify()))"
             
             let submitter = QuerySubmitter(query: deviceCountQuery, mode: .array)
             let result = await submitter.submit()
@@ -272,7 +272,7 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
         }
         
         let itemName = sortedKeys[row]
-        let whereClause = baseWhereClause + itemName.sqlify()
+        let whereClause = baseWhereClause + itemName.sqlify() + dateQueryWhereClause
         let itemsQuery = "SELECT DISTINCT (\(Common.deviceID)) FROM \(Items.table) WHERE \(whereClause)"
         let countersQuery = "SELECT DISTINCT (\(Common.deviceID)) FROM \(Counters.table) WHERE \(whereClause)"
         
@@ -326,10 +326,6 @@ class DeviceCountDisplayViewController: NSViewController, NSTableViewDelegate, N
             deviceCountContainerHeightConstraint?.constant = expanded
         } else {
             deviceCountContainerHeightConstraint?.constant = collapsed
-        }
-        NSAnimationContext.runAnimationGroup { (context) in
-            context.duration = 0.25
-            deviceCountContainer.layoutSubtreeIfNeeded()
         }
     }
 }

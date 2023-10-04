@@ -132,7 +132,7 @@ extension QueryItem {
         case .datetime:
             let likeValue = "\(value)%".sqlify()
             switch comparison as! DateComparison {
-            case DateComparison.beforeOrEquals:
+            case DateComparison.onOrBefore:
                 sql = "(\(queryType.dbColumnName) < \(likeValue) OR \(queryType.dbColumnName) LIKE \(likeValue))"
             case DateComparison.before:
                 sql = "\(queryType.dbColumnName) < \(likeValue)"
@@ -140,7 +140,7 @@ extension QueryItem {
                 sql = "\(queryType.dbColumnName) LIKE \(likeValue)"
             case DateComparison.after:
                 sql = "\(queryType.dbColumnName) > \(likeValue)"
-            case DateComparison.afterOrEquals:
+            case DateComparison.onOrAfter:
                 sql = "(\(queryType.dbColumnName) LIKE \(likeValue) OR \(queryType.dbColumnName) > \(likeValue))"
             }
 
