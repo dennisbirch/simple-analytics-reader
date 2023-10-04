@@ -1838,8 +1838,8 @@ DQ
                                                         </connections>
                                                     </button>
                                                     <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="k5J-Yr-xRS">
-                                                        <rect key="frame" x="8" y="39" width="24" height="22"/>
-                                                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Gm4-QP-i4c">
+                                                        <rect key="frame" x="7" y="38" width="26" height="23"/>
+                                                        <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSRemoveTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Gm4-QP-i4c">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1865,8 +1865,8 @@ DQ
                                                         </connections>
                                                     </button>
                                                     <button horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="CbX-cD-4uF">
-                                                        <rect key="frame" x="168" y="39" width="24" height="22"/>
-                                                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Cy3-WA-MVl">
+                                                        <rect key="frame" x="167" y="38" width="26" height="23"/>
+                                                        <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSAddTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Cy3-WA-MVl">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -1991,10 +1991,10 @@ DQ
                                                 <rect key="frame" x="0.0" y="120" width="200" height="70"/>
                                                 <subviews>
                                                     <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y9D-GN-Ck3">
-                                                        <rect key="frame" x="8" y="30" width="184" height="32"/>
+                                                        <rect key="frame" x="8" y="42" width="184" height="20"/>
                                                         <subviews>
                                                             <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NkP-us-Urc">
-                                                                <rect key="frame" x="-2" y="14" width="41" height="16"/>
+                                                                <rect key="frame" x="-2" y="2" width="41" height="16"/>
                                                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Show:" id="pCX-Oy-3cu">
                                                                     <font key="font" usesAppearanceFont="YES"/>
                                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -2002,7 +2002,7 @@ DQ
                                                                 </textFieldCell>
                                                             </textField>
                                                             <comboBox focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xIi-kp-s5W">
-                                                                <rect key="frame" x="44" y="10" width="143" height="23"/>
+                                                                <rect key="frame" x="44" y="-2" width="143" height="23"/>
                                                                 <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="100" drawsBackground="YES" completes="NO" numberOfVisibleItems="3" id="7bD-oQ-cpL">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2030,7 +2030,7 @@ DQ
                                                         </customSpacing>
                                                     </stackView>
                                                     <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1RL-My-z26">
-                                                        <rect key="frame" x="6" y="8" width="188" height="14"/>
+                                                        <rect key="frame" x="6" y="20" width="188" height="14"/>
                                                         <textFieldCell key="cell" id="sVy-tN-Bd9">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -2045,7 +2045,6 @@ DQ
                                                     <constraint firstItem="1RL-My-z26" firstAttribute="leading" secondItem="Xg7-7x-XEb" secondAttribute="leading" constant="8" id="LK1-cB-Lwt"/>
                                                     <constraint firstItem="Y9D-GN-Ck3" firstAttribute="leading" secondItem="Xg7-7x-XEb" secondAttribute="leading" constant="8" id="eAZ-uJ-Ih1"/>
                                                     <constraint firstAttribute="height" constant="70" id="glJ-8G-0jm"/>
-                                                    <constraint firstAttribute="bottom" secondItem="1RL-My-z26" secondAttribute="bottom" priority="750" constant="8" id="gsy-K2-nht"/>
                                                     <constraint firstAttribute="trailing" secondItem="Y9D-GN-Ck3" secondAttribute="trailing" constant="8" id="sED-Lo-guH"/>
                                                 </constraints>
                                             </customView>
@@ -2116,6 +2115,7 @@ DQ
                         <outlet property="limitHeightConstraint" destination="glJ-8G-0jm" id="31p-da-Tfz"/>
                         <outlet property="limitInfoLabel" destination="1RL-My-z26" id="4eW-nD-9u4"/>
                         <outlet property="limitSearchCheckbox" destination="h6W-Yh-nuI" id="IUr-If-pVY"/>
+                        <outlet property="limitToControlsStackView" destination="Y9D-GN-Ck3" id="Fsd-Vx-CZi"/>
                         <outlet property="performSearchButton" destination="cwp-iz-GQW" id="VXK-Y7-cFc"/>
                         <outlet property="queriesTableView" destination="3Cu-Ko-ig1" id="ydD-gd-Bji"/>
                         <outlet property="queryControlsHeightConstraint" destination="GRU-JL-tw8" id="2Xe-hY-xM7"/>

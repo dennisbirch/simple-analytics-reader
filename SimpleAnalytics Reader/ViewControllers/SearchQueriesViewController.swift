@@ -53,6 +53,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
     @IBOutlet private weak var limitInfoLabel: NSTextField!
     @IBOutlet private weak var limitSearchCheckbox: NSButton!
     @IBOutlet private weak var limitHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var limitToControlsStackView: NSStackView!
 
     private var selectedQueryRow = -1
     var whatItems: WhatItems = .items
@@ -143,7 +144,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
         searchLimits.lastCountersID = 0
         
         limitInfoLabel.stringValue = ""
-
+        
         limitHeightConstraint.constant = newLimitHeight
         queryControlsHeightConstraint.constant = queryContainerHeight
         NSAnimationContext.runAnimationGroup { [weak self] (context) in
@@ -152,7 +153,7 @@ class SearchQueriesViewController: NSViewController, QueriesTableDelegate, NSCom
             self?.view.layoutSubtreeIfNeeded()
         } completionHandler: { [weak self] in
             self?.limitInfoLabel.isHidden = !shouldDisplay
-            self?.limitComboBox.isHidden = !shouldDisplay
+            self?.limitToControlsStackView.isHidden = !shouldDisplay
         }
     }
     
