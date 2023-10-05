@@ -17,6 +17,7 @@ class DateSelectorViewController: NSViewController {
     var restrictDates: Bool = false
     var dateRange = ""
     var date: Date? = nil
+    private(set) var delay: Int = 1000
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,12 +58,14 @@ class DateSelectorViewController: NSViewController {
     
     @IBAction private func selectedDateRange(_ sender: NSButton) {
         dateRange = sender.selectedCell()?.title ?? ""        
-        NotificationCenter.default.post(name: queryDateChangeNotification, object: nil)
+        // allow a one-second delay for other changes before taking further action
+        updateDelayAndNotifyChange(delay: 1000)
     }
     
     @IBAction private func changedDate(_ sender: NSDatePicker) {
         date = sender.dateValue
-        NotificationCenter.default.post(name: queryDateChangeNotification, object: nil)
+        // allow a half-second delay for other changes before taking further action
+        updateDelayAndNotifyChange(delay: 500)
     }
     
     @IBAction private func restrictDatesToggled(_ sender: NSButton) {
@@ -74,6 +77,12 @@ class DateSelectorViewController: NSViewController {
             date = dateSelector.dateValue
         }
         
+        // allow 1 second before notifying of a change for other actions after turning on, or one-tenth-second if turning off
+        updateDelayAndNotifyChange(delay: (restrictDates == true) ? 1000 : 100)
+    }
+    
+    private func updateDelayAndNotifyChange(delay: Int) {
+        self.delay = delay
         NotificationCenter.default.post(name: queryDateChangeNotification, object: nil)
     }
 }

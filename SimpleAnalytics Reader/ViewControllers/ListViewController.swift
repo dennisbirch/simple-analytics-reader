@@ -134,11 +134,11 @@ class ListViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     }
     
     private func setupDateRestrictionChangeObserver() {
-        let strongSelf = self
         let sub = NotificationCenter.default
             .publisher(for: queryDateChangeNotification, object: nil)
-            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
-            .sink(receiveValue: { _  in
+            .debounce(for: .milliseconds(dateRangeViewController?.delay ?? 1000), scheduler: RunLoop.main)
+            .sink(receiveValue: { [weak self] _  in
+                guard let strongSelf = self else { return }
                 strongSelf.updateDateRestrictionsForCounterViewControllers()
                 strongSelf.refreshTapped(strongSelf)
             })
