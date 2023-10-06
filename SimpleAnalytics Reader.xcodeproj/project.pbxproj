@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D813102A2AD0C0E60051CAE1 /* TextEntryDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81310292AD0C0E60051CAE1 /* TextEntryDialog.swift */; };
 		D829263B262360D600B16434 /* QueryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263A262360D600B16434 /* QueryItem.swift */; };
 		D829263D262386E600B16434 /* QueriesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D829263C262386E600B16434 /* QueriesTable.swift */; };
 		D832AC3D2ACB708C00723D1C /* DateSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D832AC3C2ACB708C00723D1C /* DateSelectorViewController.swift */; };
@@ -30,8 +31,6 @@
 		D8ED4AD6262F713600A01593 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8ED4AD5262F713600A01593 /* Localizable.strings */; };
 		D8EE21A42641F34E00C4F554 /* QueryPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE21A32641F34E00C4F554 /* QueryPersistence.swift */; };
 		D8EE21A6264341D800C4F554 /* SavedQueriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE21A5264341D800C4F554 /* SavedQueriesViewController.swift */; };
-		D8EE21CD2644BD6300C4F554 /* TextEntryAlertDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE21CB2644BD6300C4F554 /* TextEntryAlertDialog.swift */; };
-		D8EE21CE2644BD6300C4F554 /* TextEntryDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8EE21CC2644BD6300C4F554 /* TextEntryDialog.xib */; };
 		D8F0B4AC260CFD83008D6054 /* DBAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F0B4AB260CFD83008D6054 /* DBAccess.swift */; };
 		D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */; };
 		D8FAE0352646E8F200BA500B /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FAE0342646E8F200BA500B /* DetailView.swift */; };
@@ -40,6 +39,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D81310292AD0C0E60051CAE1 /* TextEntryDialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextEntryDialog.swift; sourceTree = "<group>"; };
 		D829263A262360D600B16434 /* QueryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItem.swift; sourceTree = "<group>"; };
 		D829263C262386E600B16434 /* QueriesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueriesTable.swift; sourceTree = "<group>"; };
 		D832AC3C2ACB708C00723D1C /* DateSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectorViewController.swift; sourceTree = "<group>"; };
@@ -67,8 +67,6 @@
 		D8ED4AD5262F713600A01593 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		D8EE21A32641F34E00C4F554 /* QueryPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPersistence.swift; sourceTree = "<group>"; };
 		D8EE21A5264341D800C4F554 /* SavedQueriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedQueriesViewController.swift; sourceTree = "<group>"; };
-		D8EE21CB2644BD6300C4F554 /* TextEntryAlertDialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextEntryAlertDialog.swift; sourceTree = "<group>"; };
-		D8EE21CC2644BD6300C4F554 /* TextEntryDialog.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextEntryDialog.xib; sourceTree = "<group>"; };
 		D8F0B4AB260CFD83008D6054 /* DBAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBAccess.swift; sourceTree = "<group>"; };
 		D8F9EF3C262B48B1007B41C3 /* SearchQueriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueriesViewController.swift; sourceTree = "<group>"; };
 		D8FAE0342646E8F200BA500B /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
@@ -200,8 +198,7 @@
 		D8EE21CA2644BD6300C4F554 /* TextEntryDialog */ = {
 			isa = PBXGroup;
 			children = (
-				D8EE21CB2644BD6300C4F554 /* TextEntryAlertDialog.swift */,
-				D8EE21CC2644BD6300C4F554 /* TextEntryDialog.xib */,
+				D81310292AD0C0E60051CAE1 /* TextEntryDialog.swift */,
 			);
 			path = TextEntryDialog;
 			sourceTree = "<group>";
@@ -281,7 +278,6 @@
 				D87A5C39260AD35700D7B016 /* Main.storyboard in Resources */,
 				D86CE8482AC356AA00440C9F /* Endpoint.txt in Resources */,
 				D85E9E762678371800A9CD0A /* OSSummary.storyboard in Resources */,
-				D8EE21CE2644BD6300C4F554 /* TextEntryDialog.xib in Resources */,
 				D8FAE0372646E91300BA500B /* DetailView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -295,6 +291,7 @@
 			files = (
 				D87396EB262106C40050D602 /* SearchViewController.swift in Sources */,
 				D87A5C32260AD35500D7B016 /* AppDelegate.swift in Sources */,
+				D813102A2AD0C0E60051CAE1 /* TextEntryDialog.swift in Sources */,
 				D87A5C42260AD37000D7B016 /* Network.swift in Sources */,
 				D87DCA72262A6325000668A3 /* AnalyticsItem.swift in Sources */,
 				D8D4C558264C7D850041F12F /* ExecuteAndSaveSQLViewController.swift in Sources */,
@@ -312,7 +309,6 @@
 				D88B0D78263F87410055C196 /* Extensions.swift in Sources */,
 				D87A5C44260BCC2900D7B016 /* ListViewController.swift in Sources */,
 				D829263B262360D600B16434 /* QueryItem.swift in Sources */,
-				D8EE21CD2644BD6300C4F554 /* TextEntryAlertDialog.swift in Sources */,
 				D8F9EF3D262B48B1007B41C3 /* SearchQueriesViewController.swift in Sources */,
 				D87396EE26210D050050D602 /* QueryItemCell.swift in Sources */,
 				D8FB831B264E171A00218700 /* DeviceCountDisplayViewController.swift in Sources */,
