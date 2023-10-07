@@ -47,9 +47,8 @@ extension SearchViewController {
     }
     
     private func promptForQuerySaveName(for data: Data) {
-        let queryDialog = TextEntryDialog()
-        queryDialog.configure(prompt: "Enter a unique name for the Query",
-                              filter: "./:") { [weak self] name in
+        let queryDialog = TextEntryDialog(prompt: "Enter a unique name for the Query",
+                                          filter: "./:") { [weak self] name in
             if name.isEmpty { return }
             self?.saveSearchData(data, to: name)
         }

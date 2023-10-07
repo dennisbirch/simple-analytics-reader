@@ -16,16 +16,13 @@ class TextEntryDialog: NSWindow {
         return true
     }
     
-    init() {
+    init(prompt: String, filter: String?, handler: @escaping (String) -> Void) {
         textField = NSTextField()
         promptLabel = NSTextField(labelWithString: "")
         okButton = NSButton()
         super.init(contentRect: CGRect.zero, styleMask: .docModalWindow, backing: .buffered, defer: true)
         setupUI()
         textField.delegate = self
-    }
-    
-    func configure(prompt: String, filter: String?, handler: @escaping (String) -> Void) {
         promptLabel.stringValue = prompt
         self.handler = handler
         if let filter = filter, filter.isEmpty == false {
