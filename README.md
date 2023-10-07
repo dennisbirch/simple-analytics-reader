@@ -4,13 +4,20 @@
 
 The [SimpleAnalytics package](https://github.com/dennisbirch/simple-analytics) allows you to collect data user interaction analytic data in iOS and macOS applications. This _SimpleAnalytics Reader_ app project allows you to more easily make sense of that collected data by displaying it on your Mac. It can run right out of the box with one minor configuration step.
 
+#### Latest update
+As of release 1.0.9, SimpleAnalytics Readers uses async-await network calls, and downstream to support them where necessary. It also:
+
+* Adds the ability to limit queries to date ranges in its "List" interface
+* Displays alerts for most errors it encounters
+* Fixes a handful of bugs
+
 ![SimpleAnalytics Reader screenshots.](https://github.com/dennisbirch/simple-analytics/blob/master/images/simpleanalytics-reader.png)
 
 ### Setup
 SimpleAnalytics Reader works by sending database queries to a backend app, which forwards them to the database that's collecting your analytics data. Therefore you need to make a web app available, and add a text file with the URL for it in the SimpleAnalytics Reader project folder.
 
 ##### Web app
-The __query.php__ file at the top level of the project's repository folder is the best starting point for providing a web app. If you have PHP and MySQL available on your web service (and you're using MySQL for collecting your data), you can configure the file for database access and upload it to your service. 
+The __query.php__ file at the top level of the project's repository folder is a reasonable starting point for providing a web app. If you have PHP and MySQL available on your web service (and you're using MySQL for collecting your data), you can configure the file for database access and upload it to your service. 
 
 If that's not the case, or you prefer to build your web app with another language, your web app should be able to handle POST requests with two parameters encoded in JSON in the request body: 
 
@@ -79,7 +86,7 @@ Example of a _Dictionary_ return value:
 ```
 
 ##### Endpoint file
-Once your web app is available, you need to let SimpleAnalytics Reader know where it is by creating a text file named "Endpoint.txt" at the project folder's top level. Then add the file to the project, selecting the "Create folder references" option.
+Once your web app is available, you need to let SimpleAnalytics Reader know where it is by creating a text file named "Endpoint.txt" somewhere on disk where Xcode can find it. Then add the file to the Xcode project, selecting the "Create folder references" option.
 
 ##### Running and debugging
 With those two steps complete, you are ready to begin running SimpleAnalytics Reader.
